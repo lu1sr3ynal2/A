@@ -1,102 +1,211 @@
-<!doctypehtml><html lang=pt><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Gerador de Evolução de Pacientes</title><style>body{margin:0;font-family:Arial,sans-serif;display:flex;background:#f5f5f5}.wrapper{display:flex;height:100vh;width:100%}.sidebar{width:400px;padding:.3rem;overflow-y:auto;border-right:1px solid #ccc;background:#fff}.row-1,.row-2,.row-3,.sidebar-section{background:#f9f9f9;padding:.5rem;margin-bottom:.5rem;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.sidebar label{font-size:.8rem;text-transform:uppercase;display:block;margin-bottom:.1rem}.sidebar label.bold{font-weight:700}.sidebar input,.sidebar select,.sidebar textarea{width:100%;padding:.3rem;border:1px solid #ccc;border-radius:4px;text-transform:uppercase;box-sizing:border-box;margin-bottom:.3rem;font-size:.9rem}.access-curativo-group{display:grid;grid-template-columns:2fr 1fr;gap:.3rem}.checkbox-group{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.1rem}.checkbox-group label{font-weight:400;font-size:.7rem;text-transform:uppercase;background:#e0e0e0;padding:.2rem .4rem;border-radius:3px;cursor:pointer}.checkbox-group input{margin-right:.2rem}.preview{flex:1;padding:1rem;background:#fff;white-space:pre-wrap;word-break:break-word;overflow-y:auto;font-family:monospace;display:flex;flex-direction:column;font-size:.9rem}#nota{flex-grow:1}#copyBtn{padding:.4rem;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;text-transform:uppercase;width:120px;align-self:flex-end;margin-top:.5rem;font-size:.8rem}#copyBtn:hover{background:#0056b3}.row-2{display:grid;gap:.3rem;grid-template-columns:1fr 1fr}.row-3{display:grid;gap:.3rem;grid-template-columns:repeat(3,1fr)}</style><div class=wrapper><aside class=sidebar><div class=row-3><label>Sala <select id=tipoSala><option value=OBS>Observação<option value=UDC>UDC</select></label> <label>Nº Sala<select id=numeroSala></select></label> <label>Box<select id=box><option>1<option>2<option>3<option>4<option>5</select></label></div><div class=row-1><label class=bold>Nome do Paciente<input id=nome placeholder="Nome completo"></label></div><div class=row-2><label>Data Nasc<input id=nascimento placeholder=DD/MM/AAAA></label> <label>Acompanhante<select id=acompanha><option>Sim<option>Não</select></label></div><div class=row-3><label class=bold>Neurológico<select id=consciencia><option value=ALERTA>Alerta e orientado<option value=LUCIDO>Lúcido com confusão<option value=CONFUSO>Confuso<option value=LETARGICO>Letárgico<option value=SEM_RELACAO>Sem relação</select></label> <label class=bold>Ventilação<select id=ventilacao><option value=AA>Ar ambiente<option value=OC>Óculos nasal<option value=MV>Máscara Venturi</select></label> <label class=bold>Dieta<select id=dieta><option value=ABVO>Via Oral – Boa aceitação<option value=VO_POUCA>Via Oral – Pouca aceitação<option value=NPO>NPO</select></label></div><div class=sidebar-section><label class=bold>Acessos Venosos e Curativo</label><div class=access-curativo-group><div class=checkbox-group><label><input id=acc1 type=checkbox>MSD</label> <label><input id=acc2 type=checkbox>MSE</label> <label><input id=acc3 type=checkbox>PICC</label> <label><input id=acc4 type=checkbox>Port-a-cath</label></div><div><label><input id=curativoGeral type=checkbox checked>Curativo limpo</label></div></div></div><div class=sidebar-section><label>Dispositivos</label><div class=checkbox-group><label><input id=disp1 type=checkbox>SVD</label> <label><input id=disp2 type=checkbox>Gastrostomia</label> <label><input id=disp3 type=checkbox>SNE/SNG</label></div></div><div class=row-2><label class=bold>Eliminações<select id=elimTipo><option value="">Nenhuma<option value=BANHEIRO selected>Banheiro<option value=FRALDA>Fralda<option value=AMBAS>Ambos</select></label> <label class=bold>Deambulação<select id=deambula><option value="">Nenhuma<option value=DEAMBULA selected>Deambula<option value=DEAMBULA_AUX>Com auxílio</select></label></div><div class=row-1><label>Cuidados<textarea id=acoes rows=4>Apresento-me e coloco-me à disposição.
+<!doctype html><html lang="pt"> <meta charset="UTF-8" /> <meta content="width=device-width,initial-scale=1" name="viewport" /> <title>Gerador de Evolução de Pacientes</title><style> body { margin: 0; font-family: Arial, sans-serif; display: flex; background: #f5f5f5; } .wrapper { display: flex; height: 100vh; width: 100%; } .sidebar { width: 400px; padding: 0.3rem; overflow-y: auto; border-right: 1px solid #ccc; background: #fff; } .row-1, .row-2, .row-3, .sidebar-section { background: #f9f9f9; padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); } .sidebar label { font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.1rem; } .sidebar label.bold { font-weight: 700; } .sidebar input, .sidebar select, .sidebar textarea { width: 100%; padding: 0.3rem; border: 1px solid #ccc; border-radius: 4px; text-transform: uppercase; box-sizing: border-box; margin-bottom: 0.3rem; font-size: 0.9rem; } .access-curativo-group { display: grid; grid-template-columns: 2fr 1fr; gap: 0.3rem; } .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.1rem; } .checkbox-group label { font-weight: 400; font-size: 0.7rem; text-transform: uppercase; background: #e0e0e0; padding: 0.2rem 0.4rem; border-radius: 3px; cursor: pointer; } .checkbox-group input { margin-right: 0.2rem; } .preview { flex: 1; padding: 1rem; background: #fff; white-space: pre-wrap; word-break: break-word; overflow-y: auto; font-family: monospace; display: flex; flex-direction: column; font-size: 0.9rem; } #nota { flex-grow: 1; } #copyBtn { padding: 0.4rem; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 120px; align-self: flex-end; margin-top: 0.5rem; font-size: 0.8rem; } #copyBtn:hover { background: #0056b3; } .row-2 { display: grid; gap: 0.3rem; grid-template-columns: 1fr 1fr; } .row-3 { display: grid; gap: 0.3rem; grid-template-columns: 33.333% 33.333% 33.333%;} .menu-neuro, .menu-ventilacion, .menu-dieta { position: relative; display: inline-block; width: 100%; } .menu-btn { width: 100%; display: block; height: 2rem; padding: 0 0.5rem; background: #e0e0e0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .submenu { display: none; position: absolute; background: white; border: 1px solid #ccc; width: 230px; z-index: 1000; } .menu-neuro:hover .submenu, .menu-ventilacion:hover .submenu, .menu-dieta:hover .submenu { display: block; } .submenu a, .subsubmenu a { padding: 0.7rem ; display: block; font-size: 0.95rem; color: #333; text-decoration: none; border-bottom: 1px solid #ddd; background: white; } .submenu a:last-child, .subsubmenu a:last-child { border-bottom: none; } .submenu a:hover, .subsubmenu a:hover { background: #f0f8ff; } .submenu-item { position: relative; } .subsubmenu { display: none; position: absolute; left: 100%; top: 0; background: white; border: 1px solid #ccc; min-width: 100px; z-index: 1001; }.menu-neuro,.menu-ventilacion,.menu-dieta { overflow: visible; position: relative; }.menu-neuro .submenu,.menu-ventilacion .submenu,.menu-dieta .submenu { top: 100% !important; left: 0 !important; position: absolute !important; width: 230px; z-index: 9999;}.menu-ventilacion .submenu-item { position: static !important;}.menu-ventilacion { position: relative; overflow: visible; }.menu-ventilacion .subsubmenu { position: absolute !important; top: 0% !important; left: 80% !important; z-index: 9999 !important;} .submenu-item:hover .subsubmenu { display: block; }</style> <div class="wrapper"> <aside class="sidebar"> <div class="row-3"> <label>Sala <select id="tipoSala"> <option value="OBS">Observação</option> <option value="UDC">UDC</option> <option value="INTERMEDIARIA">Intermediária</option> <option value="RESPIRATORIA">Respiratória</option> <option value="CARDIONEURO">Cardioneuro</option> <option value="VERMELHA">Vermelha</option> <option value="CARDIOLOGICA">Cardiológica</option> <option value="ISOLAMENTO">Isolamentos</option> </select> </label> <label id="labelNumeroSala">Nº Sala <select id="numeroSala"></select> </label> <label>Box <select id="box"></select> </label> </div> <div class="row-1"> <label class="bold">Nome do Paciente <input id="nome" placeholder="Nome completo" /> </label> </div> <div class="row-2"> <label>Data Nasc <input id="nascimento" placeholder="DD/MM/AAAA" /> </label> <label>Acompanhante <select id="acompanha"> <option>Sim</option> <option>Não</option> </select> </label> </div> <div class="row-3"> <!-- Neurológico --> <label class="bold">Neurológico <select id="consciencia" style="display: none;"> <option value="ALERTA" selected>LOC, ALERTA</option> <option value="LUCIDO">LÚCIDO C/ CONFUSÃO</option> <option value="CONFUSO">CONFUSO</option> <option value="LETARGICO">LETÁRGICO</option> <option value="SEM_RELACAO">SEM RELAÇÃO</option> </select> <div class="menu-neuro"> <button class="menu-btn" id="consciencia-btn">LOC, ALERTA</button> <div class="submenu"> <a data-value="ALERTA">LOC, ALERTA</a> <a data-value="LUCIDO">LÚCIDO C/ CONFUSÃO</a> <a data-value="CONFUSO">CONFUSO</a> <a data-value="LETARGICO">LETÁRGICO</a> <a data-value="SEM_RELACAO">SEM RELAÇÃO</a> </div> </div> </label> <!-- Ventilação --> <label class="bold">Ventilação <select id="ventilacao" style="display: none;"> <option value="AA" selected>Ar ambiente</option> <option value="OC">Óculos nasal</option> <option value="MV">Máscara Venturi</option> <option value="MH">Máscara Hudson</option> </select> <div class="menu-ventilacion"> <button class="menu-btn" id="ventilacao-btn">AR AMBIENTE</button> <div class="submenu"> <a data-value="AA">AR AMBIENTE</a> <div class="submenu-item"> <a>ÓCULOS NASAL »</a> <div class="subsubmenu"> <a data-value="OC" data-litros="1">1L</a> <a data-value="OC" data-litros="2">2L</a> <a data-value="OC" data-litros="3">3L</a> <a data-value="OC" data-litros="4">4L</a> <a data-value="OC" data-litros="5">5L</a> <a data-value="OC" data-litros="6">6L</a> </div> </div> <div class="submenu-item"> <a>MÁSCARA VENTURI »</a> <div class="subsubmenu"> <a data-value="MV" data-litros="8">8L</a> <a data-value="MV" data-litros="9">9L</a> <a data-value="MV" data-litros="10">10L</a> <a data-value="MV" data-litros="11">11L</a> <a data-value="MV" data-litros="12">12L</a> <a data-value="MV" data-litros="13">13L</a> <a data-value="MV" data-litros="14">14L</a> <a data-value="MV" data-litros="15">15L</a> </div> </div> <div class="submenu-item"> <a>MÁSCARA HUDSON »</a> <div class="subsubmenu"> <a data-value="MH" data-litros="8">8L</a> <a data-value="MH" data-litros="9">9L</a> <a data-value="MH" data-litros="10">10L</a> <a data-value="MH" data-litros="11">11L</a> <a data-value="MH" data-litros="12">12L</a> <a data-value="MH" data-litros="13">13L</a> <a data-value="MH" data-litros="14">14L</a> <a data-value="MH" data-litros="15">15L</a> </div> </div> </div> </div> <input type="hidden" id="litros" value=""> </label> <!-- Dieta --> <label class="bold">Dieta <select id="dieta" style="display: none;"> <option value="ABVO" selected>VIA ORAL – BOA ACEITAÇÃO</option> <option value="VO_POUCA">VIA ORAL – POUCA ACEITAÇÃO</option> <option value="NPO">NPO</option> </select> <div class="menu-dieta"> <button class="menu-btn" id="dieta-btn">VIA ORAL – BOA ACEITAÇÃO</button> <div class="submenu"> <a data-value="ABVO">VIA ORAL – BOA ACEITAÇÃO</a> <a data-value="VO_POUCA">VIA ORAL – POUCA ACEITAÇÃO</a> <a data-value="NPO">NPO</a> </div> </div> </label> </div> <div class="sidebar-section"> <label class="bold">Acessos Venosos e Curativo</label> <div class="access-curativo-group"> <div class="checkbox-group"> <label><input id="acc1" type="checkbox" />MSD</label> <label><input id="acc2" type="checkbox" />MSE</label> <label><input id="acc3" type="checkbox" />PICC</label> <label><input id="acc4" type="checkbox" />Port-a-cath</label> </div> <div> <label><input id="curativoGeral" type="checkbox" checked />Curativo limpo</label> </div> </div> </div> <div class="sidebar-section"> <label>Dispositivos</label> <div class="checkbox-group"> <label><input id="disp1" type="checkbox" />SVD</label> <label><input id="disp2" type="checkbox" />Gastrostomia</label> <label><input id="disp3" type="checkbox" />SNE/SNG</label> </div> </div> <div class="row-2"> <label class="bold">Eliminações <select id="elimTipo"> <option value="">Nenhuma</option> <option value="BANHEIRO" selected>Banheiro</option> <option value="FRALDA">Fralda</option> <option value="AMBAS">Ambos</option> </select> </label> <label class="bold">Deambulação <select id="deambula"> <option value="">Nenhuma</option> <option value="DEAMBULA" selected>Deambula</option> <option value="DEAMBULA_AUX">Com auxílio</option> </select> </label> </div> <div class="row-1"> <label>Cuidados <textarea id="acoes" rows="4">Apresento-me e coloco-me à disposição.
 Realizo controle de sinais vitais.
 Vigio e comunico alterações à equipe.
 Oriento sobre prevenção de quedas, rotinas da instituição e uso da campainha.
-Acolho e promovo conforto.</textarea></label></div></aside><main class=preview><pre id=nota></pre><button id=copyBtn onclick=copiarEvolucao()>Copiar Evolução</button></main></div><script>const tipoEl = document.getElementById('tipoSala'), numEl = document.getElementById('numeroSala');
-        const curativoGeral = document.getElementById('curativoGeral');
+Acolho e promovo conforto.</textarea> </label> </div> </aside> <main class="preview"> <pre id="nota"></pre> <button id="copyBtn" onclick="copiarEvolucao()">Copiar Evolução</button> </main> </div>
+<script>
 
-        function atualizarNumeros() {
-            const max = tipoEl.value === 'OBS' ? 3 : 4;
-            numEl.innerHTML = '';
-            for (let i = 1; i <= max; i++) {
-                let o = document.createElement('option');
-                o.value = i;
-                o.textContent = i;
-                numEl.appendChild(o);
-            }
-        }
-        tipoEl.addEventListener('change', atualizarNumeros);
-        atualizarNumeros();
+  const tipoEl = document.getElementById('tipoSala');
+  const numEl = document.getElementById('numeroSala');
+  const boxEl = document.getElementById('box');
+  const labelNumeroSala = document.getElementById('labelNumeroSala');
+  const curativoGeral = document.getElementById('curativoGeral');
 
-        function gerarNota() {
-            const tipoText = tipoEl.value === 'OBS' ? 'OBSERVAÇÃO' : tipoEl.value;
-            const sala = `EMERGÊNCIA ADULTO - ${tipoText} ${numEl.value} - BOX ${document.getElementById('box').value}`;
-            const nome = document.getElementById('nome').value.trim().toUpperCase();
-            const nascimento = document.getElementById('nascimento').value.trim();
-            const acomp = document.getElementById('acompanha').value === 'Sim' ? 'COM ACOMPANHANTE' : 'SEM ACOMPANHANTE';
-            const recepcao = nome ? (nascimento ? `RECEBO PACIENTE ${nome} ${nascimento}, ${acomp}.` : `RECEBO PACIENTE ${nome}, ${acomp}.`) : '';
-            const neuMap = {
-                ALERTA: 'ALERTA, LÚCIDO, ORIENTADO E COMUNICATIVO',
-                LUCIDO: 'LÚCIDO COM PERÍODOS DE CONFUSÃO',
-                CONFUSO: 'CONFUSO',
-                LETARGICO: 'LETÁRGICO',
-                SEM_RELACAO: 'SEM RELAÇÃO DE VIDA'
-            };
-            const ventMap = {
-                AA: 'VENTILANDO EM AR AMBIENTE.',
-                OC: 'VENTILANDO POR ÓCULOS NASAL.',
-                MV: 'VENTILANDO POR MÁSCARA VENTURI.'
-            };
-            const dietMap = {
-                ABVO: 'VO LIBERADA COM BOA ACEITAÇÃO.',
-                VO_POUCA: 'VO LIBERADA COM POUCA ACEITAÇÃO.',
-                NPO: 'NPO.'
-            };
-            const elimMap = {
-                BANHEIRO: 'ELIMINAÇÕES NO BANHEIRO.',
-                FRALDA: 'ELIMINAÇÕES EM FRALDA.',
-                AMBAS: 'ELIMINAÇÕES NO BANHEIRO E FRALDA PARA CONFORTO.'
-            };
-            const deamMap = {
-                DEAMBULA: 'DEAMBULA.',
-                DEAMBULA_AUX: 'DEAMBULA COM AUXÍLIO.'
-            };
-            const accDesc = {
-                'acc1': 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR DIREITO',
-                'acc2': 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR ESQUERDO',
-                'acc3': 'PICC',
-                'acc4': 'PORT-A-CATH'
-            };
-            const dispDesc = {
-                'disp1': 'COM SVD',
-                'disp2': 'COM GASTROSTOMIA',
-                'disp3': 'COM SNE/SNG'
-            };
-            let lines = [];
-            if (sala) lines.push(sala, '');
-            if (recepcao) lines.push(recepcao);
-            lines.push(neuMap[document.getElementById('consciencia').value]);
-            lines.push(ventMap[document.getElementById('ventilacao').value]);
-            lines.push(dietMap[document.getElementById('dieta').value]);
-            ['acc1', 'acc2', 'acc3', 'acc4'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el.checked) {
-                    lines.push(`${accDesc[id]}. ${curativoGeral.checked ? 'CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO.' : 'CURATIVO A SER AVALIADO.'}`);
-                }
-            });
-            ['disp1', 'disp2', 'disp3'].forEach(id => {
-                if (document.getElementById(id).checked) lines.push(`${dispDesc[id]}.`);
-            });
-            const elim = elimMap[document.getElementById('elimTipo').value] || '';
-            const deambula = deamMap[document.getElementById('deambula').value] || '';
-            if (elim) lines.push(elim);
-            if (deambula) lines.push(deambula);
-            lines.push('');
-            lines.push(...document.getElementById('acoes').value.trim().toUpperCase().split('\n'));
-            document.getElementById('nota').innerText = lines.join('\n');
-        }
+  const config = {
+    UDC:          { salas: [1,2,3,4],     box: ['POLTRONA 1','POLTRONA 2','POLTRONA 3','POLTRONA 4','POLTRONA 5'] },
+    OBS:          { salas: [1,2,3],       box: [1,2,3,4] },
+    INTERMEDIARIA:{ salas: [],            box: [1,2,3,4] },
+    RESPIRATORIA: { salas: [],            box: [1,2,3,4] },
+    CARDIONEURO:  { salas: [],            box: [1,2,3,4] },
+    VERMELHA:     { salas: [],            box: [1,2,3,4] },
+    CARDIOLOGICA: { salas: [],            box: [1,2,3,4] },
+    ISOLAMENTO:   { salas: [15,16],       box: ['A','B'] }
+  };
 
-        function copiarEvolucao() {
-            navigator.clipboard.writeText(document.getElementById('nota').innerText).then(() => {
-                const b = document.getElementById('copyBtn');
-                b.textContent = 'COPIADO!';
-                setTimeout(() => b.textContent = 'COPIAR EVOLUÇÃO', 2000);
-            });
-        }
+  function atualizarSelects() {
+    const tipo = tipoEl.value;
+    const { salas, box } = config[tipo];
+    labelNumeroSala.style.display = salas.length ? '' : 'none';
+    numEl.innerHTML = '';
+    salas.forEach(n => {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      numEl.appendChild(o);
+    });
+    boxEl.innerHTML = '';
+    box.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b; o.textContent = b;
+      boxEl.appendChild(o);
+    });
+  }
 
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.addEventListener('input', gerarNota);
-            el.addEventListener('change', gerarNota);
-        });
+  tipoEl.addEventListener('change', atualizarSelects);
+  atualizarSelects();
 
-        gerarNota();</script>
+
+
+  const neuMap = {
+    ALERTA:      'ALERTA, LÚCIDO, ORIENTADO E COERENTE',
+    LUCIDO:      'LÚCIDO COM PERÍODOS DE CONFUSÃO',
+    CONFUSO:     'CONFUSO',
+    LETARGICO:   'LETÁRGICO',
+    SEM_RELACAO: 'SEM RELAÇÃO DE VIDA'
+  };
+  const ventMap = {
+    AA: litros => 'VENTILANDO EM AR AMBIENTE.',
+    OC: litros => `VENTILANDO POR ÓCULOS NASAL A ${litros}L.`,
+    MV: litros => `VENTILANDO POR MÁSCARA VENTURI A ${litros}L.`,
+    MH: litros => `VENTILANDO POR MÁSCARA DE HUDSON A ${litros}L.`
+  };
+  const dietMap = {
+    ABVO:     'VO LIBERADA COM BOA ACEITAÇÃO.',
+    VO_POUCA: 'VO LIBERADA COM POUCA ACEITAÇÃO.',
+    NPO:      'EM NPO.'
+  };
+  const elimMap = {
+    BANHEIRO: 'ELIMINAÇÕES NO BANHEIRO.',
+    FRALDA:   'ELIMINAÇÕES EM FRALDA.',
+    AMBAS:    'ELIMINAÇÕES NO BANHEIRO E FRALDA PARA CONFORTO.'
+  };
+  const deamMap = {
+    DEAMBULA:     'DEAMBULA.',
+    DEAMBULA_AUX: 'DEAMBULA COM AUXÍLIO.'
+  };
+  const accDesc = {
+    acc1: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR DIREITO',
+    acc2: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR ESQUERDO',
+    acc3: 'PICC',
+    acc4: 'PORT-A-CATH'
+  };
+  const dispDesc = {
+    disp1: 'COM SVD',
+    disp2: 'COM GASTROSTOMIA',
+    disp3: 'COM SNE/SNG'
+  };
+
+  function gerarNota() {
+    const tipo = tipoEl.value;
+    const tipoText = tipo.replace('_',' ');
+    const sala =
+      ['INTERMEDIARIA','RESPIRATORIA','CARDIONEURO','VERMELHA','CARDIOLOGICA'].includes(tipo)
+        ? `EMERGÊNCIA ADULTO - ${tipoText} - BOX ${boxEl.value}`
+      : tipo === 'UDC'
+        ? `EMERGÊNCIA ADULTO - ${tipoText} ${numEl.value} - ${boxEl.value.toUpperCase()}`
+        : `EMERGÊNCIA ADULTO - ${tipoText} ${numEl.value} - BOX ${boxEl.value}`;
+
+    const nome      = document.getElementById('nome').value.trim().toUpperCase();
+    const nasc      = document.getElementById('nascimento').value.trim();
+    const acomp     = document.getElementById('acompanha').value === 'Sim' ? 'COM ACOMPANHANTE' : 'SEM ACOMPANHANTE';
+    const recepcao  = nome
+      ? nasc
+        ? `RECEBO PACIENTE ${nome} ${nasc}, ${acomp}.`
+        : `RECEBO PACIENTE ${nome}, ${acomp}.`
+      : '';
+
+    const neuVal   = document.getElementById('consciencia')?.value   || 'ALERTA';
+    const ventVal  = document.getElementById('ventilacao')?.value    || 'AA';
+    const dietVal  = document.getElementById('dieta')?.value         || 'ABVO';
+    const litros   = document.getElementById('litros')?.value        || '';
+
+    let lines = [];
+    if (sala) lines.push(sala,'');
+    if (recepcao) lines.push(recepcao);
+    lines.push(neuMap[neuVal]);
+    lines.push(
+      typeof ventMap[ventVal] === 'function'
+        ? ventMap[ventVal](litros)
+        : ventMap[ventVal]
+    );
+    lines.push(dietMap[dietVal]);
+
+    ['acc1','acc2','acc3','acc4'].forEach(id => {
+      if (document.getElementById(id).checked) {
+        lines.push(`${accDesc[id]}. ${
+          curativoGeral.checked
+            ? 'CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO.'
+            : 'CURATIVO A SER AVALIADO.'
+        }`);
+      }
+    });
+    ['disp1','disp2','disp3'].forEach(id => {
+      if (document.getElementById(id).checked) lines.push(`${dispDesc[id]}.`);
+    });
+
+    const elim   = elimMap[document.getElementById('elimTipo').value] || '';
+    const deambula = deamMap[document.getElementById('deambula').value] || '';
+    if (elim) lines.push(elim);
+    if (deambula) lines.push(deambula);
+
+    lines.push('');
+    lines.push(...document.getElementById('acoes').value.trim().toUpperCase().split('\n'));
+    document.getElementById('nota').innerText = lines.join('\n');
+  }
+
+  function copiarEvolucao() {
+    navigator.clipboard.writeText(document.getElementById('nota').innerText).then(() => {
+      const b = document.getElementById('copyBtn');
+      b.textContent = 'COPIADO!';
+      setTimeout(() => b.textContent = 'COPIAR EVOLUÇÃO', 2000);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('.menu-neuro a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('consciencia').value = a.dataset.value;
+        document.getElementById('consciencia-btn').textContent = a.textContent;
+        gerarNota();
+      });
+    });
+
+    document.querySelectorAll('.menu-ventilacion a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const v = a.dataset.value;
+        const l = a.dataset.litros || '';
+        document.getElementById('ventilacao').value = v;
+        document.getElementById('litros').value = l;
+        const btn = document.getElementById('ventilacao-btn');
+
+let baseLabel;
+switch (a.dataset.value) {
+  case 'OC':
+    baseLabel = 'ÓCULOS NASAL';
+    break;
+  case 'MV':
+    baseLabel = 'MÁSCARA VENTURI';
+    break;
+  case 'MH':
+    baseLabel = 'MÁSCARA HUDSON';
+    break;
+  default:
+    baseLabel = 'AR AMBIENTE';
+}
+
+btn.textContent = l
+  ? `${baseLabel} ${l}L`
+  : baseLabel;
+        gerarNota();
+      });
+    });
+
+    document.querySelectorAll('.menu-dieta a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('dieta').value = a.dataset.value;
+        document.getElementById('dieta-btn').textContent = a.textContent;
+        gerarNota();
+      });
+    });
+
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', gerarNota);
+      el.addEventListener('change', gerarNota);
+    });
+    gerarNota();
+  });
+</script>
+</html>
