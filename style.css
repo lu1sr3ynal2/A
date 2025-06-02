@@ -1,0 +1,48 @@
+body{margin:0;font-family:Arial,sans-serif;display:flex;background:#f5f5f5;color:#333}
+.wrapper{display:flex;height:100vh;width:100%}
+.sidebar{width:400px;padding:.4rem;overflow-y:auto;border-right:1px solid #ddd;background:#fff;box-shadow:2px 0 6px rgba(0,0,0,.03)}
+.row-1,.row-2,.row-3,.sidebar-section{background:#fafafa;padding:.6rem;margin-bottom:.5rem;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:background .2s,box-shadow .2s}
+.row-1:hover,.row-2:hover,.row-3:hover,.sidebar-section:hover{background:#f2f2f2;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.sidebar label{font-size:.8rem;text-transform:uppercase;display:block;margin-bottom:.15rem;color:#555}
+.sidebar label.bold{font-weight:700}
+.sidebar input,.sidebar select,.sidebar textarea{width:100%;padding:.35rem;border:1px solid #ccc;border-radius:5px;text-transform:uppercase;box-sizing:border-box;margin-bottom:.4rem;font-size:.9rem;background:#fff;transition:border-color .2s,box-shadow .2s}
+.sidebar input:focus,.sidebar select:focus,.sidebar textarea:focus{border-color:#007bff;box-shadow:0 0 3px rgba(0,123,255,.3);outline:none}
+.access-curativo-group{display:grid;gap:.5rem}
+.checkbox-row{display:flex;gap:1rem}
+.checkbox-large{position:relative;display:flex;align-items:center;justify-content:center;width:70px;height:36px;background:#e8e8e8;border-radius:4px;font-weight:600;font-size:.9rem;text-transform:uppercase;user-select:none;cursor:pointer;transition:background .2s}
+.checkbox-large input[type="checkbox"]{position:absolute;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2}
+.checkbox-large:hover{background:#d8d8d8}
+.checkbox-large input[type="checkbox"]:checked+span{background:#007bff;color:#fff;border-radius:4px;box-shadow:0 0 6px #007bffaa}
+.checkbox-large span{pointer-events:none;width:100%;height:100%;display:flex;justify-content:center;align-items:center;border-radius:4px;transition:background .2s,color .2s;user-select:none}
+.checkbox-small{font-weight:400;font-size:.75rem;text-transform:uppercase;background:#e8e8e8;padding:.25rem .45rem;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;user-select:none;transition:background .2s}
+.checkbox-small:hover{background:#d8d8d8}
+.checkbox-small input[type="checkbox"]{margin:0;cursor:pointer}
+.device-input-tooltip{position:absolute;top:36px;left:0;width:80px;background:#fff;border:1px solid #ccc;padding:.25rem;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:.85rem;display:none;z-index:10}
+label.checkbox-large:hover input[type="checkbox"]:checked~.device-input-tooltip{display:block}
+.catheter-tooltip{position:absolute;top:36px;left:0;width:90px;background:#fff;border:1px solid #ccc;padding:.25rem .5rem;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:.85rem;display:none;z-index:10}
+label.checkbox-large:hover input[type="checkbox"]:checked~.catheter-tooltip{display:block}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}
+.checkbox-group label{font-weight:400;font-size:.75rem;text-transform:uppercase;background:#e8e8e8;padding:.25rem .45rem;border-radius:4px;cursor:pointer;transition:background .2s}
+.checkbox-group label:hover{background:#d8d8d8}
+.checkbox-group input{margin-right:.2rem;outline:none;box-shadow:none}
+.checkbox-group input[type="checkbox"]:focus{outline:none;box-shadow:none}
+.preview{flex:1;padding:1rem;background:#fff;white-space:pre-wrap;word-break:break-word;overflow-y:auto;font-family:'Courier New',monospace;font-size:.9rem;border-left:1px solid #eee;display:flex;flex-direction:column}
+#nota{flex-grow:1}
+#copyBtn{padding:.45rem 1rem;background:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;text-transform:uppercase;width:130px;align-self:flex-end;margin-top:.6rem;font-size:.85rem;transition:background .3s,box-shadow .2s}
+#copyBtn:hover{background:#0056b3;box-shadow:0 2px 6px rgba(0,86,179,.3)}
+.row-2{display:grid;gap:.35rem;grid-template-columns:1fr 1fr 1fr}
+.row-3{display:grid;gap:.35rem;grid-template-columns:33.333% 33.333% 33.333%}
+.menu-neuro,.menu-ventilacion,.menu-dieta{position:relative;display:inline-block;width:100%;overflow:visible}
+.menu-btn{width:100%;height:2rem;padding:0 .5rem;background:#f0f0f0;border:1px solid #ccc;border-radius:5px;cursor:pointer;text-transform:uppercase;font-size:1rem;font-weight:500;color:#333;padding:0.4rem 0.8rem;transition:background .2s,box-shadow .2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-btn:hover{background:#e2e6ea;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.submenu,.subsubmenu{background:#ffffff;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.08);padding:.25rem 0;z-index:9999}
+.submenu{display:none;position:absolute;top:100%;left:0;width:240px}
+.menu-neuro:hover .submenu,.menu-ventilacion:hover .submenu,.menu-dieta:hover .submenu{display:block}
+.submenu-item .subsubmenu{display:none;position:absolute;left:100%;top:0;width:160px}
+.submenu a,.subsubmenu a{display:block;padding:.6rem 1rem;font-size:.95rem;color:#333;text-decoration:none;transition:background .2s,color .2s;border-bottom:1px solid #eeeeee}
+.submenu a:last-child{border-bottom:none}
+.submenu a:hover,.subsubmenu a:hover{background:rgba(0,123,255,.1);color:#007bff;cursor:pointer}
+.subsubmenu a{padding:.5rem .9rem;font-size:.9rem;padding-left:1.2rem}
+.menu-ventilacion .submenu-item{position:static!important}
+.menu-ventilacion .subsubmenu{position:absolute!important;top:0!important;left:80%!important;z-index:9999!important}
+.submenu-item:hover .subsubmenu{display:block}
