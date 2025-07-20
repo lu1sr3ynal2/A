@@ -1,6 +1,624 @@
-<!doctypehtml><html lang=pt><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Anotação HMV</title><style>.checkbox-large,.checkbox-large span,.checkbox-small{user-select:none;border-radius:4px}.checkbox-group input,.checkbox-group input[type=checkbox]:focus{outline:0;box-shadow:none}body{margin:0;font-family:Arial,sans-serif;display:flex;background:#f5f5f5;color:#333}.wrapper{display:flex;height:100vh;width:100%}.sidebar{width:450px;padding:.4rem;overflow-y:auto;border-right:1px solid #dbe3ff;background:#f6fbff;box-shadow:2px 0 6px rgb(0 0 0 / .03)}.row-1,.row-2,.row-3,.sidebar-section{background:#f1f5f9;padding:.6rem;margin-bottom:.5rem;border-radius:6px;box-shadow:0 1px 4px rgb(0 0 0 / .07);transition:background .2s,box-shadow .2s}.row-1:hover,.row-2:hover,.row-3:hover,.sidebar-section:hover{background:#f2f2f2;box-shadow:0 2px 6px rgb(0 0 0 / .08)}.sidebar label{font-size:.8rem;text-transform:uppercase;display:block;margin-bottom:.15rem;color:#555}.sidebar label.bold{font-weight:700}.sidebar input,.sidebar select,.sidebar textarea{width:100%;padding:.35rem;border:1px solid #ccc;border-radius:5px;text-transform:uppercase;box-sizing:border-box;margin-bottom:.4rem;font-size:.9rem;background:#e9e9ec;transition:border-color .2s,box-shadow .2s}.sidebar input:focus,.sidebar select:focus,.sidebar textarea:focus{border-color:#007bff;box-shadow:0 0 3px rgb(0 123 255 / .3);outline:0}.access-curativo-group{display:grid;gap:.5rem}.checkbox-row{display:flex;gap:1rem}.checkbox-large{position:relative;display:flex;align-items:center;justify-content:center;width:70px;height:36px;background:#e8e8e8;font-weight:600;font-size:.9rem;text-transform:uppercase;cursor:pointer;transition:background .2s}.checkbox-large input[type=checkbox]{position:absolute;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2}.checkbox-group label:hover,.checkbox-large:hover,.checkbox-small:hover{background:#d8d8d8}.checkbox-large input[type=checkbox]:checked+span{background:#007bff;color:#fff;border-radius:4px;box-shadow:0 0 6px #007bffaa}.checkbox-large span{pointer-events:none;width:100%;height:100%;display:flex;justify-content:center;align-items:center;transition:background .2s,color .2s}.checkbox-group label,.checkbox-small{font-weight:400;font-size:.75rem;background:#e8e8e8;padding:.25rem .45rem;transition:background .2s;text-transform:uppercase;cursor:pointer}.checkbox-small{display:inline-flex;align-items:center;gap:.3rem}.catheter-tooltip,.device-input-tooltip{position:absolute;top:36px;box-shadow:0 2px 8px rgb(0 0 0 / .15);display:none;z-index:10;font-size:.85rem;left:0}.checkbox-small input[type=checkbox]{margin:0;cursor:pointer}.device-input-tooltip{width:80px;background:#f1f5f9;border:1px solid #ccc;padding:.25rem;border-radius:5px}.menu-dieta:hover .submenu,.menu-neuro:hover .submenu,.menu-ventilacion:hover .submenu,.submenu-item:hover .subsubmenu,label.checkbox-large:hover input[type=checkbox]:checked~.catheter-tooltip,label.checkbox-large:hover input[type=checkbox]:checked~.device-input-tooltip{display:block}.catheter-tooltip{width:90px;background:#fff;border:1px solid #ccc;padding:.25rem .5rem;border-radius:5px}.checkbox-group{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}.checkbox-group label{border-radius:4px}.checkbox-group input{margin-right:.2rem}.preview{flex:1;padding:1rem;background:#f1f5f9;white-space:pre-wrap;word-break:break-word;overflow-y:auto;font-family:'Courier New',monospace;font-size:.9rem;border-left:1px solid #eee;display:flex;flex-direction:column}.row-2,.row-3{display:grid;gap:.35rem}#nota{flex-grow:1}#copyBtn{padding:.45rem 1rem;background:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;text-transform:uppercase;width:130px;align-self:flex-end;margin-top:.6rem;font-size:.85rem;transition:background .3s,box-shadow .2s}#copyBtn:hover{background:#0056b3;box-shadow:0 2px 6px rgb(0 86 179 / .3)}.row-2{grid-template-columns:1fr 1fr 1fr}.row-3{grid-template-columns:33.333% 33.333% 33.333%}.menu-dieta,.menu-neuro,.menu-ventilacion{position:relative;display:inline-block;width:100%;overflow:visible}.menu-btn{width:100%;height:2rem;padding:.4rem .8rem;background:#e4e5e7;border:1px solid #ccc;border-radius:5px;cursor:pointer;text-transform:uppercase;font-size:1rem;font-weight:500;color:#333;transition:background .2s,box-shadow .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.menu-btn:hover{background:#e2e6ea;box-shadow:0 2px 6px rgb(0 0 0 / .08)}.submenu,.subsubmenu{background:#f1f5f9;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 12px rgb(0 0 0 / .08);padding:.25rem 0;z-index:9999}.submenu{display:none;position:absolute;top:100%;left:0;width:240px}.submenu-item .subsubmenu{display:none;position:absolute;left:100%;top:0;width:160px}.submenu a,.subsubmenu a{display:block;padding:.6rem 1rem;font-size:.95rem;color:#333;text-decoration:none;transition:background .2s,color .2s;border-bottom:1px solid #eee}.submenu a:last-child{border-bottom:none}.submenu a:hover,.subsubmenu a:hover{background:rgb(0 123 255 / .1);color:#007bff;cursor:pointer}.subsubmenu a{padding:.5rem .9rem .5rem 1.2rem;font-size:.9rem}.menu-ventilacion .submenu-item{position:static!important}.menu-ventilacion .subsubmenu{position:absolute!important;top:0!important;left:80%!important;z-index:9999!important}</style><div class=wrapper><aside class=sidebar><div class=row-3><label>Sala <select id=tipoSala><option value=OBSERVAÇÃO>Observação<option value=UDC>UDC<option value=MEDICAÇÃO>MEDICAÇÃO<option value=CARDIONEURO>Cardioneuro<option value=INTERMEDIARIA>Intermediária<option value=RESPIRATORIA>Respiratória<option value=ISOLAMENTO>Isolamentos<option value=CARDIOLOGICA>Cardiológica<option value=VERMELHA>Vermelha</select></label> <label id=labelNumeroSala>Nº Sala <select id=numeroSala></select></label> <label>Box <select id=box></select></label></div><div class=row-1><label class=bold>Nome do Paciente <input id=nome placeholder="Nome completo"></label></div><div class=row-2><label>Alergias <input id=alergias placeholder="Liste aqui as alergias"></label> <label>Acompanhante <select id=acompanha><option>Sim<option>Não</select></label> <label>Decúbito <select id=decubito><option value="">Nenhum<option value=DORSAL>Dorsal<option value=LATERAL_ESQ>Lateral Esquerda<option value=LATERAL_DIR>Lateral Direita</select></label></div><div class=row-3><label class=bold>Neurológico <select id=consciencia style=display:none><option value=ALERTA selected>LOC, ALERTA<option value=LUCIDO>LÚCIDO C/ CONFUSÃO<option value=CONFUSO>CONFUSO<option value=LETARGICO>LETÁRGICO<option value=SEM_RELACAO>SEM RELAÇÃO</select><div class=menu-neuro><button id=consciencia-btn class=menu-btn>LOC, ALERTA</button><div class=submenu><a data-value=ALERTA>LOC, ALERTA</a> <a data-value=LUCIDO>LÚCIDO C/ CONFUSÃO</a> <a data-value=CONFUSO>CONFUSO</a> <a data-value=LETARGICO>LETÁRGICO</a> <a data-value=SEM_RELACAO>SEM RELAÇÃO</a></div></div></label> <label class=bold>Ventilação <select id=ventilacao style=display:none><option value=AA selected>Ar ambiente<option value=OC>Óculos nasal<option value=MV>Máscara Venturi<option value=MH>Máscara Hudson</select><div class=menu-ventilacion><button id=ventilacao-btn class=menu-btn>AR AMBIENTE</button><div class=submenu><a data-value=AA>AR AMBIENTE</a><div class=submenu-item><a>ÓCULOS NASAL »</a><div class=subsubmenu><a data-value=OC data-litros=1>1L</a> <a data-value=OC data-litros=2>2L</a> <a data-value=OC data-litros=3>3L</a> <a data-value=OC data-litros=4>4L</a> <a data-value=OC data-litros=5>5L</a> <a data-value=OC data-litros=6>6L</a></div></div><div class=submenu-item><a>MÁSCARA VENTURI »</a><div class=subsubmenu><a data-value=MV data-litros=8>8L</a> <a data-value=MV data-litros=9>9L</a> <a data-value=MV data-litros=10>10L</a> <a data-value=MV data-litros=11>11L</a> <a data-value=MV data-litros=12>12L</a> <a data-value=MV data-litros=13>13L</a> <a data-value=MV data-litros=14>14L</a> <a data-value=MV data-litros=15>15L</a></div></div><div class=submenu-item><a>MÁSCARA HUDSON »</a><div class=subsubmenu><a data-value=MH data-litros=8>8L</a> <a data-value=MH data-litros=9>9L</a> <a data-value=MH data-litros=10>10L</a> <a data-value=MH data-litros=11>11L</a> <a data-value=MH data-litros=12>12L</a> <a data-value=MH data-litros=13>13L</a> <a data-value=MH data-litros=14>14L</a> <a data-value=MH data-litros=15>15L</a></div></div></div></div><input id=litros type=hidden></label> <label class=bold>Dieta <select id=dieta style=display:none><option value=ABVO selected>VIA ORAL – BOA ACEITAÇÃO<option value=VO_POUCA>VIA ORAL – POUCA ACEITAÇÃO<option value=NPO>NPO</select><div class=menu-dieta><button id=dieta-btn class=menu-btn>VIA ORAL – BOA ACEITAÇÃO</button><div class=submenu><a data-value=ABVO>VIA ORAL – BOA ACEITAÇÃO</a> <a data-value=VO_POUCA>VIA ORAL – POUCA ACEITAÇÃO</a> <a data-value=NPO>NPO</a></div></div></label></div><div class=sidebar-section><label class=bold>Acessos Venosos e Curativo</label><div class=access-curativo-group><div class=checkbox-row><label class=checkbox-large for=acc1><input id=acc1 type=checkbox> <span>MSD</span><div class=catheter-tooltip><select id=cateter-acc1 aria-label="Cateter MSD"><option value=""selected>Catéter<option value=18>18<option value=20>20<option value=22>22<option value=24>24</select></div></label> <label class=checkbox-large for=acc2><input id=acc2 type=checkbox> <span>MSE</span><div class=catheter-tooltip><select id=cateter-acc2 aria-label="Cateter MSE"><option value=""selected>Catéter<option value=18>18<option value=20>20<option value=22>22<option value=24>24</select></div></label></div><div class=checkbox-row style=margin-top:.5rem><label class=checkbox-small for=acc3><input id=acc3 type=checkbox> PICC</label> <label class=checkbox-small for=acc4><input id=acc4 type=checkbox> Port-a-cath</label> <label class=checkbox-small for=curativoGeral><input id=curativoGeral type=checkbox checked> Curativo limpo</label></div></div></div><div class=sidebar-section><label class=bold>Dispositivos e Dieta Enteral</label><div class=access-curativo-group><div class=checkbox-row><label class=checkbox-large for=dispGastro><input id=dispGastro type=checkbox> <span>GASTROSTOMIA</span><div class=device-input-tooltip><input id=gastro-mlh type=number min=0 placeholder=mL/h></div></label> <label class=checkbox-large for=dispSNE><input id=dispSNE type=checkbox> <span>SNE</span><div class=device-input-tooltip><input id=sne-mlh type=number min=0 placeholder=mL/h></div></label> <label class=checkbox-large for=dispSNG><input id=dispSNG type=checkbox> <span>SNG</span><div class=device-input-tooltip><input id=sng-mlh type=number min=0 placeholder=mL/h></div></label></div></div></div><div class=row-2><label class=bold>Eliminações <select id=elimTipo><option value="">Nenhuma<option value=BANHEIRO selected>Banheiro<option value=FRALDA>Fralda<option value=AMBAS>Ambos</select></label> <label class=bold>Deambulação <select id=deambula><option value="">Nenhuma<option value=RESTRITO>RESTRITO<option value=DEAMBULA selected>Deambula<option value=DEAMBULA_AUX>Com auxílio</select></label></div><div class=row-1><label>Cuidados <textarea id=acoes rows=4>Apresento-me e coloco-me à disposição.
-Realizo controle de sinais vitais.
-Vigio e comunico alterações à equipe.
-Oriento sobre prevenção de quedas, rotinas da instituição e uso da campainha.
-Acolho e promovo conforto.</textarea></label></div></aside><main class=preview><pre id=nota></pre><button id=copyBtn>Copiar Evolución</button></main></div>
-<script>document.addEventListener("DOMContentLoaded",()=>{let A=A=>document.getElementById(A),e=A("tipoSala"),O=A("numeroSala"),a=A("box"),E=A("labelNumeroSala"),l=A("curativoGeral"),t=A("copyBtn"),R=A("alergias"),n=A("decubito"),I=A("nome"),L=A("acompanha"),T=A("consciencia"),c=A("consciencia-btn"),C=A("ventilacao"),s=A("ventilacao-btn"),S=A("litros"),i=A("dieta"),N=A("dieta-btn"),o=A("nota"),u=A("acoes"),M={UDC:{salas:[1,2,3,4],box:["POLTRONA 1","POLTRONA 2","POLTRONA 3","POLTRONA 4","POLTRONA 5"]},MEDICAÇÃO:{salas:[],box:["POLTRONA 1","POLTRONA 2","POLTRONA 3","POLTRONA 4","POLTRONA 5"]},OBSERVAÇÃO:{salas:[1,2,3],box:[1,2,3,4]},INTERMEDIARIA:{salas:[],box:[1,2,3,4]},RESPIRATORIA:{salas:[],box:[1,2,3,4]},CARDIONEURO:{salas:[],box:[1,2,3,4]},VERMELHA:{salas:[],box:[1,2,3,4]},CARDIOLOGICA:{salas:[],box:[1,2,3,4]},ISOLAMENTO:{salas:[15,16],box:["A","B"]}},D={neu:{ALERTA:"ALERTA, L\xdaCIDO, ORIENTADO E COERENTE",LUCIDO:"L\xdaCIDO COM PER\xcdODOS DE CONFUS\xc3O",CONFUSO:"CONFUSO",LETARGICO:"LET\xc1RGICO",SEM_RELACAO:"SEM RELA\xc7\xc3O DE VIDA"},vent:{AA:()=>"VENTILANDO EM AR AMBIENTE.",OC:A=>`VENTILANDO POR \xd3CULOS NASAL A ${A}L.`,MV:A=>`VENTILANDO POR M\xc1SCARA VENTURI A ${A}L.`,MH:A=>`VENTILANDO POR M\xc1SCARA DE HUDSON A ${A}L.`},diet:{ABVO:"VO LIBERADA COM BOA ACEITA\xc7\xc3O.",VO_POUCA:"VO LIBERADA COM POUCA ACEITA\xc7\xc3O.",NPO:"EM NPO."},elim:{BANHEIRO:"ELIMINA\xc7\xd5ES NO BANHEIRO.",FRALDA:"ELIMINA\xc7\xd5ES EM FRALDA.",AMBAS:"ELIMINA\xc7\xd5ES NO BANHEIRO E FRALDA PARA CONFORTO."},deam:{RESTRITO:"RESTRITO AO LEITO.",DEAMBULA:"DEAMBULA.",DEAMBULA_AUX:"DEAMBULA COM AUX\xcdLIO."},acc:{acc1:"ACESSO VENOSO PERIF\xc9RICO EM MEMBRO SUPERIOR DIREITO",acc2:"ACESSO VENOSO PERIF\xc9RICO EM MEMBRO SUPERIOR ESQUERDO",acc3:"PICC",acc4:"PORT-A-CATH"},dec:{DORSAL:"EM DEC\xdaBITO DORSAL",LATERAL_ESQ:"EM DEC\xdaBITO LATERAL ESQUERDA",LATERAL_DIR:"EM DEC\xdaBITO LATERAL DIREITA"}},r=(A,e)=>{A.innerHTML="",e.forEach(e=>A.appendChild(new Option(e,e)))},v=()=>{console.log("↪︎ updSel disparado: tipo.value =",e.value);let A=M[e.value];if(!A){console.warn(`⚠️ cfg["${e.value}"] no existe.`),E.style.display="none",O.innerHTML="",a.innerHTML="",p();return}Array.isArray(A.salas)&&A.salas.length>0?(E.style.display="",r(O,A.salas)):(E.style.display="none",O.innerHTML=""),Array.isArray(A.box)?r(a,A.box):a.innerHTML="",p()};function p(){let E=e.value,t=E.replace("_"," "),c=a.value,s=T.value,N=C.value,M=i.value,r=S.value,v;v="UDC"===e.value?`EMERG\xcaNCIA ADULTO - SALA ${t} ${O.value} - ${c}`:"MEDICA\xc7\xc3O"===e.value?`EMERG\xcaNCIA ADULTO - SALA DE ${t} ${O.value} - ${c}`:"OBSERVA\xc7\xc3O"===e.value?`EMERG\xcaNCIA ADULTO - SALA ${t} ${O.value} - BOX ${c}`:"ISOLAMENTO"===e.value?`EMERG\xcaNCIA ADULTO - SALA ${t} ${O.value} - BOX ${c}`:`EMERG\xcaNCIA ADULTO - SALA ${t} - BOX ${c}`;let p=[v,""],d=R.value.trim().toUpperCase();d&&p.push(`#ALERGIAS: ${d}`,"");let h=I.value.trim().toUpperCase(),P="Sim"===L.value?"COM ACOMPANHANTE":"SEM ACOMPANHANTE";if(h){p.push(`RECEBO PACIENTE ${h}, ${P}.`);let U=D.dec[n.value]||"";U&&p.push(U)}if(p.push(D.neu[s],"function"==typeof D.vent[N]?D.vent[N](r):D.vent[N],D.diet[M]),["acc1","acc2","acc3","acc4"].forEach(e=>{if(A(e).checked){let O=D.acc[e];if("acc1"===e||"acc2"===e){let a=A(`cateter-${e}`).value;a&&(O+=` CATETER ${a}`)}O+=`. ${l.checked?"CURATIVO LIMPO E SECO SEM SINAIS FLOG\xcdSTICOS NO S\xcdTIO DA INSER\xc7\xc3O.":"CURATIVO A SER AVALIADO."}`,p.push(O)}}),A("dispGastro").checked){let B=parseInt(A("gastro-mlh").value)||0;B>0?p.push(`RECEBENDO DIETA POR GASTROSTOMIA A ${B} ML/H.`):p.push("COM GASTROSTOMIA.")}if(A("dispSNE").checked){let m=parseInt(A("sne-mlh").value)||0;m>0?p.push(`RECEBENDO DIETA POR SONDA NASOENTERICA A ${m} ML/H.`):p.push("COM SONDA NASOENTERICA.")}if(A("dispSNG").checked){let x=parseInt(A("sng-mlh").value)||0;x>0?p.push(`RECEBENDO DIETA POR SONDA NASOGASTRICA A ${x} ML/H.`):p.push("COM SONDA NASOGASTRICA.")}let f=D.elim[A("elimTipo").value],V=D.deam[A("deambula").value];f&&p.push(f),V&&p.push(V),p.push(""),u.value.trim().toUpperCase().split("\n").filter(A=>A.trim()).forEach(A=>p.push(A)),o.innerText=p.join("\n")}e.addEventListener("change",v),[[".menu-neuro","consciencia",c],[".menu-ventilacion","ventilacao",s],[".menu-dieta","dieta",N]].forEach(([e,O,a])=>{document.querySelectorAll(`${e} a[data-value]`).forEach(e=>{e.onclick=E=>{E.preventDefault(),A(O).value=e.dataset.value,"ventilacao"===O&&(S.value=e.dataset.litros||""),a.textContent=e.textContent,p()}})}),document.querySelectorAll("input,select,textarea").forEach(A=>{A.oninput=p,A.onchange=p}),["gastro-mlh","sne-mlh","sng-mlh"].forEach(e=>{A(e).oninput=p,A(e).onchange=p}),t.onclick=()=>{navigator.clipboard.writeText(o.innerText),t.textContent="COPIADO!",setTimeout(()=>t.textContent="COPIAR EVOLU\xc7\xc3O",2e3)},v()});</script>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evolução V2 - SoulMV Style</title>
+  <style>
+    :root {
+      --color-primary: #0071BC;
+      --color-primary-dark: #005BAC;
+      --color-bg: #EDF2F7;
+      --color-bg-light: #FAFCFE;
+      --color-text: #334155;
+      --color-border: #D0D7DE;
+      --border-radius: 6px;
+      --font-family: Arial, sans-serif;
+      --transition-fast: 0.2s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background: var(--color-bg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--color-text);
+    }
+    .top-bar {
+      background-color: var(--color-primary-dark);
+      color: #fff;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .layout { display: flex; flex: 1; overflow: hidden; }
+    .sidebar {
+      width: 300px;
+      background: var(--color-bg-light);
+      border-right: 1px solid var(--color-border);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .sidebar .buttons { display: flex; flex-direction: column; gap: 0.4rem; }
+    .sidebar button {
+      padding: 0.6rem 1rem;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      text-align: left;
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .sidebar button:hover { background: #E3EBF2; }
+    .sidebar button.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary-dark);
+    }
+input[type="checkbox"] {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border: 2px solid var(--color-primary);
+  border-radius: 5px;
+  appearance: none; /* elimina estilo nativo */
+  -webkit-appearance: none;
+  outline: none;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+  background-color: #fff;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary-dark);
+}
+
+/* Dibujar el check con un pseudo-elemento */
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 7px;
+  width: 5px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+/* Para el hover, mejora la UX */
+input[type="checkbox"]:hover {
+  border-color: var(--color-primary-dark);
+}
+
+/* Checkbox disabled */
+input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background-color: #eee;
+  border-color: #ccc;
+}
+.acesso-group {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-wrap: wrap;
+}
+
+.acesso-group label {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  min-width: 110px;
+  margin: 6px 0;
+}
+
+.acesso-group input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.acesso-group select,
+.acesso-group input[type="text"] {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+
+    .copy-button {
+      margin-top: 1rem;
+      background: var(--color-primary);
+      color: #000000;
+      padding: 0.6rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+    .main-content {
+      flex: 1;
+      background: var(--color-bg-light);
+      padding: 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .patient-name-bar input {
+      width: 100%; 
+      padding: 0.60rem 1rem; 
+      font-size: 1rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--border-radius);
+      transition: all var(--transition-medium);
+      background: var(--color-bg);
+      font-weight: 500;
+    }
+    .section-output {
+      flex: 1; max-height: 50%; overflow-y: auto;
+      background: transparent; padding: 0;
+    }
+    .note-output {
+ flex: 1; 
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: 1rem; 
+      background: var(--color-bg);
+      overflow-y: auto;
+      white-space: pre-wrap; 
+      font-size: 0.9rem;
+      transition: all var(--transition-medium);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.5rem 0.8rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+    label {
+      display: block; font-weight: 600;
+      text-align: center; margin-bottom: 0.15rem;
+      font-size: 0.78rem;
+    }
+    input, select, textarea {
+     width: 100%; 
+      padding: 0.5rem 0.75rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
+      transition: all var(--transition-medium);
+      background: var(--color-bg);
+      font-family: inherit;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0,113,188,0.2);
+      background: #fff;
+    }
+    select { background-image: none; position: relative; }
+    select::after {
+      content: '';
+      position: absolute; top: 50%; right: 1rem;
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--color-text);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    textarea { resize: vertical; }
+    .footer {
+      background: #DDEAF5; text-align: center;
+      padding: 0.5rem; font-size: 0.75rem;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">EMERGÊNCIA ADULTO - HMV</div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div>
+        <h2>Seções</h2>
+        <div class="buttons">
+          <button onclick="activate(this,'dados')" class="active">📄 Dados</button>
+          <button onclick="activate(this,'neurologico')">🧠 Neurológico</button>
+          <button onclick="activate(this,'ventilacao')">👃 Ventilação</button>
+          <button onclick="activate(this,'dieta')">🍽️ Dieta</button>
+          <button onclick="activate(this,'acessos')">🩸 Acessos</button>
+          <button onclick="activate(this,'eliminacoes')">🧻 Eliminações</button>
+          <button onclick="activate(this,'deambulacao')">🚶 Deambulação</button>
+          <button onclick="activate(this,'dorso')">🛏️ Dorso</button>
+          <button onclick="activate(this,'cuidados')">🩹 Cuidados</button>
+        </div>
+      </div>
+      <button class="copy-button">📋 Copiar Evolução</button>
+    </aside>
+    <main class="main-content">
+      <div class="patient-name-bar">
+        <input type="text" placeholder="Nome do paciente"/>
+      </div>
+      <div id="section-output" class="section-output"></div>
+      <div id="note-output" class="note-output">
+        <strong>Evolução:</strong>
+        <p>O conteúdo da evolução será gerado aqui...</p>
+      </div>
+    </main>
+  </div>
+  <div class="footer">ANOTAÇÃO DE ENFERMAGEM - EMERGÊNCIA ADULTO</div>
+  <script>
+    const sectionKeys = ['dados','neurologico','ventilacao','dieta','acessos','eliminacoes','deambulacao','dorso','cuidados'];
+    let currentIndex = 0;
+    const sections = {
+      dados: `
+        <div class="form-row">
+          <div><label for="tipoSala">Sala</label><select id="tipoSala"><option disabled selected>Selecione a sala</option><option>Observação</option><option>UDC</option><option>Medicação</option><option>Cardioneuro</option><option>Intermediária</option><option>Respiratória</option><option>Isolamento</option><option>Cardiológica</option><option>Vermelha</option></select></div>
+          <div><label for="numeroSala">Nº da Sala</label><select id="numeroSala" disabled><option disabled selected>Selecione</option></select></div>
+          <div><label for="boxSala">Box</label><select id="boxSala" disabled><option disabled selected>Selecione</option></select></div>
+        </div>
+        <div class="form-row">
+          <div><label for="idadePaciente">Idade</label><input type="number" id="idadePaciente" min="0" placeholder="Idade"/></div>
+          <div><label for="acompanha">Acompanhante</label><select id="acompanha"><option disabled selected>Selecione</option><option>Sim</option><option>Não</option></select></div>
+        </div>
+        <div class="form-row">
+          <div><label for="problemaAtual">Problema atual</label><input type="text" id="problemaAtual" placeholder="Problema atual"/></div>
+          <div><label for="alergias">Alergias</label><input type="text" id="alergias" placeholder="Alergias"/></div>
+        </div>
+      `,
+      neurologico: `
+        <div class="form-row">
+  <div>
+    <label for="nivelConsciencia">Nível de Consciência</label>
+    <select id="nivelConsciencia">
+      <option disabled selected>Selecione</option>
+      <option>Lúcido, orientado e coerente</option>
+      <option>Confuso</option>
+      <option>Sem relação com a vida</option>
+    </select>
+  </div>
+  
+</div>
+
+<div class="form-row">
+  <div>
+    <label for="verbalizacao">Verbalização</label>
+    <select id="verbalizacao">
+      <option disabled selected>Selecione</option>
+      <option>Comunicativo</option>
+      <option>Pouco comunicativo</option>
+      <option>Fala incoerente</option>
+      <option>Afásico</option>
+      <option>Não verbaliza</option>
+      <option>Responde apenas a estímulos dolorosos</option>
+    </select>
+  </div>
+  <div>
+    <label for="pupilas">Pupilas (Tamanho)</label>
+    <select id="pupilas">
+      <option disabled selected>Selecione</option>
+      <option>Isocóricas</option>
+      <option>Anisocóricas</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-row">
+  <div>
+    <label for="dorPresente">Presença de Dor</label>
+    <select id="dorPresente">
+      <option disabled selected>Selecione</option>
+      <option>Sim</option>
+      <option>Não</option>
+      <option>NÃO APLICA</option>
+    </select>
+  </div>
+  <div>
+    <label for="escalaDor">Escala utilizada</label>
+    <select id="escalaDor">
+      <option disabled selected>Selecione</option>
+      <option>EVA</option>
+      <option>BPS</option>
+      <option>PAINAD</option>
+      <option>DORMINDO</option>
+      <option>NÃO APLICA</option>
+    </select>
+  </div>
+  <div>
+    <label for="valorDor">Intensidade (0 a 10)</label>
+    <input type="number" id="valorDor" min="0" max="10" />
+  </div>
+</div>
+
+
+
+      `,
+      ventilacao: `
+<div class="form-row">
+  <div>
+    <label for="tipoOxigenoterapia">Oxigenoterapia</label>
+    <select id="tipoOxigenoterapia" onchange="handleOxigenoterapiaChange(this.value)">
+      <option disabled selected>Selecione</option>
+      <option>Ar ambiente</option>
+      <option>ON - Óculos nasal</option>
+      <option>CN - Cânula nasal</option>
+      <option>VNI - Não invasiva</option>
+      <option>MV - Máscara de Venturi</option>
+      <option>MH - Máscara de Hudson</option>
+      <option>TOT AYRE</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="litrosOxigenio">Litros/min</label>
+    <input type="number" id="litrosOxigenio" placeholder="0" min="0" step="1" />
+  </div>
+
+  <div>
+    <label for="padraoVentilatorio">Padrão ventilatório</label>
+    <select id="padraoVentilatorio">
+      <option disabled selected>Selecione</option>
+      <option>Eupneico</option>
+      <option>Bradipneico</option>
+      <option>Taquipneico</option>
+      <option>Apneico</option>
+      <option>Dispneico</option>
+      <option>Uso de musculatura acessória</option>
+    </select>
+  </div>
+</div>
+
+      `,
+      dieta: `
+  <div class="form-row">
+  <div>
+    <label for="dietaOral">Via Oral</label>
+    <select id="dietaOral">
+      <option disabled selected>Selecione</option>
+      <option>LIBERADA</option>
+      <option>Aceita bem</option>
+      <option>Recusando</option>
+      <option>NPO</option>
+      <option>Náuseas/Vômitos</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="dietaSonda">Por Sonda</label>
+    <select id="dietaSonda" onchange="habilitarInputML(this.value)">
+      <option disabled selected>Selecione</option>
+      <option>Gastrostomia</option>
+      <option>Sonda nasogástrica</option>
+      <option>Sonda nasoenteral</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="mlSonda">Volume (ml/h)</label>
+    <input type="number" id="mlSonda" placeholder="Ex: 80" min="0" step="1" disabled />
+  </div>
+</div>
+      `,
+
+      
+      acessos: `
+      <div class="form-row">
+
+  <!-- AVP MSD -->
+  <div class="acesso-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="avpMsdCheckbox" onchange="toggleFields('avpMsdCheckbox', ['calibreMsd', 'dataMsd', 'medicacaoMsd'])" />
+      AVP MSD
+    </label>
+    <select id="calibreMsd" disabled>
+      <option disabled selected>Calibre</option>
+      <option>16</option>
+      <option>18</option>
+      <option>20</option>
+      <option>22</option>
+      <option>24</option>
+    </select>
+    <input type="text" id="dataMsd" placeholder="Data" disabled />
+    <input type="text" id="medicacaoMsd" placeholder="Medicação" disabled />
+  </div>
+
+  <!-- AVP MSE -->
+  <div class="acesso-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="avpMseCheckbox" onchange="toggleFields('avpMseCheckbox', ['calibreMse', 'dataMse', 'medicacaoMse'])" />
+      AVP MSE
+    </label>
+    <select id="calibreMse" disabled>
+      <option disabled selected>Calibre</option>
+      <option>16</option>
+      <option>18</option>
+      <option>20</option>
+      <option>22</option>
+      <option>24</option>
+    </select>
+    <input type="text" id="dataMse" placeholder="Data" disabled />
+    <input type="text" id="medicacaoMse" placeholder="Medicação" disabled />
+  </div>
+
+  <!-- PICC -->
+  <div class="acesso-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="piccCheckbox" onchange="toggleFields('piccCheckbox', ['localInsercaoPicc', 'dataPicc', 'medicacaoPicc'])" />
+      PICC
+    </label>
+    <select id="localInsercaoPicc" disabled>
+      <option disabled selected>Local de inserção</option>
+      <option>Braço direito</option>
+      <option>Braço esquerdo</option>
+      <option>Veia jugular</option>
+      <option>Veia subclávia</option>
+      <option>Veia femoral</option>
+    </select>
+    <input type="text" id="dataPicc" placeholder="Data" disabled />
+    <input type="text" id="medicacaoPicc" placeholder="Medicação" disabled />
+  </div>
+
+  <!-- Port-a-cath -->
+  <div class="acesso-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="portCheckbox" onchange="toggleFields('portCheckbox', ['localInsercaoPort', 'dataPort', 'medicacaoPort'])" />
+      Port-a-cath
+    </label>
+    <select id="localInsercaoPort" disabled>
+      <option disabled selected>Local de inserção</option>
+      <option>Braço direito</option>
+      <option>Braço esquerdo</option>
+      <option>Veia jugular</option>
+      <option>Veia subclávia</option>
+      <option>Veia femoral</option>
+    </select>
+    <input type="text" id="dataPort" placeholder="Data" disabled />
+    <input type="text" id="medicacaoPort" placeholder="Medicação" disabled />
+  </div>
+
+  <!-- Permicath -->
+  <div class="acesso-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="permicathCheckbox" onchange="toggleFields('permicathCheckbox', ['localInsercaoPermi', 'dataPermi', 'medicacaoPermi'])" />
+      Permicath
+    </label>
+    <select id="localInsercaoPermi" disabled>
+      <option disabled selected>Local de inserção</option>
+      <option>Braço direito</option>
+      <option>Braço esquerdo</option>
+      <option>Veia jugular</option>
+      <option>Veia subclávia</option>
+      <option>Veia femoral</option>
+    </select>
+    <input type="text" id="dataPermi" placeholder="Data" disabled />
+    <input type="text" id="medicacaoPermi" placeholder="Medicação" disabled />
+  </div>
+
+</div>
+
+      `,
+      eliminacoes: `
+        <div class="form-row">
+    <div>
+      <label for="viaFezes">Fezes - Via de eliminação</label>
+      <select id="viaFezes">
+        <option disabled selected>Selecione</option>
+        <option>Espontânea</option>
+        <option>Colostomia</option>
+        <option>Ileostomia</option>
+      </select>
+    </div>
+    <div>
+      <label for="aspectoFezes">Fezes - Aspecto</label>
+      <select id="aspectoFezes">
+        <option disabled selected>Selecione</option>
+        <option>Normal</option>
+        <option>Pastoso</option>
+        <option>Semilíquido</option>
+        <option>Líquido</option>
+        <option>Mecônio</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div>
+      <label for="viaDiurese">Diurese - Via de eliminação</label>
+      <select id="viaDiurese">
+        <option disabled selected>Selecione</option>
+        <option>Espontânea</option>
+        <option>Sonda vesical de demora</option>
+        <option>Sonda vesical de alívio</option>
+        <option>Nefrostomia</option>
+        <option>Cistostomia</option>
+      </select>
+    </div>
+    <div>
+      <label for="aspectoDiurese">Diurese - Aspecto</label>
+      <select id="aspectoDiurese">
+        <option disabled selected>Selecione</option>
+        <option>Clara</option>
+        <option>Alaranjada</option>
+        <option>Turva</option>
+        <option>Piúrica</option>
+        <option>Hemática</option>
+      </select>
+    </div>
+  </div>
+      `,
+      deambulacao: `
+        <div class="form-row">
+          <label for="deambula">Deambulação</label>
+          <select id="deambula"><option disabled selected>Selecione</option><option>Deambula sem ajuda</option><option>Ajuda mínima (bengala/andador)</option><option>Restrita ao leito</option></select>
+        </div>
+      `,
+      dorso: `
+        <div class="form-row">
+          <label for="dorsoEstado">Dorso</label>
+          <select id="dorsoEstado"><option disabled selected>Selecione</option><option>Dorso íntegro</option><option>Dorso com hiperemia</option><option>Lesão por pressão grau I</option><option>Lesão por pressão grau II</option><option>Lesão por pressão grau III</option></select>
+        </div>
+        <div class="form-row">
+          <label><input type="checkbox" id="mepilex"/> Mepilex</label>
+        </div>
+      `,
+      cuidados: `
+        <div class="form-row">
+          <label for="acoesCuidados">Cuidados</label>
+          <textarea id="acoesCuidados" rows="5">Apresento-me e coloco-me à disposição.\nRealizo controle de sinais vitais.\nAcolho e promovo conforto.</textarea>
+        </div>
+      `
+    };
+function habilitarInputML(valor) {
+  const input = document.getElementById('mlSonda');
+  const opcoesValidas = ["Gastrostomia", "Sonda nasogástrica", "Sonda nasoenteral"];
+  input.disabled = !opcoesValidas.includes(valor);
+  if (input.disabled) input.value = '';
+}
+function toggleFields(checkboxId, fieldIds) {
+  const checked = document.getElementById(checkboxId).checked;
+  fieldIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = !checked;
+  });
+}
+
+
+    function activate(btn, key) {
+      document.querySelectorAll('.sidebar .buttons button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('section-output').innerHTML = sections[key] || '<p>Seção não encontrada.</p>';
+      currentIndex = sectionKeys.indexOf(key);
+    }
+    function activateByIndex(idx) {
+      const key = sectionKeys[idx];
+      const btn = document.querySelectorAll('.sidebar .buttons button')[idx];
+      activate(btn, key);
+    }
+    // Manejo de roda do mouse para trocar seções\, throttle 300ms
+    let wheelTimeout;
+    window.addEventListener('wheel', e=>{
+      e.preventDefault();
+      if (wheelTimeout) return;
+      if (e.deltaY>0) currentIndex=(currentIndex+1)%sectionKeys.length;
+      else currentIndex=(currentIndex-1+sectionKeys.length)%sectionKeys.length;
+      activateByIndex(currentIndex);
+      wheelTimeout=setTimeout(()=>wheelTimeout=null,300);
+    },{passive:false});
+    window.onload=()=>document.querySelector('.sidebar .buttons button.active').click();
+
+    
+  </script>
+</body>
+</html>
