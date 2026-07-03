@@ -31,8 +31,10 @@
       --shadow-md:    0 2px 6px rgba(0,0,0,0.1);
       --success:      #22c55e;
       --success-soft: #86efac;
+      color-scheme: light; /* controles nativos (date picker) seguem o tema */
     }
     body.dark {
+      color-scheme: dark;
       --bg:           #131720;
       --surface:      #1e2a3a;
       --surface-hov:  #253446;
@@ -255,6 +257,15 @@
       min-height: 0;
       overflow-y: auto;
     }
+    /* Entrada suave ao trocar de seção (os nós são recriados a cada troca) */
+    @keyframes sectionIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .section-output > * { animation: sectionIn 0.16s ease-out both; }
+    @media (prefers-reduced-motion: reduce) {
+      .section-output > * { animation: none; }
+    }
     .note-output {
       flex: 1;
       min-height: 0;
@@ -322,6 +333,20 @@
     select:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+    }
+
+    /* Foco por teclado: o mesmo anel dos inputs em todos os controles */
+    .nc-chip:focus-visible,
+    .nc-step-btn:focus-visible,
+    .toggle-btn:focus-visible,
+    .nav-btn:focus-visible,
+    .next-btn:focus-visible,
+    .action-btn:focus-visible,
+    .copy-btn:focus-visible,
+    .history-entry:focus-visible {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-focus);
     }
 
     /* ── 9. Checkbox ───────────────────────────────────────────────────────── */
@@ -392,6 +417,7 @@
       align-items: start;
     }
     .form-row > div { position: relative; }
+    .form-row.cols-1-2 { grid-template-columns: 1fr 2fr; }
 
     /* ── 12. NC chip groups (Consciência) ─────────────────────────────────── */
     .nc-group { margin-bottom: 0.5rem; }
@@ -484,6 +510,7 @@
       box-shadow: var(--shadow-sm);
       transition: border-color var(--speed);
     }
+    .acesso-card:not(.open):hover { border-color: var(--muted); }
     .acesso-card.open { border-color: var(--primary); }
     .acesso-card .nc-chip { width: 100%; }
     .acesso-fields {
@@ -853,23 +880,25 @@
         </div>
       </div>
     </div>
-    <div class="nc-group">
-      <span class="nc-group-label">Tosse</span>
-      <div class="nc-chips nc-chips-stretch">
-        <button type="button" class="nc-chip nc-tosse" data-nc-val="Ausente"   data-nc-color="green">Ausente</button>
-        <button type="button" class="nc-chip nc-tosse" data-nc-val="Seca"      data-nc-color="amber">Seca</button>
-        <button type="button" class="nc-chip nc-tosse" data-nc-val="Produtiva" data-nc-color="orange">Produtiva</button>
+    <div class="form-row cols-1-2">
+      <div>
+        <label>Tosse</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-tosse" data-nc-val="Ausente"   data-nc-color="green">Ausente</button>
+          <button type="button" class="nc-chip nc-tosse" data-nc-val="Seca"      data-nc-color="amber">Seca</button>
+          <button type="button" class="nc-chip nc-tosse" data-nc-val="Produtiva" data-nc-color="orange">Produtiva</button>
+        </div>
       </div>
-    </div>
-    <div class="nc-group">
-      <span class="nc-group-label">Secreção</span>
-      <div class="nc-chips nc-chips-stretch">
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Serosa"        data-nc-color="gray"   disabled>Serosa</button>
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucosa"        data-nc-color="amber"  disabled>Mucosa</button>
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucopurulenta" data-nc-color="orange" disabled>Mucopurulenta</button>
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Purulenta"     data-nc-color="red"    disabled>Purulenta</button>
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemoptoica"    data-nc-color="red"    disabled>Hemoptoica</button>
-        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemática"      data-nc-color="red"    disabled>Hemática</button>
+      <div>
+        <label>Secreção</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Serosa"        data-nc-color="gray"   disabled>Serosa</button>
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucosa"        data-nc-color="amber"  disabled>Mucosa</button>
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucopurulenta" data-nc-color="orange" disabled>Mucopurulenta</button>
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Purulenta"     data-nc-color="red"    disabled>Purulenta</button>
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemoptoica"    data-nc-color="red"    disabled>Hemoptoica</button>
+          <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemática"      data-nc-color="red"    disabled>Hemática</button>
+        </div>
       </div>
     </div>
   </template>
@@ -1454,6 +1483,17 @@
     }
 
     // ── 4. Section navigation ─────────────────────────────────────────────────
+    // Anuncia cada grupo de chips com o rótulo visível ao lado (a11y).
+    function applyChipGroupA11y(root) {
+      root.querySelectorAll('.nc-chips').forEach(g => {
+        g.setAttribute('role', 'group');
+        const lbl = g.closest('.nc-group')?.querySelector('.nc-group-label')
+                 || g.parentElement?.querySelector('label')
+                 || g.closest('.nc-group')?.previousElementSibling;
+        if (lbl?.textContent.trim()) g.setAttribute('aria-label', lbl.textContent.trim());
+      });
+    }
+
     function activate(key) {
       document.querySelectorAll('[data-section]').forEach(b => b.classList.remove('active'));
       document.querySelector(`[data-section="${key}"]`)?.classList.add('active');
@@ -1462,6 +1502,7 @@
       const output = document.getElementById('section-output');
       output.innerHTML = '';
       output.appendChild(document.getElementById(`tpl-${key}`).content.cloneNode(true));
+      applyChipGroupA11y(output);
 
       restoreSection();
       if (key === 'cuidados') ensureCuidadosContent();
