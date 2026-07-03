@@ -29,6 +29,8 @@
       --shadow-focus: 0 0 0 2px rgba(0,113,188,0.2);
       --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
       --shadow-md:    0 2px 6px rgba(0,0,0,0.1);
+      --success:      #22c55e;
+      --success-soft: #86efac;
     }
     body.dark {
       --bg:           #131720;
@@ -151,9 +153,9 @@
       flex-shrink: 0;
       transition: background var(--speed);
     }
-    .nav-btn.has-data .section-dot { background: #22c55e; }
+    .nav-btn.has-data .section-dot { background: var(--success); }
     .nav-btn.active .section-dot   { background: rgba(255,255,255,0.6); }
-    .nav-btn.active.has-data .section-dot { background: #86efac; }
+    .nav-btn.active.has-data .section-dot { background: var(--success-soft); }
     .copy-btn {
       margin-top: 1rem;
       padding: 0.6rem;
@@ -464,42 +466,47 @@
     .nc-valor-dor::-webkit-inner-spin-button,
     .nc-valor-dor::-webkit-outer-spin-button { display: none; }
 
-    /* ── 13. Acesso group ──────────────────────────────────────────────────── */
-    .acesso-group {
-      display: flex;
-      align-items: center;
-      gap: 1px;
-      flex-wrap: wrap;
+    /* ── 13. Acessos (tarjetas con el mismo vocabulario de chips) ──────────── */
+    .acessos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.6rem;
+      align-items: start;
     }
-    .acesso-group label {
+    .acesso-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 0.5rem;
       display: flex;
-      align-items: center;
-      font-weight: 500;
-      min-width: 110px;
-      margin: 0.375rem 0;
-      user-select: none;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--text);
-      font-size: 0.7rem;
+      flex-direction: column;
+      gap: 0.45rem;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--speed);
     }
-    .acesso-group input[type="checkbox"] { margin-right: 0.375rem; }
-    .acesso-group input[type="date"],
-    .acesso-group input[type="text"],
-    .acesso-group select {
+    .acesso-card.open { border-color: var(--primary); }
+    .acesso-card .nc-chip { width: 100%; }
+    .acesso-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .acesso-fields[hidden] { display: none; } /* display:flex anula o [hidden] da UA */
+    .acesso-fields input[type="date"],
+    .acesso-fields input[type="text"],
+    .acesso-fields select {
       padding: 0.375rem 0.625rem;
       font-size: var(--font-md);
-      margin: 0.25rem 0;
       font-weight: 400;
       text-transform: none;
       letter-spacing: normal;
       color: var(--muted);
     }
-    .acesso-group input[type="date"]:focus,
-    .acesso-group input[type="text"]:focus,
-    .acesso-group select:focus { color: var(--text); }
-    .acesso-group select option { text-transform: none; font-weight: 400; color: var(--text); }
-    .acesso-group .clear-icon   { display: none; }
+    .acesso-fields input[type="date"]:focus,
+    .acesso-fields input[type="text"]:focus,
+    .acesso-fields select:focus { color: var(--text); }
+    .acesso-fields select option { text-transform: none; font-weight: 400; color: var(--text); }
+    .acesso-fields .clear-icon   { display: none; }
     .has-clear { padding-right: 1.8rem; }
 
     /* ── 14. Utilities ─────────────────────────────────────────────────────── */
@@ -694,12 +701,11 @@
         </div>
       </div>
       <div>
-        <label for="acompanha">Acompanhante</label>
-        <select id="acompanha">
-          <option value="" disabled selected>Selecione</option>
-          <option>Sim</option>
-          <option>Não</option>
-        </select>
+        <label>Acompanhante</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-acompanha" data-nc-val="Sim" data-nc-color="green">Sim</button>
+          <button type="button" class="nc-chip nc-acompanha" data-nc-val="Não" data-nc-color="amber">Não</button>
+        </div>
       </div>
     </div>
     <p class="field-group">Clínico</p>
@@ -798,20 +804,19 @@
 
   <template id="tpl-ventilacao">
     <p class="field-group">Oxigenoterapia</p>
-    <div class="form-row">
-      <div>
-        <label for="tipoOxigenoterapia">Modalidade</label>
-        <select id="tipoOxigenoterapia">
-          <option value="" disabled selected>Selecione</option>
-          <option>Ar ambiente</option>
-          <option>Óculos nasal</option>
-          <option>Máscara de Hudson</option>
-          <option>Máscara não-reinalante</option>
-          <option>Máscara de Venturi</option>
-          <option>VNI</option>
-          <option>Ventilação mecânica</option>
-        </select>
+    <div class="nc-group">
+      <span class="nc-group-label">Modalidade</span>
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Ar ambiente"            data-nc-color="green">Ar ambiente</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Óculos nasal"           data-nc-color="amber">Óculos nasal</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Máscara de Hudson"      data-nc-color="amber">Hudson</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Máscara não-reinalante" data-nc-color="orange">Não-reinalante</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Máscara de Venturi"     data-nc-color="orange">Venturi</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="VNI"                    data-nc-color="orange">VNI</button>
+        <button type="button" class="nc-chip nc-oxi" data-nc-val="Ventilação mecânica"    data-nc-color="red">Vent. mecânica</button>
       </div>
+    </div>
+    <div class="form-row">
       <div>
         <label for="litrosOxigenio">Litros/min</label>
         <div class="nc-stepper">
@@ -821,26 +826,15 @@
         </div>
       </div>
       <div>
-        <label for="viaAereaArtificial">Via aérea</label>
-        <select id="viaAereaArtificial" disabled>
-          <option value="" disabled selected>Selecione</option>
-          <option>IOT</option>
-          <option>Traqueostomia</option>
-        </select>
+        <label>Via aérea</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-via-aerea" data-nc-val="IOT"           data-nc-color="gray" disabled>IOT</button>
+          <button type="button" class="nc-chip nc-via-aerea" data-nc-val="Traqueostomia" data-nc-color="gray" disabled>TQT</button>
+        </div>
       </div>
     </div>
     <p class="field-group">Avaliação</p>
     <div class="form-row">
-      <div>
-        <label for="padraoVentilatorio">Padrão</label>
-        <select id="padraoVentilatorio">
-          <option value="" disabled selected>Selecione</option>
-          <option>Eupneico</option>
-          <option>Bradipneico</option>
-          <option>Taquipneico</option>
-          <option>Dispneico</option>
-        </select>
-      </div>
       <div>
         <label for="spo2">SpO2 (%)</label>
         <div class="nc-stepper">
@@ -850,25 +844,32 @@
         </div>
       </div>
       <div>
-        <label for="tosse">Tosse</label>
-        <select id="tosse">
-          <option value="" disabled selected>Selecione</option>
-          <option>Seca</option>
-          <option>Produtiva</option>
-          <option>Ausente</option>
-        </select>
+        <label>Padrão</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-padrao" data-nc-val="Eupneico"    data-nc-color="green">Eupneico</button>
+          <button type="button" class="nc-chip nc-padrao" data-nc-val="Bradipneico" data-nc-color="amber">Bradipneico</button>
+          <button type="button" class="nc-chip nc-padrao" data-nc-val="Taquipneico" data-nc-color="amber">Taquipneico</button>
+          <button type="button" class="nc-chip nc-padrao" data-nc-val="Dispneico"   data-nc-color="red">Dispneico</button>
+        </div>
       </div>
-      <div>
-        <label for="aspectoSecrecao">Secreção</label>
-        <select id="aspectoSecrecao" disabled>
-          <option value="" disabled selected>Selecione</option>
-          <option>Serosa</option>
-          <option>Mucosa</option>
-          <option>Mucopurulenta</option>
-          <option>Purulenta</option>
-          <option>Hemoptoica</option>
-          <option>Hemática</option>
-        </select>
+    </div>
+    <div class="nc-group">
+      <span class="nc-group-label">Tosse</span>
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-tosse" data-nc-val="Ausente"   data-nc-color="green">Ausente</button>
+        <button type="button" class="nc-chip nc-tosse" data-nc-val="Seca"      data-nc-color="amber">Seca</button>
+        <button type="button" class="nc-chip nc-tosse" data-nc-val="Produtiva" data-nc-color="orange">Produtiva</button>
+      </div>
+    </div>
+    <div class="nc-group">
+      <span class="nc-group-label">Secreção</span>
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Serosa"        data-nc-color="gray"   disabled>Serosa</button>
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucosa"        data-nc-color="amber"  disabled>Mucosa</button>
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Mucopurulenta" data-nc-color="orange" disabled>Mucopurulenta</button>
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Purulenta"     data-nc-color="red"    disabled>Purulenta</button>
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemoptoica"    data-nc-color="red"    disabled>Hemoptoica</button>
+        <button type="button" class="nc-chip nc-secrecao" data-nc-val="Hemática"      data-nc-color="red"    disabled>Hemática</button>
       </div>
     </div>
   </template>
@@ -917,14 +918,13 @@
     <p class="field-group">Via Enteral</p>
     <div class="form-row">
       <div>
-        <label for="dietaSonda">Dispositivo</label>
-        <select id="dietaSonda">
-          <option value="" disabled selected>Selecione</option>
-          <option>Sonda nasogástrica</option>
-          <option>Sonda nasoenteral</option>
-          <option>Gastrostomia</option>
-          <option>Jejunostomia</option>
-        </select>
+        <label>Dispositivo</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-sonda" data-nc-val="Sonda nasogástrica" data-nc-color="gray">SNG</button>
+          <button type="button" class="nc-chip nc-sonda" data-nc-val="Sonda nasoenteral"  data-nc-color="gray">SNE</button>
+          <button type="button" class="nc-chip nc-sonda" data-nc-val="Gastrostomia"       data-nc-color="gray">Gastrostomia</button>
+          <button type="button" class="nc-chip nc-sonda" data-nc-val="Jejunostomia"       data-nc-color="gray">Jejunostomia</button>
+        </div>
       </div>
       <div>
         <label for="mlSonda">Volume (ml/h)</label>
@@ -939,7 +939,7 @@
 
   <!-- Conteúdo gerado no boot a partir da config ACESSOS (buildAcessosTemplate) -->
   <template id="tpl-acessos">
-    <div class="form-row acessos-row"></div>
+    <div class="acessos-grid"></div>
   </template>
 
   <template id="tpl-eliminacoes">
@@ -982,12 +982,11 @@
     <p class="field-group">Náuseas / Vômito</p>
     <div class="form-row">
       <div>
-        <label for="nauseasSelect">Náuseas</label>
-        <select id="nauseasSelect">
-          <option value="" disabled selected>Selecione</option>
-          <option>Presentes</option>
-          <option>Ausentes</option>
-        </select>
+        <label>Náuseas</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-nauseas" data-nc-val="Ausentes"  data-nc-color="green">Ausentes</button>
+          <button type="button" class="nc-chip nc-nauseas" data-nc-val="Presentes" data-nc-color="orange">Presentes</button>
+        </div>
       </div>
       <div>
         <label for="vomitoSelect">Vômito</label>
@@ -1047,46 +1046,38 @@
 
   <template id="tpl-deambulacao">
     <p class="field-group">Mobilidade</p>
-    <div class="form-row">
-      <div>
-        <label for="deambula">Deambulação</label>
-        <select id="deambula">
-          <option value="" disabled selected>Selecione</option>
-          <option>Deambula</option>
-          <option>Deambula com auxílio</option>
-          <option>Deambula com andador</option>
-          <option>Em cadeira de rodas</option>
-          <option>Acamado</option>
-          <option>Restrito ao leito</option>
-        </select>
+    <div class="nc-group">
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Deambula"             data-nc-color="green">Deambula</button>
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Deambula com auxílio" data-nc-color="amber">Com auxílio</button>
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Deambula com andador" data-nc-color="amber">Com andador</button>
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Em cadeira de rodas"  data-nc-color="orange">Cadeira de rodas</button>
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Acamado"              data-nc-color="red">Acamado</button>
+        <button type="button" class="nc-chip nc-deambula" data-nc-val="Restrito ao leito"    data-nc-color="red">Restrito ao leito</button>
       </div>
     </div>
     <p class="field-group">Integridade cutânea</p>
-    <div class="form-row">
-      <div>
-        <label for="dorsoEstado">Dorso</label>
-        <select id="dorsoEstado">
-          <option value="" disabled selected>Selecione</option>
-          <option>Íntegro</option>
-          <option>Com hiperemia</option>
-          <option>Lesão por pressão grau I</option>
-          <option>Lesão por pressão grau II</option>
-          <option>Lesão por pressão grau III</option>
-          <option>Lesão por pressão grau IV</option>
-          <option>DAI</option>
-        </select>
+    <div class="nc-group">
+      <span class="nc-group-label">Dorso</span>
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Íntegro"                   data-nc-color="green">Íntegro</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Com hiperemia"             data-nc-color="amber">Hiperemia</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau I"  data-nc-color="amber">LPP I</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau II" data-nc-color="orange">LPP II</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau III" data-nc-color="red">LPP III</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau IV" data-nc-color="red">LPP IV</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="DAI"                       data-nc-color="orange">DAI</button>
       </div>
-      <div>
-        <label for="tipoCurativo">Curativo</label>
-        <select id="tipoCurativo">
-          <option value="" disabled selected>Selecione</option>
-          <option>Aquacel</option>
-          <option>Hidrocolóide</option>
-          <option>Alginato</option>
-          <option>Gaze</option>
-          <option>Filme transparente</option>
-          <option>Sem curativo</option>
-        </select>
+    </div>
+    <div class="nc-group">
+      <span class="nc-group-label">Curativo</span>
+      <div class="nc-chips nc-chips-stretch">
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Aquacel"            data-nc-color="gray">Aquacel</button>
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Hidrocolóide"       data-nc-color="gray">Hidrocolóide</button>
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Alginato"           data-nc-color="gray">Alginato</button>
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Gaze"               data-nc-color="gray">Gaze</button>
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Filme transparente" data-nc-color="gray">Filme</button>
+        <button type="button" class="nc-chip nc-curativo" data-nc-val="Sem curativo"       data-nc-color="green">Sem curativo</button>
       </div>
     </div>
     <div class="form-row">
@@ -1095,14 +1086,13 @@
         <input type="date" id="dataDorso" />
       </div>
       <div>
-        <label for="integridadeDorso">Estado</label>
-        <select id="integridadeDorso">
-          <option value="" disabled selected>Selecione</option>
-          <option>Limpo</option>
-          <option>Íntegro</option>
-          <option>Sujo</option>
-          <option>Com exsudato</option>
-        </select>
+        <label>Estado</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-integridade" data-nc-val="Limpo"        data-nc-color="green">Limpo</button>
+          <button type="button" class="nc-chip nc-integridade" data-nc-val="Íntegro"      data-nc-color="green">Íntegro</button>
+          <button type="button" class="nc-chip nc-integridade" data-nc-val="Sujo"         data-nc-color="orange">Sujo</button>
+          <button type="button" class="nc-chip nc-integridade" data-nc-val="Com exsudato" data-nc-color="red">Exsudato</button>
+        </div>
       </div>
     </div>
   </template>
@@ -1166,10 +1156,6 @@
         data: 'dataPermi', med: 'medicacaoPermi', cur: 'curativoPermi' },
     ];
 
-    const ACESSO_FIELDS = Object.fromEntries(
-      ACESSOS.map(a => [a.cb, [a.select.id, a.data, a.med, a.cur]])
-    );
-
     const SALAS_CONFIG = {
       UDC:           { salas: [1,2,3,4], box: ['POLTRONA 1','POLTRONA 2','POLTRONA 3','POLTRONA 4','POLTRONA 5'] },
       MEDICACAO:     { salas: [],        box: ['POLTRONA 1','POLTRONA 2','POLTRONA 3','POLTRONA 4','POLTRONA 5'] },
@@ -1193,6 +1179,10 @@
       'nc-deambula':     'deambula',     'nc-dorso':        'dorsoEstado',
       'nc-curativo':     'tipoCurativo', 'nc-integridade':  'integridadeDorso',
       'nc-verb':         'verbalizacao', 'nc-escala':       'escalaDor',
+      'nc-oxi':          'tipoOxigenoterapia', 'nc-via-aerea': 'viaAereaArtificial',
+      'nc-padrao':       'padraoVentilatorio', 'nc-tosse':     'tosse',
+      'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
+      'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
     };
 
     const BASE_FORM = {
@@ -1210,7 +1200,7 @@
       ventilacao:  ['tipoOxigenoterapia', 'padraoVentilatorio', 'spo2', 'tosse'],
       dieta:       ['dietaOral', 'dietaSonda'],
       acessos:     ['avpMsdCheckbox', 'avpMseCheckbox', 'cvcCheckbox', 'piccCheckbox', 'portCheckbox', 'permicathCheckbox'],
-      eliminacoes: ['viaDiurese', 'viaFezes', 'nauseasSelect', 'vomitoSelect', 'tipodreno'],
+      eliminacoes: ['viaDiurese', 'viaFezes', 'nauseas', 'vomitoSelect', 'tipodreno'],
       deambulacao: ['deambula', 'dorsoEstado'],
       cuidados:    ['acoesCuidados'],
     };
@@ -1519,15 +1509,13 @@
           });
         });
         Object.entries(CHIP_CHANGE_HANDLERS).forEach(([key, fn]) => fn(state.form[key] || ''));
-        const tipoOx = document.getElementById('tipoOxigenoterapia');
-        if (tipoOx?.value) handleOxigenoterapiaChange(tipoOx.value);
-        const tosse = document.getElementById('tosse');
-        if (tosse?.value) handleTosseChange(tosse.value);
-        const dietaSonda = document.getElementById('dietaSonda');
-        if (dietaSonda?.value) handleDietaSondaChange(dietaSonda.value);
-        Object.keys(ACESSO_FIELDS).forEach(id => {
-          const el = document.getElementById(id);
-          if (el?.checked) toggleAcessoFields(id);
+        ACESSOS.forEach(a => {
+          const toggle = document.querySelector(`.acesso-toggle[data-acesso="${a.cb}"]`);
+          if (!toggle) return;
+          toggle.classList.toggle('active', !!state.form[a.cb]);
+          document.querySelector(`.acesso-cur[data-cur="${a.cur}"]`)
+            ?.classList.toggle('active', !!state.form[a.cur]);
+          toggleAcessoFields(a.cb);
         });
       }
     }
@@ -1550,7 +1538,6 @@
 
     function handleOxigenoterapiaChange(value) {
       const litrosEl  = document.getElementById('litrosOxigenio');
-      const viaEl     = document.getElementById('viaAereaArtificial');
       const usaLitros = ['Óculos nasal', 'Máscara de Hudson', 'Máscara não-reinalante', 'Máscara de Venturi'].includes(value);
       const usaVia    = value === 'Ventilação mecânica';
       if (litrosEl) {
@@ -1558,15 +1545,20 @@
         ['litrosOxigenioMinus','litrosOxigenioPlus'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !usaLitros; });
         if (!usaLitros) { litrosEl.value = ''; state.form.litrosOxigenio = ''; }
       }
-      if (viaEl)    { viaEl.disabled    = !usaVia;    if (!usaVia)   { viaEl.value    = ''; state.form.viaAereaArtificial = ''; } }
+      document.querySelectorAll('.nc-chip.nc-via-aerea').forEach(c => {
+        c.disabled = !usaVia;
+        if (!usaVia) c.classList.remove('active');
+      });
+      if (!usaVia) state.form.viaAereaArtificial = '';
     }
 
     function handleTosseChange(value) {
-      const el = document.getElementById('aspectoSecrecao');
-      if (!el) return;
       const ok = value === 'Produtiva';
-      el.disabled = !ok;
-      if (!ok) { el.value = ''; state.form.aspectoSecrecao = ''; }
+      document.querySelectorAll('.nc-chip.nc-secrecao').forEach(c => {
+        c.disabled = !ok;
+        if (!ok) c.classList.remove('active');
+      });
+      if (!ok) state.form.aspectoSecrecao = '';
     }
 
     function handleTipoSalaChange(value) {
@@ -1641,43 +1633,53 @@
 
     // Handlers dependentes disparados quando o chip da chave correspondente muda.
     const CHIP_CHANGE_HANDLERS = {
-      dietaOral:  handleDietaOralChange,
-      viaDiurese: handleViaDiureseChange,
-      viaFezes:   handleViaFezesChange,
+      dietaOral:          handleDietaOralChange,
+      viaDiurese:         handleViaDiureseChange,
+      viaFezes:           handleViaFezesChange,
+      tipoOxigenoterapia: handleOxigenoterapiaChange,
+      tosse:              handleTosseChange,
+      dietaSonda:         handleDietaSondaChange,
     };
 
-    function toggleAcessoFields(checkboxId) {
-      const cb = document.getElementById(checkboxId);
-      if (!cb) return;
-      (ACESSO_FIELDS[checkboxId] || []).forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.disabled = !cb.checked;
-        if (!cb.checked) {
-          if (el.type === 'checkbox') { el.checked = false; state.form[id] = false; }
-          else { el.value = ''; state.form[id] = ''; }
-        }
-      });
+    function toggleAcessoFields(cbKey) {
+      const on   = !!state.form[cbKey];
+      const card = document.querySelector(`.acesso-toggle[data-acesso="${cbKey}"]`)?.closest('.acesso-card');
+      if (!card) return;
+      card.classList.toggle('open', on);
+      card.querySelector('.acesso-fields').hidden = !on;
+      if (!on) {
+        const a = ACESSOS.find(x => x.cb === cbKey);
+        [a.select.id, a.data, a.med].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+          state.form[id] = '';
+        });
+        state.form[a.cur] = false;
+        card.querySelector('.acesso-cur')?.classList.remove('active');
+      }
     }
 
-    // Preenche o tpl-acessos uma vez no boot: 6 blocos idênticos, uma só fonte.
+    // Preenche o tpl-acessos uma vez no boot: 6 tarjetas idênticas, uma só fonte.
+    // Cada acesso é um chip-toggle; os campos só aparecem com o acesso ativo.
     function buildAcessosTemplate() {
-      const row = document.getElementById('tpl-acessos').content.querySelector('.acessos-row');
+      const grid = document.getElementById('tpl-acessos').content.querySelector('.acessos-grid');
       ACESSOS.forEach(a => {
-        const g = document.createElement('div');
-        g.className = 'acesso-group';
+        const card = document.createElement('div');
+        card.className = 'acesso-card';
         const opts = a.select.options
           .map(o => `<option value="${o}">${String(o).toUpperCase()}</option>`)
           .join('');
-        g.innerHTML = `
-          <label><input type="checkbox" id="${a.cb}" /> ${a.nome}</label>
-          <select id="${a.select.id}" disabled>
-            <option value="" disabled selected>${a.select.placeholder}</option>${opts}
-          </select>
-          <input type="date" id="${a.data}" disabled />
-          <input type="text" id="${a.med}" placeholder="Medicação" disabled />
-          <label><input type="checkbox" id="${a.cur}" disabled /> Curativo limpo</label>`;
-        row.appendChild(g);
+        card.innerHTML = `
+          <button type="button" class="nc-chip acesso-toggle" data-acesso="${a.cb}" data-nc-color="green">${a.nome}</button>
+          <div class="acesso-fields" hidden>
+            <select id="${a.select.id}">
+              <option value="" disabled selected>${a.select.placeholder}</option>${opts}
+            </select>
+            <input type="date" id="${a.data}" />
+            <input type="text" id="${a.med}" placeholder="Medicação" />
+            <button type="button" class="nc-chip acesso-cur" data-cur="${a.cur}" data-nc-color="green">Curativo limpo</button>
+          </div>`;
+        grid.appendChild(card);
       });
     }
 
@@ -1697,7 +1699,7 @@
     }
 
     function updateClearIcon(el) {
-      if (el.type === 'checkbox' || el.closest('.acesso-group')) return;
+      if (el.type === 'checkbox' || el.closest('.acesso-fields')) return;
       const parent = el.closest('.form-row > div');
       if (!parent) return;
       parent.querySelector('.clear-icon')?.remove();
@@ -1887,7 +1889,7 @@
       const volumeDiurese = getValue('volumeDiurese');
       const viaFezes      = getValue('viaFezes');
       const modoFezes     = getValue('modoFezes');
-      const nauseas       = getValue('nauseasSelect');
+      const nauseas       = getValue('nauseas');
       const vomito        = getValue('vomitoSelect');
       const tipodreno     = getValue('tipodreno');
       const aspectodreno  = getValue('aspectodreno');
@@ -2075,6 +2077,21 @@
         return;
       }
 
+      // ── Acessos: chip-toggle da tarjeta e curativo ───────────────────────
+      if (chip.classList.contains('acesso-toggle')) {
+        const key = chip.dataset.acesso;
+        state.form[key] = chip.classList.toggle('active');
+        toggleAcessoFields(key);
+        updateSectionIndicators();
+        gerarAnotacao();
+        return;
+      }
+      if (chip.classList.contains('acesso-cur')) {
+        state.form[chip.dataset.cur] = chip.classList.toggle('active');
+        gerarAnotacao();
+        return;
+      }
+
       // ── Chips de escolha única (radio toggle) ────────────────────────────
       const chipClass = Object.keys(CHIP_STATE_MAP).find(k => chip.classList.contains(k));
       if (chipClass) {
@@ -2152,12 +2169,8 @@
     document.addEventListener('change', e => {
       const el = e.target;
       saveField(e);
-      if (el.id === 'tipoSala')    handleTipoSalaChange(el.value);
+      if (el.id === 'tipoSala')   handleTipoSalaChange(el.value);
       if (el.id === 'numeroSala') handleNumeroSalaChange(el.value);
-      if (el.id === 'tipoOxigenoterapia') handleOxigenoterapiaChange(el.value);
-      if (el.id === 'tosse')              handleTosseChange(el.value);
-      if (el.id === 'dietaSonda') handleDietaSondaChange(el.value);
-      if (ACESSO_FIELDS[el.id])   toggleAcessoFields(el.id);
       updateClearIcon(el);
       gerarAnotacao();
     });
