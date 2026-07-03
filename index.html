@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,6 +51,7 @@
       background: var(--bg);
       color: var(--text);
       height: 100vh;
+      height: 100dvh; /* fallback acima: navegadores sem dvh usam vh */
       display: flex;
       flex-direction: column;
       line-height: 1.5;
@@ -440,6 +441,10 @@
     .form-row .nc-chips .nc-chip { flex: 1; }
     .nc-chips-stretch { width: 100%; }
     .nc-chips-stretch .nc-chip { flex: 1; }
+    .nc-chips-nowrap { flex-wrap: nowrap; }
+    .nc-chips-nowrap .nc-chip { min-width: 0; }
+    .chip-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; }
+    .span-full { grid-column: 1 / -1; }
     .nc-step-btn {
       padding: 0.45rem 0.7rem;
       border: 1.5px solid var(--border); background: var(--surface);
@@ -656,7 +661,7 @@
       <div>
         <label for="tipoSala">Sala</label>
         <select id="tipoSala">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Observação</option>
           <option>UDC</option>
           <option>Medicação</option>
@@ -671,11 +676,11 @@
       </div>
       <div>
         <label for="numeroSala">Nº</label>
-        <select id="numeroSala" disabled><option disabled selected>Selecione</option></select>
+        <select id="numeroSala" disabled><option value="" disabled selected>Selecione</option></select>
       </div>
       <div>
         <label for="boxSala">Box</label>
-        <select id="boxSala" disabled><option disabled selected>Selecione</option></select>
+        <select id="boxSala" disabled><option value="" disabled selected>Selecione</option></select>
       </div>
     </div>
     <p class="field-group">Paciente</p>
@@ -691,7 +696,7 @@
       <div>
         <label for="acompanha">Acompanhante</label>
         <select id="acompanha">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Sim</option>
           <option>Não</option>
         </select>
@@ -764,7 +769,7 @@
       <div>
         <label for="pupilas">Pupilas</label>
         <select id="pupilas">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Isocóricas fotorreativas</option>
           <option>Isocóricas pouco fotorreativas</option>
           <option>Anisocóricas</option>
@@ -797,7 +802,7 @@
       <div>
         <label for="tipoOxigenoterapia">Modalidade</label>
         <select id="tipoOxigenoterapia">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Ar ambiente</option>
           <option>Óculos nasal</option>
           <option>Máscara de Hudson</option>
@@ -818,7 +823,7 @@
       <div>
         <label for="viaAereaArtificial">Via aérea</label>
         <select id="viaAereaArtificial" disabled>
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>IOT</option>
           <option>Traqueostomia</option>
         </select>
@@ -829,7 +834,7 @@
       <div>
         <label for="padraoVentilatorio">Padrão</label>
         <select id="padraoVentilatorio">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Eupneico</option>
           <option>Bradipneico</option>
           <option>Taquipneico</option>
@@ -847,7 +852,7 @@
       <div>
         <label for="tosse">Tosse</label>
         <select id="tosse">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Seca</option>
           <option>Produtiva</option>
           <option>Ausente</option>
@@ -856,7 +861,7 @@
       <div>
         <label for="aspectoSecrecao">Secreção</label>
         <select id="aspectoSecrecao" disabled>
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Serosa</option>
           <option>Mucosa</option>
           <option>Mucopurulenta</option>
@@ -914,7 +919,7 @@
       <div>
         <label for="dietaSonda">Dispositivo</label>
         <select id="dietaSonda">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Sonda nasogástrica</option>
           <option>Sonda nasoenteral</option>
           <option>Gastrostomia</option>
@@ -932,89 +937,26 @@
     </div>
   </template>
 
+  <!-- Conteúdo gerado no boot a partir da config ACESSOS (buildAcessosTemplate) -->
   <template id="tpl-acessos">
-    <div class="form-row">
-      <div class="acesso-group">
-        <label><input type="checkbox" id="avpMsdCheckbox" /> AVP MSD</label>
-        <select id="calibreMsd" disabled>
-          <option disabled selected>Calibre</option>
-          <option>16</option><option>18</option><option>20</option><option>22</option><option>24</option>
-        </select>
-        <input type="date" id="dataMsd" disabled />
-        <input type="text" id="medicacaoMsd" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativoMsd" disabled /> Curativo limpo</label>
-      </div>
-      <div class="acesso-group">
-        <label><input type="checkbox" id="avpMseCheckbox" /> AVP MSE</label>
-        <select id="calibreMse" disabled>
-          <option disabled selected>Calibre</option>
-          <option>16</option><option>18</option><option>20</option><option>22</option><option>24</option>
-        </select>
-        <input type="date" id="dataMse" disabled />
-        <input type="text" id="medicacaoMse" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativoMse" disabled /> Curativo limpo</label>
-      </div>
-      <div class="acesso-group">
-        <label><input type="checkbox" id="cvcCheckbox" /> CVC</label>
-        <select id="localInsercaocvc" disabled>
-          <option disabled selected>Local de inserção</option>
-          <option>Veia jugular</option><option>Veia subclávia</option><option>Veia femoral</option>
-        </select>
-        <input type="date" id="datacvc" disabled />
-        <input type="text" id="medicacaocvc" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativocvc" disabled /> Curativo limpo</label>
-      </div>
-      <div class="acesso-group">
-        <label><input type="checkbox" id="piccCheckbox" /> PICC</label>
-        <select id="localInsercaoPicc" disabled>
-          <option disabled selected>Local de inserção</option>
-          <option>Braço direito</option><option>Braço esquerdo</option>
-          <option>Veia jugular</option><option>Veia subclávia</option><option>Veia femoral</option>
-        </select>
-        <input type="date" id="dataPicc" disabled />
-        <input type="text" id="medicacaoPicc" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativoPicc" disabled /> Curativo limpo</label>
-      </div>
-      <div class="acesso-group">
-        <label><input type="checkbox" id="portCheckbox" /> Portocath</label>
-        <select id="localInsercaoPort" disabled>
-          <option disabled selected>Local de inserção</option>
-          <option>Braço direito</option><option>Braço esquerdo</option>
-          <option>Veia jugular</option><option>Veia subclávia</option><option>Veia femoral</option>
-        </select>
-        <input type="date" id="dataPort" disabled />
-        <input type="text" id="medicacaoPort" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativoPort" disabled /> Curativo limpo</label>
-      </div>
-      <div class="acesso-group">
-        <label><input type="checkbox" id="permicathCheckbox" /> Permicath</label>
-        <select id="localInsercaoPermi" disabled>
-          <option disabled selected>Local de inserção</option>
-          <option>Braço direito</option><option>Braço esquerdo</option>
-          <option>Veia jugular</option><option>Veia subclávia</option><option>Veia femoral</option>
-        </select>
-        <input type="date" id="dataPermi" disabled />
-        <input type="text" id="medicacaoPermi" placeholder="Medicação" disabled />
-        <label><input type="checkbox" id="curativoPermi" disabled /> Curativo limpo</label>
-      </div>
-    </div>
+    <div class="form-row acessos-row"></div>
   </template>
 
   <template id="tpl-eliminacoes">
     <p class="field-group">Diurese</p>
-    <div class="nc-group" style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem">
+    <div class="nc-group chip-grid-2">
       <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Espontânea" data-nc-color="green">Espontânea</button>
-      <div class="nc-chips nc-chips-stretch" style="flex-wrap:nowrap">
-        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Sonda vesical de demora" data-nc-color="gray" style="min-width:0">SVD</button>
-        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Sonda vesical de alívio" data-nc-color="gray" style="min-width:0">SVA</button>
-        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Nefrostomia"             data-nc-color="gray" style="min-width:0">Nefrostomia</button>
-        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Cistostomia"             data-nc-color="gray" style="min-width:0">Cistostomia</button>
+      <div class="nc-chips nc-chips-stretch nc-chips-nowrap">
+        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Sonda vesical de demora" data-nc-color="gray">SVD</button>
+        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Sonda vesical de alívio" data-nc-color="gray">SVA</button>
+        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Nefrostomia"             data-nc-color="gray">Nefrostomia</button>
+        <button type="button" class="nc-chip nc-via-diurese" data-nc-val="Cistostomia"             data-nc-color="gray">Cistostomia</button>
       </div>
-      <div class="nc-chips nc-chips-stretch" style="flex-wrap:nowrap">
-        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Banheiro" data-nc-color="gray"  disabled style="min-width:0">Banheiro</button>
-        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Fralda"   data-nc-color="amber" disabled style="min-width:0">Fralda</button>
-        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Comadre"  data-nc-color="gray"  disabled style="min-width:0">Comadre</button>
-        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Papagaio" data-nc-color="gray"  disabled style="min-width:0">Papagaio</button>
+      <div class="nc-chips nc-chips-stretch nc-chips-nowrap">
+        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Banheiro" data-nc-color="gray"  disabled>Banheiro</button>
+        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Fralda"   data-nc-color="amber" disabled>Fralda</button>
+        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Comadre"  data-nc-color="gray"  disabled>Comadre</button>
+        <button type="button" class="nc-chip nc-modo-diurese" data-nc-val="Papagaio" data-nc-color="gray"  disabled>Papagaio</button>
       </div>
       <div class="nc-stepper">
         <button type="button" class="nc-step-btn" id="volumeDiureseMinus">−</button>
@@ -1023,18 +965,18 @@
       </div>
     </div>
     <p class="field-group">Fezes</p>
-    <div class="nc-group" style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem">
+    <div class="nc-group chip-grid-2">
       <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Espontânea"              data-nc-color="green">Espontânea</button>
-      <div class="nc-chips nc-chips-stretch" style="flex-wrap:nowrap">
-        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Colostomia"             data-nc-color="gray"  style="min-width:0">Colostomia</button>
-        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Ileostomia"             data-nc-color="gray"  style="min-width:0">Ileostomia</button>
-        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Sem evacuação no turno" data-nc-color="amber" style="min-width:0">Sem evacuação</button>
+      <div class="nc-chips nc-chips-stretch nc-chips-nowrap">
+        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Colostomia"             data-nc-color="gray">Colostomia</button>
+        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Ileostomia"             data-nc-color="gray">Ileostomia</button>
+        <button type="button" class="nc-chip nc-via-fezes" data-nc-val="Sem evacuação no turno" data-nc-color="amber">Sem evacuação</button>
       </div>
-      <div class="nc-chips nc-chips-stretch" style="grid-column:1/-1;flex-wrap:nowrap">
-        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Banheiro" data-nc-color="gray"  disabled style="min-width:0">Banheiro</button>
-        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Fralda"   data-nc-color="amber" disabled style="min-width:0">Fralda</button>
-        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Comadre"  data-nc-color="gray"  disabled style="min-width:0">Comadre</button>
-        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Papagaio" data-nc-color="gray"  disabled style="min-width:0">Papagaio</button>
+      <div class="nc-chips nc-chips-stretch nc-chips-nowrap span-full">
+        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Banheiro" data-nc-color="gray"  disabled>Banheiro</button>
+        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Fralda"   data-nc-color="amber" disabled>Fralda</button>
+        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Comadre"  data-nc-color="gray"  disabled>Comadre</button>
+        <button type="button" class="nc-chip nc-modo-fezes" data-nc-val="Papagaio" data-nc-color="gray"  disabled>Papagaio</button>
       </div>
     </div>
     <p class="field-group">Náuseas / Vômito</p>
@@ -1042,7 +984,7 @@
       <div>
         <label for="nauseasSelect">Náuseas</label>
         <select id="nauseasSelect">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Presentes</option>
           <option>Ausentes</option>
         </select>
@@ -1050,7 +992,7 @@
       <div>
         <label for="vomitoSelect">Vômito</label>
         <select id="vomitoSelect">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Presente</option>
           <option>Alimentar</option>
           <option>Bilioso</option>
@@ -1067,7 +1009,7 @@
       <div>
         <label for="tipodreno">Tipo</label>
         <select id="tipodreno">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Penrose</option>
           <option>Jackson-Pratt</option>
           <option>Torácico</option>
@@ -1081,7 +1023,7 @@
       <div>
         <label for="aspectodreno">Aspecto</label>
         <select id="aspectodreno">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Seroso</option>
           <option>Serossanguinolento</option>
           <option>Sanguinolento</option>
@@ -1109,7 +1051,7 @@
       <div>
         <label for="deambula">Deambulação</label>
         <select id="deambula">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Deambula</option>
           <option>Deambula com auxílio</option>
           <option>Deambula com andador</option>
@@ -1124,7 +1066,7 @@
       <div>
         <label for="dorsoEstado">Dorso</label>
         <select id="dorsoEstado">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Íntegro</option>
           <option>Com hiperemia</option>
           <option>Lesão por pressão grau I</option>
@@ -1137,7 +1079,7 @@
       <div>
         <label for="tipoCurativo">Curativo</label>
         <select id="tipoCurativo">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Aquacel</option>
           <option>Hidrocolóide</option>
           <option>Alginato</option>
@@ -1155,7 +1097,7 @@
       <div>
         <label for="integridadeDorso">Estado</label>
         <select id="integridadeDorso">
-          <option disabled selected>Selecione</option>
+          <option value="" disabled selected>Selecione</option>
           <option>Limpo</option>
           <option>Íntegro</option>
           <option>Sujo</option>
@@ -1166,7 +1108,7 @@
   </template>
 
   <template id="tpl-cuidados">
-    <div class="form-row" style="flex-direction: column">
+    <div class="form-row">
       <textarea id="acoesCuidados" rows="10"
         placeholder="Ações de cuidados aparecerão aqui quando o nome do paciente for preenchido...">
       </textarea>
@@ -1198,14 +1140,35 @@
       'acessos', 'eliminacoes', 'deambulacao', 'cuidados',
     ];
 
-    const ACESSO_FIELDS = {
-      avpMsdCheckbox:    ['calibreMsd',        'dataMsd',   'medicacaoMsd',   'curativoMsd'],
-      avpMseCheckbox:    ['calibreMse',        'dataMse',   'medicacaoMse',   'curativoMse'],
-      cvcCheckbox:       ['localInsercaocvc',  'datacvc',   'medicacaocvc',   'curativocvc'],
-      piccCheckbox:      ['localInsercaoPicc', 'dataPicc',  'medicacaoPicc',  'curativoPicc'],
-      portCheckbox:      ['localInsercaoPort', 'dataPort',  'medicacaoPort',  'curativoPort'],
-      permicathCheckbox: ['localInsercaoPermi','dataPermi', 'medicacaoPermi', 'curativoPermi'],
-    };
+    // Fonte única dos acessos: gera o formulário, o toggle de campos e o texto.
+    const CALIBRES          = [16, 18, 20, 22, 24];
+    const LOCAIS_CENTRAIS   = ['Veia jugular', 'Veia subclávia', 'Veia femoral'];
+    const LOCAIS_INSERCAO   = ['Braço direito', 'Braço esquerdo', ...LOCAIS_CENTRAIS];
+
+    const ACESSOS = [
+      { cb: 'avpMsdCheckbox',    nome: 'AVP MSD',   texto: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR DIREITO',
+        select: { id: 'calibreMsd',        placeholder: 'Calibre',            options: CALIBRES,        tipo: 'calibre' },
+        data: 'dataMsd',   med: 'medicacaoMsd',   cur: 'curativoMsd' },
+      { cb: 'avpMseCheckbox',    nome: 'AVP MSE',   texto: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR ESQUERDO',
+        select: { id: 'calibreMse',        placeholder: 'Calibre',            options: CALIBRES,        tipo: 'calibre' },
+        data: 'dataMse',   med: 'medicacaoMse',   cur: 'curativoMse' },
+      { cb: 'cvcCheckbox',       nome: 'CVC',       texto: 'CATETER VENOSO CENTRAL',
+        select: { id: 'localInsercaocvc',  placeholder: 'Local de inserção',  options: LOCAIS_CENTRAIS, tipo: 'local' },
+        data: 'datacvc',   med: 'medicacaocvc',   cur: 'curativocvc' },
+      { cb: 'piccCheckbox',      nome: 'PICC',      texto: 'PICC',
+        select: { id: 'localInsercaoPicc', placeholder: 'Local de inserção',  options: LOCAIS_INSERCAO, tipo: 'local' },
+        data: 'dataPicc',  med: 'medicacaoPicc',  cur: 'curativoPicc' },
+      { cb: 'portCheckbox',      nome: 'Portocath', texto: 'PORTOCATH',
+        select: { id: 'localInsercaoPort', placeholder: 'Local de inserção',  options: LOCAIS_INSERCAO, tipo: 'local' },
+        data: 'dataPort',  med: 'medicacaoPort',  cur: 'curativoPort' },
+      { cb: 'permicathCheckbox', nome: 'Permicath', texto: 'PERMICATH',
+        select: { id: 'localInsercaoPermi', placeholder: 'Local de inserção', options: LOCAIS_INSERCAO, tipo: 'local' },
+        data: 'dataPermi', med: 'medicacaoPermi', cur: 'curativoPermi' },
+    ];
+
+    const ACESSO_FIELDS = Object.fromEntries(
+      ACESSOS.map(a => [a.cb, [a.select.id, a.data, a.med, a.cur]])
+    );
 
     const SALAS_CONFIG = {
       UDC:           { salas: [1,2,3,4], box: ['POLTRONA 1','POLTRONA 2','POLTRONA 3','POLTRONA 4','POLTRONA 5'] },
@@ -1218,6 +1181,18 @@
       CARDIOLOGICA:  { salas: [],        box: [1,2,3,4] },
       ISOLAMENTO:    { salas: [15,16],   box: ['A','B'] },
       'SALA ENEMA':  { salas: [],        box: [1,2,3] },
+    };
+
+    // Chips de escolha única: classe CSS → chave no state (uma fonte para
+    // clique, restauração e handlers dependentes).
+    const CHIP_STATE_MAP = {
+      'nc-dieta-oral':   'dietaOral',    'nc-motivo':       'motivoNpo',
+      'nc-tipo-dieta':   'tipoDieta',    'nc-aceit':        'aceitacaoOral',
+      'nc-via-diurese':  'viaDiurese',   'nc-modo-diurese': 'modoDiurese',
+      'nc-via-fezes':    'viaFezes',     'nc-modo-fezes':   'modoFezes',
+      'nc-deambula':     'deambula',     'nc-dorso':        'dorsoEstado',
+      'nc-curativo':     'tipoCurativo', 'nc-integridade':  'integridadeDorso',
+      'nc-verb':         'verbalizacao', 'nc-escala':       'escalaDor',
     };
 
     const BASE_FORM = {
@@ -1265,7 +1240,7 @@
 
     function populateSelect(el, items) {
       const prev = el.value;
-      el.innerHTML = '<option disabled selected>Selecione</option>';
+      el.innerHTML = '<option value="" disabled selected>Selecione</option>';
       items.forEach(v => {
         const o = document.createElement('option');
         o.value = v;
@@ -1351,7 +1326,7 @@
         const v = state.form[f];
         if (f === 'nivelConsciencia') return Array.isArray(v) && v.length > 0;
         if (typeof v === 'boolean') return v === true;
-        return v && v !== 'Selecione';
+        return !!v;
       });
     }
 
@@ -1380,7 +1355,7 @@
       const hasData = Object.entries(state.form).some(([k, v]) => {
         if (k === 'nivelConsciencia') return Array.isArray(v) && v.length > 0;
         if (typeof v === 'boolean') return v === true;
-        return v && v !== 'Selecione' && v !== '';
+        return !!v;
       });
       if (!hasData) return;
       state.history.unshift({
@@ -1538,34 +1513,18 @@
           dorToggle.classList.toggle('active', val === 'Sim');
           handleDorPresenteChange(val);
         }
-        document.querySelectorAll('.nc-chip.nc-escala').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.ncVal === state.form.escalaDor);
-        });
-        document.querySelectorAll('.nc-chip.nc-verb').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.ncVal === state.form.verbalizacao);
-        });
-        const tipoOx = document.getElementById('tipoOxigenoterapia');
-        if (tipoOx?.value) handleOxigenoterapiaChange(tipoOx.value);
-        const tosse = document.getElementById('tosse');
-        if (tosse?.value) handleTosseChange(tosse.value);
-        const nutriRestore = {
-          'nc-dieta-oral':   'dietaOral',    'nc-motivo':      'motivoNpo',
-          'nc-tipo-dieta':   'tipoDieta',    'nc-aceit':       'aceitacaoOral',
-          'nc-via-diurese':  'viaDiurese',   'nc-modo-diurese': 'modoDiurese',
-          'nc-via-fezes':    'viaFezes',     'nc-modo-fezes':   'modoFezes',
-          'nc-deambula':     'deambula',     'nc-dorso':       'dorsoEstado',
-          'nc-curativo':     'tipoCurativo', 'nc-integridade': 'integridadeDorso',
-        };
-        Object.entries(nutriRestore).forEach(([cls, key]) => {
+        Object.entries(CHIP_STATE_MAP).forEach(([cls, key]) => {
           document.querySelectorAll(`.nc-chip.${cls}`).forEach(c => {
             c.classList.toggle('active', c.dataset.ncVal === state.form[key]);
           });
         });
-        handleDietaOralChange(state.form.dietaOral || '');
+        Object.entries(CHIP_CHANGE_HANDLERS).forEach(([key, fn]) => fn(state.form[key] || ''));
+        const tipoOx = document.getElementById('tipoOxigenoterapia');
+        if (tipoOx?.value) handleOxigenoterapiaChange(tipoOx.value);
+        const tosse = document.getElementById('tosse');
+        if (tosse?.value) handleTosseChange(tosse.value);
         const dietaSonda = document.getElementById('dietaSonda');
         if (dietaSonda?.value) handleDietaSondaChange(dietaSonda.value);
-        handleViaDiureseChange(state.form.viaDiurese || '');
-        handleViaFezesChange(state.form.viaFezes || '');
         Object.keys(ACESSO_FIELDS).forEach(id => {
           const el = document.getElementById(id);
           if (el?.checked) toggleAcessoFields(id);
@@ -1627,7 +1586,7 @@
     }
 
     function handleNumeroSalaChange(value) {
-      if (!value || value === 'Selecione') return;
+      if (!value) return;
       const tipoSala = document.getElementById('tipoSala');
       const key = stripAccents(((tipoSala?.value) || '').toUpperCase());
       const cfg = SALAS_CONFIG[key] || { salas: [], box: [] };
@@ -1674,11 +1633,18 @@
     function handleDietaSondaChange(value) {
       const el = document.getElementById('mlSonda');
       if (!el) return;
-      const ok = value && value !== 'Selecione';
+      const ok = !!value;
       el.disabled = !ok;
       ['mlSondaMinus','mlSondaPlus'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !ok; });
       if (!ok) { el.value = ''; state.form.mlSonda = ''; }
     }
+
+    // Handlers dependentes disparados quando o chip da chave correspondente muda.
+    const CHIP_CHANGE_HANDLERS = {
+      dietaOral:  handleDietaOralChange,
+      viaDiurese: handleViaDiureseChange,
+      viaFezes:   handleViaFezesChange,
+    };
 
     function toggleAcessoFields(checkboxId) {
       const cb = document.getElementById(checkboxId);
@@ -1691,6 +1657,27 @@
           if (el.type === 'checkbox') { el.checked = false; state.form[id] = false; }
           else { el.value = ''; state.form[id] = ''; }
         }
+      });
+    }
+
+    // Preenche o tpl-acessos uma vez no boot: 6 blocos idênticos, uma só fonte.
+    function buildAcessosTemplate() {
+      const row = document.getElementById('tpl-acessos').content.querySelector('.acessos-row');
+      ACESSOS.forEach(a => {
+        const g = document.createElement('div');
+        g.className = 'acesso-group';
+        const opts = a.select.options
+          .map(o => `<option value="${o}">${String(o).toUpperCase()}</option>`)
+          .join('');
+        g.innerHTML = `
+          <label><input type="checkbox" id="${a.cb}" /> ${a.nome}</label>
+          <select id="${a.select.id}" disabled>
+            <option value="" disabled selected>${a.select.placeholder}</option>${opts}
+          </select>
+          <input type="date" id="${a.data}" disabled />
+          <input type="text" id="${a.med}" placeholder="Medicação" disabled />
+          <label><input type="checkbox" id="${a.cur}" disabled /> Curativo limpo</label>`;
+        row.appendChild(g);
       });
     }
 
@@ -1745,12 +1732,12 @@
       const acomp    = getValue('acompanha');
       const parts    = [];
 
-      if (sala && sala !== 'Selecione') {
+      if (sala) {
         let loc = 'EMERGÊNCIA ADULTO';
         if (state.turno) loc += ` - ${state.turno}`;
         loc += ` - SALA ${sala.toUpperCase()}`;
-        if (numero && numero !== 'Selecione') loc += ` ${numero}`;
-        if (box && box !== 'Selecione') {
+        if (numero) loc += ` ${numero}`;
+        if (box) {
           loc += String(box).includes('POLTRONA') ? ` - ${box}` : ` - BOX ${box}`;
         }
         parts.push(loc);
@@ -1765,7 +1752,7 @@
       if (nome) {
         let paciente = nome.toUpperCase();
         if (idade) paciente += `, ${idade} ANOS`;
-        if (acomp && acomp !== 'Selecione') {
+        if (acomp) {
           paciente += ` . ${acomp === 'Sim' ? 'COM' : 'SEM'} ACOMPANHANTE`;
         }
         parts.push(paciente);
@@ -1786,11 +1773,11 @@
 
       if (consciencia.length) parts.push('PACIENTE ' + consciencia.map(v => v.toUpperCase()).join(', '));
       if (glasgow) parts.push(`GLASGOW ${glasgow}`);
-      if (verbalizacao && verbalizacao !== 'Selecione') parts.push(verbalizacao.toUpperCase());
-      if (pupilas && pupilas !== 'Selecione') parts.push(`PUPILAS ${pupilas.toUpperCase()}`);
+      if (verbalizacao) parts.push(verbalizacao.toUpperCase());
+      if (pupilas) parts.push(`PUPILAS ${pupilas.toUpperCase()}`);
 
       if (dorPresente === 'Sim') {
-        if (valorDor && escalaDor && escalaDor !== 'Selecione') {
+        if (valorDor && escalaDor) {
           parts.push(`DOR ${valorDor} AVALIADA NA ESCALA ${escalaDor}`);
         } else if (valorDor) {
           parts.push(`DOR ${valorDor}`);
@@ -1812,14 +1799,14 @@
       const secrecao = getValue('aspectoSecrecao');
       const parts    = [];
 
-      if (tipo && tipo !== 'Selecione') {
+      if (tipo) {
         if (tipo === 'Ar ambiente') {
           parts.push('VENTILANDO EM AR AMBIENTE');
         } else if (tipo === 'VNI') {
           parts.push('EM VNI');
         } else if (tipo === 'Ventilação mecânica') {
           let txt = 'EM VENTILAÇÃO MECÂNICA INVASIVA';
-          if (viaAerea && viaAerea !== 'Selecione') {
+          if (viaAerea) {
             txt += viaAerea === 'IOT' ? ' EM IOT' : ' EM TRAQUEOSTOMIA';
           }
           parts.push(txt);
@@ -1831,11 +1818,11 @@
       }
 
       if (spo2) parts.push(`SATURAÇÃO ${spo2}%`);
-      if (padrao && padrao !== 'Selecione') parts.push(padrao.toUpperCase());
+      if (padrao) parts.push(padrao.toUpperCase());
 
       if (tosse === 'Produtiva') {
         let txt = 'TOSSE PRODUTIVA';
-        if (secrecao && secrecao !== 'Selecione') txt += ` COM EXPECTORAÇÃO ${secrecao.toUpperCase()}`;
+        if (secrecao) txt += ` COM EXPECTORAÇÃO ${secrecao.toUpperCase()}`;
         parts.push(txt);
       } else if (tosse === 'Seca') {
         parts.push('TOSSE SECA');
@@ -1857,7 +1844,7 @@
 
       if (oral === 'NPO') {
         let txt = 'EM NPO';
-        if (motivo && motivo !== 'Selecione') txt += ` PARA ${motivo.toUpperCase()}`;
+        if (motivo) txt += ` PARA ${motivo.toUpperCase()}`;
         parts.push(txt);
       } else if (oral === 'VO Liberada') {
         let txt = 'VO LIBERADA';
@@ -1868,7 +1855,7 @@
         parts.push(txt);
       }
 
-      if (sonda && sonda !== 'Selecione') {
+      if (sonda) {
         let txt = `DIETA ENTERAL POR ${sonda.toUpperCase()}`;
         if (ml) txt += ` A ${ml}ML/H`;
         parts.push(txt);
@@ -1878,37 +1865,16 @@
     }
 
     function gerarTextoAcessos() {
-      const ACESSOS = [
-        { id: 'avpMsdCheckbox',    label: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR DIREITO',
-          calibreField: 'calibreMsd',       dataField: 'dataMsd',   medField: 'medicacaoMsd',  curField: 'curativoMsd' },
-        { id: 'avpMseCheckbox',    label: 'ACESSO VENOSO PERIFÉRICO EM MEMBRO SUPERIOR ESQUERDO',
-          calibreField: 'calibreMse',       dataField: 'dataMse',   medField: 'medicacaoMse',  curField: 'curativoMse' },
-        { id: 'cvcCheckbox',       label: 'CATETER VENOSO CENTRAL',
-          localField: 'localInsercaocvc',   dataField: 'datacvc',   medField: 'medicacaocvc',  curField: 'curativocvc' },
-        { id: 'piccCheckbox',      label: 'PICC',
-          localField: 'localInsercaoPicc',  dataField: 'dataPicc',  medField: 'medicacaoPicc', curField: 'curativoPicc' },
-        { id: 'portCheckbox',      label: 'PORTOCATH',
-          localField: 'localInsercaoPort',  dataField: 'dataPort',  medField: 'medicacaoPort', curField: 'curativoPort' },
-        { id: 'permicathCheckbox', label: 'PERMICATH',
-          localField: 'localInsercaoPermi', dataField: 'dataPermi', medField: 'medicacaoPermi',curField: 'curativoPermi' },
-      ];
-
       return ACESSOS
-        .filter(a => getValue(a.id))
+        .filter(a => getValue(a.cb))
         .map(a => {
-          let txt = a.label;
-          if (a.calibreField) {
-            const cal = getValue(a.calibreField);
-            if (cal && cal !== 'Calibre') txt += ` ABOCATH ${cal}`;
-          }
-          if (a.localField) {
-            const loc = getValue(a.localField);
-            if (loc && loc !== 'Local de inserção') txt += ` EM ${loc.toUpperCase()}`;
-          }
-          const data = getValue(a.dataField);
+          let txt = a.texto;
+          const sel = getValue(a.select.id);
+          if (sel) txt += a.select.tipo === 'calibre' ? ` ABOCATH ${sel}` : ` EM ${sel.toUpperCase()}`;
+          const data = getValue(a.data);
           if (data) txt += ` DATADO ${formatDateBR(data)}`;
-          if (getValue(a.curField)) txt += '. CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO';
-          const med = getValue(a.medField);
+          if (getValue(a.cur)) txt += '. CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO';
+          const med = getValue(a.med);
           if (med) txt += `. ${med.toUpperCase()}`;
           return txt;
         })
@@ -1929,8 +1895,8 @@
       const parts         = [];
 
       // Diurese
-      const viaOk = viaDiurese && viaDiurese !== 'Selecione';
-      const modOk = modoDiurese && modoDiurese !== 'Selecione';
+      const viaOk = !!viaDiurese;
+      const modOk = !!modoDiurese;
       const volOk = volumeDiurese && !isNaN(volumeDiurese) && Number(volumeDiurese) > 0;
       if (viaOk || modOk || volOk) {
         let txt;
@@ -1946,7 +1912,7 @@
       }
 
       // Fezes
-      const modFezesOk = modoFezes && modoFezes !== 'Selecione';
+      const modFezesOk = !!modoFezes;
       if (viaFezes === 'Sem evacuação no turno') {
         parts.push('SEM ELIMINAÇÕES NO TURNO');
       } else if (viaFezes === 'Espontânea') {
@@ -1957,7 +1923,7 @@
 
       // Náuseas / Vômito
       const hasNausea  = nauseas === 'Presentes';
-      const hasVomito  = vomito && vomito !== 'Selecione' && vomito !== 'Ausente';
+      const hasVomito  = vomito && vomito !== 'Ausente';
       const comAspecto = hasVomito && vomito !== 'Presente';
       if (hasNausea || hasVomito) {
         if (hasNausea && hasVomito) {
@@ -1971,9 +1937,9 @@
 
       // Dreno
       const volDrenoOk = volumedreno && !isNaN(volumedreno) && Number(volumedreno) > 0;
-      if (tipodreno && tipodreno !== 'Selecione') {
+      if (tipodreno) {
         let txt = `DRENO ${tipodreno.toUpperCase()}`;
-        if (aspectodreno && aspectodreno !== 'Selecione') txt += `, ASPECTO ${aspectodreno.toUpperCase()}`;
+        if (aspectodreno) txt += `, ASPECTO ${aspectodreno.toUpperCase()}`;
         if (volDrenoOk) txt += `, DÉBITO ${volumedreno}ML`;
         parts.push(txt);
       }
@@ -1989,10 +1955,10 @@
       const integridade = getValue('integridadeDorso');
       const parts       = [];
 
-      if (deambula && deambula !== 'Selecione') parts.push(deambula.toUpperCase());
+      if (deambula) parts.push(deambula.toUpperCase());
 
-      const dorsOk      = dorso && dorso !== 'Selecione';
-      const curativoTipo = curativo && curativo !== 'Selecione' ? curativo : null;
+      const dorsOk       = !!dorso;
+      const curativoTipo = curativo || null;
       const temCurativo  = curativoTipo && curativoTipo !== 'Sem curativo';
 
       if (dorsOk) {
@@ -2007,13 +1973,13 @@
         } else if (temCurativo) {
           txt += `, CURATIVO ${curativoTipo.toUpperCase()}`;
           if (dataDorso) txt += ` DATA ${formatDateBR(dataDorso)}`;
-          if (integridade && integridade !== 'Selecione') txt += `, ${integridade.toUpperCase()}`;
+          if (integridade) txt += `, ${integridade.toUpperCase()}`;
         }
         parts.push(txt);
       } else if (temCurativo) {
         let txt = `CURATIVO ${curativoTipo.toUpperCase()}`;
         if (dataDorso) txt += ` DATA ${formatDateBR(dataDorso)}`;
-        if (integridade && integridade !== 'Selecione') txt += `, ${integridade.toUpperCase()}`;
+        if (integridade) txt += `, ${integridade.toUpperCase()}`;
         parts.push(txt);
       }
 
@@ -2065,10 +2031,14 @@
       }
       fitNoteText();
       updateSectionIndicators();
-      persistState(); // toda interação desemboca aqui: ponto único de persistência
+      // Toda interação desemboca aqui: ponto único de persistência e de a11y.
+      document.querySelectorAll('.nc-chip').forEach(c =>
+        c.setAttribute('aria-pressed', c.classList.contains('active'))
+      );
+      persistState();
     }
 
-    // ── 8. Copy ───────────────────────────────────────────────────────────────
+    // ── 9. Copy ───────────────────────────────────────────────────────────────
     function copiarEvolucao(silencioso = false) {
       const text = document.getElementById('note-output')?.querySelector('p')?.innerText?.trim() || '';
       if (!text || text === 'O conteúdo da evolução será gerado aqui...') {
@@ -2088,7 +2058,7 @@
         .catch(() => { if (!silencioso) showToast('Erro ao copiar.'); });
     }
 
-    // ── 9. Global event delegation ────────────────────────────────────────────
+    // ── 10. Global event delegation ────────────────────────────────────────────
     document.addEventListener('click', e => {
       const chip = e.target.closest('.nc-chip');
       if (!chip) return;
@@ -2105,53 +2075,16 @@
         return;
       }
 
-      // ── Nutrição chips (radio toggle) ────────────────────────────────────
-      const nutriMap = {
-        'nc-dieta-oral':   'dietaOral',
-        'nc-motivo':       'motivoNpo',
-        'nc-tipo-dieta':   'tipoDieta',
-        'nc-aceit':        'aceitacaoOral',
-        'nc-via-diurese':  'viaDiurese',
-        'nc-modo-diurese': 'modoDiurese',
-        'nc-via-fezes':    'viaFezes',
-        'nc-modo-fezes':   'modoFezes',
-        'nc-deambula':     'deambula',
-        'nc-dorso':        'dorsoEstado',
-        'nc-curativo':     'tipoCurativo',
-        'nc-integridade':  'integridadeDorso',
-      };
-      const nutriKey = Object.keys(nutriMap).find(k => chip.classList.contains(k));
-      if (nutriKey) {
-        const stateKey = nutriMap[nutriKey];
+      // ── Chips de escolha única (radio toggle) ────────────────────────────
+      const chipClass = Object.keys(CHIP_STATE_MAP).find(k => chip.classList.contains(k));
+      if (chipClass) {
+        const stateKey  = CHIP_STATE_MAP[chipClass];
         const wasActive = chip.classList.contains('active');
-        document.querySelectorAll(`.nc-chip.${nutriKey}`).forEach(c => c.classList.remove('active'));
+        document.querySelectorAll(`.nc-chip.${chipClass}`).forEach(c => c.classList.remove('active'));
         if (!wasActive) chip.classList.add('active');
         state.form[stateKey] = chip.classList.contains('active') ? val : '';
-        if (nutriKey === 'nc-dieta-oral')   handleDietaOralChange(state.form[stateKey]);
-        if (nutriKey === 'nc-via-diurese') handleViaDiureseChange(state.form[stateKey]);
-        if (nutriKey === 'nc-via-fezes')   handleViaFezesChange(state.form[stateKey]);
+        CHIP_CHANGE_HANDLERS[stateKey]?.(state.form[stateKey]);
         updateSectionIndicators();
-        gerarAnotacao();
-        return;
-      }
-
-      // ── Verbalização (radio toggle) ──────────────────────────────────────
-      if (chip.classList.contains('nc-verb')) {
-        const wasActive = chip.classList.contains('active');
-        document.querySelectorAll('.nc-chip.nc-verb').forEach(c => c.classList.remove('active'));
-        if (!wasActive) chip.classList.add('active');
-        state.form.verbalizacao = chip.classList.contains('active') ? val : '';
-        updateSectionIndicators();
-        gerarAnotacao();
-        return;
-      }
-
-      // ── Escala (radio toggle) ────────────────────────────────────────────
-      if (chip.classList.contains('nc-escala')) {
-        const wasActive = chip.classList.contains('active');
-        document.querySelectorAll('.nc-chip.nc-escala').forEach(c => c.classList.remove('active'));
-        if (!wasActive) chip.classList.add('active');
-        state.form.escalaDor = chip.classList.contains('active') ? val : '';
         gerarAnotacao();
         return;
       }
@@ -2235,7 +2168,7 @@
       gerarAnotacao();
     });
 
-    // ── 10. Initialisation ────────────────────────────────────────────────────
+    // ── 11. Initialisation ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       // Section navigation
       document.getElementById('navButtons').addEventListener('click', e => {
@@ -2325,19 +2258,20 @@
       const caseBtn = document.getElementById('caseToggle');
       caseBtn.textContent = state.uppercase ? 'AA' : 'Aa';
       caseBtn.classList.toggle('active', state.uppercase);
+      buildAcessosTemplate();
       uppercaseAllOptions();
       activate('dados');
       renderHistorico();
     });
 
-    // ── 11. Resize ────────────────────────────────────────────────────────────
+    // ── 12. Resize ────────────────────────────────────────────────────────────
     let _resizeFit;
     window.addEventListener('resize', () => {
       clearTimeout(_resizeFit);
       _resizeFit = setTimeout(fitNoteText, 80);
     });
 
-    // ── 12. Wheel navigation ──────────────────────────────────────────────────
+    // ── 13. Wheel navigation ──────────────────────────────────────────────────
     let wheelTimeout;
     window.addEventListener('wheel', e => {
       e.preventDefault();
