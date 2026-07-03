@@ -1292,6 +1292,36 @@
       return str.normalize('NFD').replace(/\p{Mn}/gu, '');
     }
 
+    // 'YYYY-MM-DD' → 'DD/MM/YYYY' sem passar por Date (evita o shift UTC−3)
+    function formatDateBR(iso) {
+      if (!iso) return '';
+      const [y, m, d] = iso.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    // sessionStorage (não localStorage): sobrevive ao F5 mas morre ao fechar
+    // a aba — dados de paciente não ficam num computador compartilhado.
+    const STORAGE_KEY = 'anotacao-state';
+
+    function persistState() {
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          form: state.form,
+          history: state.history,
+          turno: state.turno,
+          sexo: state.sexo,
+          uppercase: state.uppercase,
+        }));
+      } catch { /* storage indisponível: segue só em memória */ }
+    }
+
+    function loadPersistedState() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+        if (saved && typeof saved === 'object') Object.assign(state, saved);
+      } catch { /* dado corrompido: começa limpo */ }
+    }
+
     function applyGender(text) {
       if (state.sexo !== 'F') return text;
       for (const [m, f] of GENDER_SUBS_F) text = text.replaceAll(m, f);
@@ -1490,7 +1520,7 @@
           chip.classList.toggle('active', state.form.nivelConsciencia.includes(chip.dataset.ncVal));
         });
       }
-      setTimeout(() => {
+      { // dependências (selects encadeados, chips, disabled) — tudo síncrono
         const tipoSala = document.getElementById('tipoSala');
         if (tipoSala?.value) {
           handleTipoSalaChange(tipoSala.value);
@@ -1540,8 +1570,7 @@
           const el = document.getElementById(id);
           if (el?.checked) toggleAcessoFields(id);
         });
-        gerarAnotacao();
-      }, 50);
+      }
     }
 
     // ── 5. Field handlers ─────────────────────────────────────────────────────
@@ -1648,7 +1677,7 @@
       const ok = value && value !== 'Selecione';
       el.disabled = !ok;
       ['mlSondaMinus','mlSondaPlus'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !ok; });
-      if (!ok) el.value = '';
+      if (!ok) { el.value = ''; state.form.mlSonda = ''; }
     }
 
     function toggleAcessoFields(checkboxId) {
@@ -1658,7 +1687,10 @@
         const el = document.getElementById(id);
         if (!el) return;
         el.disabled = !cb.checked;
-        if (!cb.checked) { el.value = ''; state.form[id] = ''; }
+        if (!cb.checked) {
+          if (el.type === 'checkbox') { el.checked = false; state.form[id] = false; }
+          else { el.value = ''; state.form[id] = ''; }
+        }
       });
     }
 
@@ -1874,7 +1906,7 @@
             if (loc && loc !== 'Local de inserção') txt += ` EM ${loc.toUpperCase()}`;
           }
           const data = getValue(a.dataField);
-          if (data) txt += ` DATADO ${new Date(data).toLocaleDateString('pt-BR')}`;
+          if (data) txt += ` DATADO ${formatDateBR(data)}`;
           if (getValue(a.curField)) txt += '. CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO';
           const med = getValue(a.medField);
           if (med) txt += `. ${med.toUpperCase()}`;
@@ -1974,13 +2006,13 @@
           txt += ', SEM CURATIVO';
         } else if (temCurativo) {
           txt += `, CURATIVO ${curativoTipo.toUpperCase()}`;
-          if (dataDorso) txt += ` DATA ${new Date(dataDorso).toLocaleDateString('pt-BR')}`;
+          if (dataDorso) txt += ` DATA ${formatDateBR(dataDorso)}`;
           if (integridade && integridade !== 'Selecione') txt += `, ${integridade.toUpperCase()}`;
         }
         parts.push(txt);
       } else if (temCurativo) {
         let txt = `CURATIVO ${curativoTipo.toUpperCase()}`;
-        if (dataDorso) txt += ` DATA ${new Date(dataDorso).toLocaleDateString('pt-BR')}`;
+        if (dataDorso) txt += ` DATA ${formatDateBR(dataDorso)}`;
         if (integridade && integridade !== 'Selecione') txt += `, ${integridade.toUpperCase()}`;
         parts.push(txt);
       }
@@ -2033,6 +2065,7 @@
       }
       fitNoteText();
       updateSectionIndicators();
+      persistState(); // toda interação desemboca aqui: ponto único de persistência
     }
 
     // ── 8. Copy ───────────────────────────────────────────────────────────────
@@ -2124,6 +2157,7 @@
       }
 
       // ── Consciência ──────────────────────────────────────────────────────
+      if (!chip.matches('.nc-alerta, .nc-orientacao, .nc-comp')) return;
       const wasActive = chip.classList.contains('active');
       chip.classList.toggle('active');
       const nowActive = !wasActive;
@@ -2149,7 +2183,7 @@
         else if (val === 'Desorientado')           deactivate('Orientado', 'Orientado parcialmente', 'Com períodos de confusão');
       }
 
-      state.form.nivelConsciencia = [...document.querySelectorAll('.nc-chip.active:not(.nc-dor-toggle):not(.nc-escala)')].map(c => c.dataset.ncVal);
+      state.form.nivelConsciencia = [...document.querySelectorAll('.nc-chip.active:is(.nc-alerta, .nc-orientacao, .nc-comp)')].map(c => c.dataset.ncVal);
       updateSectionIndicators();
       gerarAnotacao();
     });
@@ -2194,7 +2228,12 @@
       updateClearIcon(el);
       gerarAnotacao();
     });
-    document.addEventListener('input', gerarAnotacao);
+    // Salvar já no input: trocar de seção pela roda remove o campo do DOM
+    // antes do 'change' disparar, e o texto digitado se perdia.
+    document.addEventListener('input', e => {
+      saveField(e);
+      gerarAnotacao();
+    });
 
     // ── 10. Initialisation ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
@@ -2276,6 +2315,16 @@
       });
 
       // Boot
+      loadPersistedState();
+      document.querySelectorAll('[data-turno]').forEach(b => {
+        b.classList.toggle('active', b.dataset.turno === state.turno && !!state.turno);
+      });
+      document.querySelectorAll('[data-sexo]').forEach(b => {
+        b.classList.toggle('active', b.dataset.sexo === state.sexo);
+      });
+      const caseBtn = document.getElementById('caseToggle');
+      caseBtn.textContent = state.uppercase ? 'AA' : 'Aa';
+      caseBtn.classList.toggle('active', state.uppercase);
       uppercaseAllOptions();
       activate('dados');
       renderHistorico();
