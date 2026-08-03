@@ -66,6 +66,7 @@
 
     /* ── 4. Top bar ────────────────────────────────────────────────────────── */
     .top-bar {
+      position: relative;
       background: var(--primary-dk);
       color: #fff;
       padding: 0.75rem 2rem;
@@ -77,6 +78,12 @@
       justify-content: space-between;
       gap: 1rem;
       flex-shrink: 0;
+    }
+    /* Centrado real independente da largura dos lados */
+    .top-reset {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
     .header-controls {
       display: flex;
@@ -630,6 +637,8 @@
 
   <div class="top-bar">
     <span>EMERGÊNCIA ADULTO — HMV</span>
+    <button class="toggle-btn top-reset" id="resetBtn"
+      title="Novo registro — limpa o formulário (o atual vai para o histórico)">↺ RESET</button>
     <div class="header-controls">
       <div class="toggle-group" id="turnoGroup">
         <button class="toggle-btn" data-turno="MANHÃ"   title="Turno Manhã">M</button>
@@ -2282,8 +2291,9 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
 
-      // Novo paciente
+      // Novo paciente (sidebar) e Reset (header) — mesma ação
       document.getElementById('novoBtn').addEventListener('click', limparTudo);
+      document.getElementById('resetBtn').addEventListener('click', limparTudo);
 
       // Próxima seção
       document.getElementById('nextSectionBtn').addEventListener('click', () => {
