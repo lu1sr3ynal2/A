@@ -1876,7 +1876,7 @@
       // final separa as *partes* com linha em branco, não os itens da lista)
       const comorbidades = listarComorbidades(comorb);
       if (comorbidades.length) {
-        parts.push(comorbidades.map(c => `#${c.toUpperCase()}`).join('\n'));
+        parts.push(['#COMORBIDADES:', ...comorbidades.map(c => `#${c.toUpperCase()}`)].join('\n'));
       }
       if (alergias)  parts.push(`#ALERGIAS: ${alergias.toUpperCase()}`);
 
