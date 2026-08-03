@@ -1219,7 +1219,11 @@
 
     // Fonte única dos acessos: gera o formulário, o toggle de campos e o texto.
     const CALIBRES          = [16, 18, 20, 22, 24];
-    const LOCAIS_CENTRAIS   = ['Veia jugular', 'Veia subclávia', 'Veia femoral'];
+    const LOCAIS_CENTRAIS   = [
+      'Veia jugular direita',   'Veia jugular esquerda',
+      'Veia subclávia direita', 'Veia subclávia esquerda',
+      'Veia femoral direita',   'Veia femoral esquerda',
+    ];
     const LOCAIS_INSERCAO   = ['Braço direito', 'Braço esquerdo', ...LOCAIS_CENTRAIS];
 
     const ACESSOS = [
@@ -1375,6 +1379,15 @@
       return `${d}/${m}/${y}`;
     }
 
+    // Valores persistidos antes de 2026-08: veias centrais sem lado já não têm
+    // opção correspondente no select — limpar para o usuário re-escolher.
+    const LOCAIS_SEM_LADO = ['Veia jugular', 'Veia subclávia', 'Veia femoral'];
+    function normalizarLocaisAntigos(form) {
+      ACESSOS.filter(a => a.select.tipo === 'local').forEach(a => {
+        if (LOCAIS_SEM_LADO.includes(form[a.select.id])) form[a.select.id] = '';
+      });
+    }
+
     // sessionStorage (não localStorage): sobrevive ao F5 mas morre ao fechar
     // a aba — dados de paciente não ficam num computador compartilhado.
     const STORAGE_KEY = 'anotacao-state';
@@ -1394,7 +1407,10 @@
     function loadPersistedState() {
       try {
         const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
-        if (saved && typeof saved === 'object') Object.assign(state, saved);
+        if (saved && typeof saved === 'object') {
+          Object.assign(state, saved);
+          normalizarLocaisAntigos(state.form);
+        }
       } catch { /* dado corrompido: começa limpo */ }
     }
 
@@ -1516,6 +1532,7 @@
       const entry = state.history[index];
       if (!entry) return;
       state.form = JSON.parse(JSON.stringify(entry.form));
+      normalizarLocaisAntigos(state.form);
       state.turno = entry.turno;
       state.sexo = entry.sexo;
       document.querySelectorAll('[data-turno]').forEach(b => {
