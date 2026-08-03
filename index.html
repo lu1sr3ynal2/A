@@ -1343,6 +1343,12 @@
       return str.normalize('NFD').replace(/\p{Mn}/gu, '');
     }
 
+    // A busca da CID-10 escreve "Descrição (J18.9)" no campo, mas o código é só
+    // referência para quem digita: na evolução sai apenas a descrição.
+    function semCodigoCid(texto) {
+      return texto.replace(/\s*\([A-Z]\d{2}(\.\d)?\)\s*$/, '').trim();
+    }
+
     // 'YYYY-MM-DD' → 'DD/MM/YYYY' sem passar por Date (evita o shift UTC−3)
     function formatDateBR(iso) {
       if (!iso) return '';
@@ -1827,7 +1833,7 @@
       const nome     = getValue('nomePaciente')?.trim() || '';
       const idadeRaw = getValue('idadePaciente');
       const idade    = idadeRaw && !isNaN(idadeRaw) && Number(idadeRaw) > 0 ? Number(idadeRaw) : null;
-      const problema = getValue('problemaAtual')?.trim() || '';
+      const problema = semCodigoCid(getValue('problemaAtual')?.trim() || '');
       const comorb   = getValue('comorbidades')?.trim() || '';
       const alergias = getValue('alergias')?.trim() || '';
       const acomp    = getValue('acompanha');
