@@ -800,7 +800,8 @@
       </div>
       <div>
         <label for="comorbidades">Comorbidades</label>
-        <input type="text" id="comorbidades" placeholder="Comorbidades" />
+        <input type="text" id="comorbidades" autocomplete="off"
+          placeholder="Cole a lista ou separe com Enter" />
       </div>
       <div>
         <label for="alergias">Alergias</label>
@@ -1349,6 +1350,24 @@
       return texto.replace(/\s*\([A-Z]\d{2}(\.\d)?\)\s*$/, '').trim();
     }
 
+    // As comorbidades chegam coladas de qualquer lugar: "#DM #HAS", "dm, has",
+    // uma por linha, com traços de lista. O espaço NÃO separa — "insuficiência
+    // cardíaca" é um item só. Repetidas (ignorando acento e caixa) caem fora.
+    const COMORBIDADE_SEP = /[#,;/|+\n\r\t]+/;
+    function listarComorbidades(texto) {
+      const vistas = new Set();
+      const itens = [];
+      for (const bruto of String(texto || '').split(COMORBIDADE_SEP)) {
+        const item = bruto.replace(/^[\s\-–—•*]+/, '').replace(/[\s.]+$/, '').trim();
+        if (!item) continue;
+        const chave = stripAccents(item).toUpperCase();
+        if (vistas.has(chave)) continue;
+        vistas.add(chave);
+        itens.push(item);
+      }
+      return itens;
+    }
+
     // 'YYYY-MM-DD' → 'DD/MM/YYYY' sem passar por Date (evita o shift UTC−3)
     function formatDateBR(iso) {
       if (!iso) return '';
@@ -1853,7 +1872,12 @@
       }
 
       if (problema)  parts.push(`#ATUAL: ${problema.toUpperCase()}`);
-      if (comorb)    parts.push(`#COMORBIDADES: ${comorb.toUpperCase()}`);
+      // uma comorbidade por linha, sem linha em branco entre elas (o join do
+      // final separa as *partes* com linha em branco, não os itens da lista)
+      const comorbidades = listarComorbidades(comorb);
+      if (comorbidades.length) {
+        parts.push(comorbidades.map(c => `#${c.toUpperCase()}`).join('\n'));
+      }
       if (alergias)  parts.push(`#ALERGIAS: ${alergias.toUpperCase()}`);
 
       if (nome) {
@@ -2601,6 +2625,43 @@
 
     document.addEventListener('focusout', e => {
       if (e.target.id === CID_CAMPO) cidFechar();
+    });
+
+    // ── 15. Comorbidades (lista livre) ────────────────────────────────────────
+    // O campo guarda tudo numa string ("DM; HAS; PARKINSON") — nada de estrutura
+    // nova no state, que assim continua indo inteiro para o sessionStorage e
+    // voltando pelo restoreSection. Reorganizar só ao colar, no Enter e ao sair
+    // do campo: fazer isso a cada tecla comeria o separador recém-digitado.
+    function normalizarComorbidades(input, continuar) {
+      const itens = listarComorbidades(input.value);
+      const valor = itens.join('; ') + (continuar && itens.length ? '; ' : '');
+      if (valor === input.value) return;
+      input.value = valor;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.target.id !== 'comorbidades' || e.key !== 'Enter') return;
+      e.preventDefault();
+      normalizarComorbidades(e.target, true);
+    });
+    // Colar precisa do texto do clipboard, não do que cairia no campo: um input
+    // de uma linha engole as quebras de linha, e uma lista colada de um
+    // documento ("DM⏎HAS⏎Parkinson") viraria um item só.
+    document.addEventListener('paste', e => {
+      const el = e.target;
+      if (el.id !== 'comorbidades') return;
+      const colado = e.clipboardData?.getData('text');
+      if (!colado) return;
+      e.preventDefault();
+      const ini = el.selectionStart ?? el.value.length;
+      const fim = el.selectionEnd ?? el.value.length;
+      const bruto = `${el.value.slice(0, ini)}\n${colado}\n${el.value.slice(fim)}`;
+      el.value = listarComorbidades(bruto).join('; ');
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    document.addEventListener('focusout', e => {
+      if (e.target.id === 'comorbidades') normalizarComorbidades(e.target, false);
     });
     document.addEventListener('mousedown', e => {
       if (cid.el && !cid.el.contains(e.target) && e.target.id !== CID_CAMPO) cidFechar();
