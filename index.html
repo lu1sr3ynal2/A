@@ -631,6 +631,52 @@
       transition: background var(--speed), color var(--speed), border-color var(--speed);
     }
     .next-btn:hover { background: var(--surface-hov); color: var(--primary); border-color: var(--primary); }
+
+    /* ── 15. Busca CID-10 ──────────────────────────────────────────────────── */
+    /* position: fixed porque .section-output tem overflow-y: auto — dentro dele
+       a lista seria cortada. A posição é calculada no JS a partir do input. */
+    .cid-list {
+      position: fixed;
+      z-index: 300;
+      max-height: 15rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      list-style: none;
+      background: var(--surface);
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 0.15rem;
+    }
+    .cid-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.3rem 0.45rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: var(--font-sm);
+      line-height: 1.35;
+    }
+    .cid-item:hover,
+    .cid-item.active { background: var(--surface-hov); }
+    .cid-item.active { box-shadow: inset 2px 0 0 var(--primary); }
+    .cid-cod {
+      flex-shrink: 0;
+      min-width: 3.1rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+      font-size: var(--font-xs);
+      letter-spacing: 0.02em;
+    }
+    .cid-desc { color: var(--text); }
+    .cid-empty {
+      padding: 0.4rem 0.45rem;
+      font-size: var(--font-sm);
+      font-style: italic;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -748,7 +794,9 @@
     <div class="form-row">
       <div>
         <label for="problemaAtual">Problema atual</label>
-        <input type="text" id="problemaAtual" placeholder="Problema atual" />
+        <input type="text" id="problemaAtual" placeholder="Problema atual ou CID-10"
+          autocomplete="off" role="combobox" aria-expanded="false"
+          aria-controls="cidList" aria-autocomplete="list" />
       </div>
       <div>
         <label for="comorbidades">Comorbidades</label>
@@ -1504,6 +1552,7 @@
     }
 
     function activate(key) {
+      cidFechar(); // a lista é filha do body: o input some, ela não
       document.querySelectorAll('[data-section]').forEach(b => b.classList.remove('active'));
       document.querySelector(`[data-section="${key}"]`)?.classList.add('active');
       state.sectionIndex = SECTION_KEYS.indexOf(key);
@@ -2326,6 +2375,10 @@
       uppercaseAllOptions();
       activate('dados');
       renderHistorico();
+
+      // Índice da CID-10 montado quando o navegador ficar ocioso: sem isto, a
+      // primeira busca pagaria sozinha os ~200 ms das 14 mil entradas.
+      (window.requestIdleCallback || (fn => setTimeout(fn, 500)))(() => cidIndice());
     });
 
     // ── 12. Resize ────────────────────────────────────────────────────────────
@@ -2346,6 +2399,207 @@
       activateByIndex(state.sectionIndex);
       wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 220);
     }, { passive: false });
+
+    // ── 14. Busca CID-10 ──────────────────────────────────────────────────────
+    // A CID-10 inteira mora no <script id="cid10Data"> lá embaixo (texto puro, o
+    // navegador não parseia como JS). O índice só é montado na primeira busca.
+    const CID_CAMPO = 'problemaAtual';
+    const CID_MIN   = 2;   // caracteres antes de sugerir
+    const CID_MAX   = 20;  // resultados exibidos
+
+    const cid = { lista: null, el: null, itens: [], ativo: -1 };
+
+    function cidIndice() {
+      if (cid.lista) return cid.lista;
+      cid.lista = [];
+      const bruto = document.getElementById('cid10Data')?.textContent || '';
+      for (const linha of bruto.split('\n')) {
+        const sep = linha.indexOf(' ');
+        if (sep < 3) continue;
+        const codigo = linha.slice(0, sep);
+        const desc   = linha.slice(sep + 1);
+        cid.lista.push({
+          codigo,
+          // 4 caracteres = subcategoria: J189 → J18.9
+          display: codigo.length === 4 ? `${codigo.slice(0, 3)}.${codigo[3]}` : codigo,
+          desc,
+          busca: stripAccents(desc).toUpperCase(),
+        });
+      }
+      return cid.lista;
+    }
+
+    function cidBuscar(termo) {
+      const q = stripAccents(termo).toUpperCase().trim();
+      if (q.length < CID_MIN) return [];
+      const codigo = q.replace(/[.\s]/g, '');
+      return /^[A-Z]\d/.test(codigo) ? cidPorCodigo(codigo) : cidPorTexto(q);
+    }
+
+    // A lista está ordenada por código, então basta a busca binária do primeiro
+    // com o prefixo e caminhar dali: "J18" já sai antes de "J180"…"J189".
+    function cidPorCodigo(prefixo) {
+      const lista = cidIndice();
+      let lo = 0, hi = lista.length;
+      while (lo < hi) {
+        const meio = (lo + hi) >> 1;
+        if (lista[meio].codigo < prefixo) lo = meio + 1; else hi = meio;
+      }
+      const achados = [];
+      for (let i = lo; i < lista.length && achados.length < CID_MAX; i++) {
+        if (!lista[i].codigo.startsWith(prefixo)) break;
+        achados.push(lista[i]);
+      }
+      return achados;
+    }
+
+    // Todos os termos precisam aparecer. Rank menor = melhor: começo da
+    // descrição, começo de uma palavra, e por último no meio de uma palavra.
+    function cidPorTexto(q) {
+      const tokens = q.split(/\s+/).filter(Boolean);
+      const achados = [];
+      for (const item of cidIndice()) {
+        let rank = 0;
+        for (const t of tokens) {
+          const pos = item.busca.indexOf(t);
+          if (pos < 0) { rank = -1; break; }
+          if (pos > 0) rank = Math.max(rank, /[\s(,\-/]/.test(item.busca[pos - 1]) ? 1 : 2);
+        }
+        if (rank < 0) continue;
+        achados.push({ item, rank });
+      }
+      achados.sort((a, b) =>
+        a.rank - b.rank ||
+        a.item.codigo.length - b.item.codigo.length ||
+        a.item.codigo.localeCompare(b.item.codigo));
+      return achados.slice(0, CID_MAX).map(a => a.item);
+    }
+
+    function cidFechar() {
+      cid.el?.remove();
+      cid.el = null;
+      cid.itens = [];
+      cid.ativo = -1;
+      document.getElementById(CID_CAMPO)?.setAttribute('aria-expanded', 'false');
+    }
+
+    function cidPosicionar(input) {
+      const r = input.getBoundingClientRect();
+      cid.el.style.left  = `${r.left}px`;
+      cid.el.style.width = `${r.width}px`;
+      // abre para cima se não couber embaixo
+      const espacoAbaixo = window.innerHeight - r.bottom;
+      if (espacoAbaixo < 140 && r.top > espacoAbaixo) {
+        cid.el.style.top = 'auto';
+        cid.el.style.bottom = `${window.innerHeight - r.top + 4}px`;
+      } else {
+        cid.el.style.bottom = 'auto';
+        cid.el.style.top = `${r.bottom + 4}px`;
+      }
+    }
+
+    function cidAbrir(input, itens) {
+      if (!cid.el) {
+        cid.el = document.createElement('ul');
+        cid.el.className = 'cid-list';
+        cid.el.id = 'cidList';
+        cid.el.setAttribute('role', 'listbox');
+        // o wheel global troca de seção: aqui ele só rola a lista
+        cid.el.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+        // mousedown no item roubaria o foco do input antes do click
+        cid.el.addEventListener('mousedown', e => e.preventDefault());
+        cid.el.addEventListener('click', e => {
+          const li = e.target.closest('.cid-item');
+          if (li) cidEscolher(Number(li.dataset.i));
+        });
+        document.body.appendChild(cid.el);
+      }
+      cid.itens = itens;
+      cid.ativo = -1;
+      cid.el.innerHTML = '';
+      if (!itens.length) {
+        const vazio = document.createElement('li');
+        vazio.className = 'cid-empty';
+        vazio.textContent = 'Nenhum código CID-10 encontrado';
+        cid.el.appendChild(vazio);
+      }
+      itens.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'cid-item';
+        li.dataset.i = i;
+        li.id = `cid-opt-${i}`;
+        li.setAttribute('role', 'option');
+        const cod = document.createElement('span');
+        cod.className = 'cid-cod';
+        cod.textContent = item.display;
+        const desc = document.createElement('span');
+        desc.className = 'cid-desc';
+        desc.textContent = item.desc;
+        li.append(cod, desc);
+        cid.el.appendChild(li);
+      });
+      cidPosicionar(input);
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function cidMarcar(i) {
+      cid.el?.querySelectorAll('.cid-item').forEach((li, n) => {
+        const on = n === i;
+        li.classList.toggle('active', on);
+        if (on) li.scrollIntoView({ block: 'nearest' });
+      });
+      cid.ativo = i;
+      document.getElementById(CID_CAMPO)
+        ?.setAttribute('aria-activedescendant', i >= 0 ? `cid-opt-${i}` : '');
+    }
+
+    function cidEscolher(i) {
+      const item = cid.itens[i];
+      const input = document.getElementById(CID_CAMPO);
+      if (!item || !input) return;
+      input.value = `${item.desc} (${item.display})`;
+      cidFechar();
+      // 'change' (e não 'input') é o evento que a app já usa para salvar,
+      // atualizar o ícone de limpar e regerar a nota — e não reabre a busca.
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.focus();
+    }
+
+    document.addEventListener('input', e => {
+      if (e.target.id !== CID_CAMPO) return;
+      const termo = e.target.value.trim();
+      if (termo.length < CID_MIN) { cidFechar(); return; }
+      cidAbrir(e.target, cidBuscar(termo));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.target.id !== CID_CAMPO) return;
+      if (e.key === 'Escape' && cid.el) { e.stopPropagation(); cidFechar(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!cid.el) {
+          const termo = e.target.value.trim();
+          if (termo.length < CID_MIN) return;
+          cidAbrir(e.target, cidBuscar(termo));
+        }
+        if (!cid.itens.length) return;
+        e.preventDefault();
+        const passo = e.key === 'ArrowDown' ? 1 : -1;
+        cidMarcar((cid.ativo + passo + cid.itens.length) % cid.itens.length);
+        return;
+      }
+      if (e.key === 'Enter' && cid.ativo >= 0) {
+        e.preventDefault();
+        cidEscolher(cid.ativo);
+      }
+    });
+
+    document.addEventListener('focusout', e => {
+      if (e.target.id === CID_CAMPO) cidFechar();
+    });
+    document.addEventListener('mousedown', e => {
+      if (cid.el && !cid.el.contains(e.target) && e.target.id !== CID_CAMPO) cidFechar();
+    });
+    window.addEventListener('resize', cidFechar);
   </script>
   <!-- Base CID-10 (revisão 2008, DATASUS) — 14.233 códigos, uma linha por
        código: o código, um espaço, a descrição. Fica aqui dentro de propósito:
