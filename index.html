@@ -805,7 +805,8 @@
       </div>
       <div>
         <label for="alergias">Alergias</label>
-        <input type="text" id="alergias" placeholder="Alergias" />
+        <input type="text" id="alergias" autocomplete="off"
+          placeholder="Cole a lista ou separe com Enter" />
       </div>
     </div>
   </template>
@@ -1354,14 +1355,16 @@
       return texto.replace(/\s*\([A-Z]\d{2}(\.\d)?\)\s*$/, '').trim();
     }
 
-    // As comorbidades chegam coladas de qualquer lugar: "#DM #HAS", "dm, has",
-    // uma por linha, com traços de lista. O espaço NÃO separa — "insuficiência
-    // cardíaca" é um item só. Repetidas (ignorando acento e caixa) caem fora.
-    const COMORBIDADE_SEP = /[#,;/|+\n\r\t]+/;
-    function listarComorbidades(texto) {
+    // Comorbidades e alergias chegam coladas de qualquer lugar: "#DM #HAS",
+    // "dm, has", uma por linha, com traços de lista. O espaço NÃO separa —
+    // "insuficiência cardíaca" é um item só. Repetidas (ignorando acento e
+    // caixa) caem fora.
+    const CAMPOS_LISTA = ['comorbidades', 'alergias'];
+    const LISTA_SEP = /[#,;/|+\n\r\t]+/;
+    function listarItens(texto) {
       const vistas = new Set();
       const itens = [];
-      for (const bruto of String(texto || '').split(COMORBIDADE_SEP)) {
+      for (const bruto of String(texto || '').split(LISTA_SEP)) {
         const item = bruto.replace(/^[\s\-–—•*]+/, '').replace(/[\s.]+$/, '').trim();
         if (!item) continue;
         const chave = stripAccents(item).toUpperCase();
@@ -1889,13 +1892,14 @@
       }
 
       if (problema)  parts.push(`#ATUAL: ${problema.toUpperCase()}`);
-      // uma comorbidade por linha, sem linha em branco entre elas (o join do
+      // um item por linha, sem linha em branco entre eles (o join do
       // final separa as *partes* com linha em branco, não os itens da lista)
-      const comorbidades = listarComorbidades(comorb);
-      if (comorbidades.length) {
-        parts.push(['COMORBIDADES:', ...comorbidades.map(c => `#${c.toUpperCase()}`)].join('\n'));
-      }
-      if (alergias)  parts.push(`#ALERGIAS: ${alergias.toUpperCase()}`);
+      const listaComRotulo = (rotulo, itens) =>
+        [`${rotulo}:`, ...itens.map(c => `#${c.toUpperCase()}`)].join('\n');
+      const comorbidades = listarItens(comorb);
+      if (comorbidades.length) parts.push(listaComRotulo('COMORBIDADES', comorbidades));
+      const listaAlergias = listarItens(alergias);
+      if (listaAlergias.length) parts.push(listaComRotulo('ALERGIAS', listaAlergias));
 
       if (nome) {
         let paciente = nome.toUpperCase();
@@ -2644,13 +2648,13 @@
       if (e.target.id === CID_CAMPO) cidFechar();
     });
 
-    // ── 15. Comorbidades (lista livre) ────────────────────────────────────────
+    // ── 15. Comorbidades e alergias (lista livre) ─────────────────────────────
     // O campo guarda tudo numa string ("DM; HAS; PARKINSON") — nada de estrutura
     // nova no state, que assim continua indo inteiro para o sessionStorage e
     // voltando pelo restoreSection. Reorganizar só ao colar, no Enter e ao sair
     // do campo: fazer isso a cada tecla comeria o separador recém-digitado.
-    function normalizarComorbidades(input, continuar) {
-      const itens = listarComorbidades(input.value);
+    function normalizarLista(input, continuar) {
+      const itens = listarItens(input.value);
       const valor = itens.join('; ') + (continuar && itens.length ? '; ' : '');
       if (valor === input.value) return;
       input.value = valor;
@@ -2658,27 +2662,27 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.target.id !== 'comorbidades' || e.key !== 'Enter') return;
+      if (!CAMPOS_LISTA.includes(e.target.id) || e.key !== 'Enter') return;
       e.preventDefault();
-      normalizarComorbidades(e.target, true);
+      normalizarLista(e.target, true);
     });
     // Colar precisa do texto do clipboard, não do que cairia no campo: um input
     // de uma linha engole as quebras de linha, e uma lista colada de um
     // documento ("DM⏎HAS⏎Parkinson") viraria um item só.
     document.addEventListener('paste', e => {
       const el = e.target;
-      if (el.id !== 'comorbidades') return;
+      if (!CAMPOS_LISTA.includes(el.id)) return;
       const colado = e.clipboardData?.getData('text');
       if (!colado) return;
       e.preventDefault();
       const ini = el.selectionStart ?? el.value.length;
       const fim = el.selectionEnd ?? el.value.length;
       const bruto = `${el.value.slice(0, ini)}\n${colado}\n${el.value.slice(fim)}`;
-      el.value = listarComorbidades(bruto).join('; ');
+      el.value = listarItens(bruto).join('; ');
       el.dispatchEvent(new Event('change', { bubbles: true }));
     });
     document.addEventListener('focusout', e => {
-      if (e.target.id === 'comorbidades') normalizarComorbidades(e.target, false);
+      if (CAMPOS_LISTA.includes(e.target.id)) normalizarLista(e.target, false);
     });
     document.addEventListener('mousedown', e => {
       if (cid.el && !cid.el.contains(e.target) && e.target.id !== CID_CAMPO) cidFechar();
