@@ -439,6 +439,15 @@
     }
     .nc-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
     .nc-chips + .nc-chips { margin-top: 0.3rem; }
+
+    /* Sugestões de cuidados por diagnóstico */
+    .sug-cuidados { margin-bottom: 0.6rem; }
+    .sug-grupo { margin-bottom: 0.5rem; }
+    .sug-origem { font-weight: 400; text-transform: none; letter-spacing: 0; opacity: 0.75; }
+    .sug-cuidados .nc-chip { flex: 1 1 calc(50% - 0.3rem); text-align: left; white-space: normal; line-height: 1.25; padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+    .sug-cuidados .nc-chip::before { content: '+ '; opacity: 0.6; }
+    .sug-cuidados .nc-chip.active::before { content: '✓ '; opacity: 1; }
+    .sug-vazio { font-size: 0.8rem; opacity: 0.7; margin: 0 0 0.5rem; }
     .nc-chip {
       padding: 0.45rem 1rem;
       border: 1.5px solid var(--border);
@@ -1211,6 +1220,7 @@
   </template>
 
   <template id="tpl-cuidados">
+    <div id="sugestoesCuidados" class="sug-cuidados"></div>
     <div class="form-row">
       <textarea id="acoesCuidados" rows="10"
         placeholder="Ações de cuidados aparecerão aqui quando o nome do paciente for preenchido...">
@@ -1640,7 +1650,7 @@
       applyChipGroupA11y(output);
 
       restoreSection();
-      if (key === 'cuidados') ensureCuidadosContent();
+      if (key === 'cuidados') { ensureCuidadosContent(); renderSugestoesCuidados(); }
       gerarAnotacao();
       if (key === 'cuidados') setTimeout(() => copiarEvolucao(true), 120);
     }
@@ -1872,6 +1882,153 @@
       ].join('\n');
       el.value = padrao;
       state.form.acoesCuidados = padrao;
+    }
+
+    // Cuidados sugeridos por diagnóstico — RASCUNHO, a validar pela equipe.
+    // Escopo do técnico de enfermagem (COREN): observar, controlar, administrar
+    // o prescrito e comunicar ao enfermeiro. Casamento por código CID (prefixo,
+    // sem ponto) no Problema atual, ou por palavra (sem acento) no Problema
+    // atual e nas comorbidades. Para editar frases, basta mexer aqui.
+    const CUIDADOS_POR_DIAGNOSTICO = [
+      { nome: 'Infecção urinária',
+        cids: ['N10', 'N12', 'N30', 'N390'],
+        palavras: ['ITU', 'INFECCAO URINARIA', 'INFECCAO DO TRATO URINARIO', 'CISTITE', 'PIELONEFRITE'],
+        cuidados: [
+          'OBSERVO E COMUNICO CARACTERÍSTICAS DA DIURESE (COR, ODOR E VOLUME);',
+          'ESTIMULO INGESTA HÍDRICA CONFORME PRESCRIÇÃO;',
+          'CONTROLO TEMPERATURA E COMUNICO FEBRE AO ENFERMEIRO;',
+          'ORIENTO HIGIENE ÍNTIMA;',
+          'ADMINISTRO ANTIBIOTICOTERAPIA CONFORME PRESCRIÇÃO MÉDICA;',
+        ] },
+      { nome: 'Cálculo renal',
+        cids: ['N20', 'N21', 'N22', 'N23'],
+        palavras: ['CALCULO RENAL', 'CALCULO URETERAL', 'PEDRA NO RIM', 'LITIASE', 'NEFROLITIASE', 'UROLITIASE', 'URETEROLITIASE', 'COLICA RENAL', 'COLICA NEFRETICA'],
+        cuidados: [
+          'AVALIO DOR E COMUNICO PERSISTÊNCIA OU PIORA AO ENFERMEIRO;',
+          'ADMINISTRO ANALGESIA CONFORME PRESCRIÇÃO MÉDICA;',
+          'OBSERVO DIURESE QUANTO A HEMATÚRIA E ELIMINAÇÃO DE CÁLCULOS;',
+          'ESTIMULO INGESTA HÍDRICA CONFORME PRESCRIÇÃO;',
+          'ORIENTO POSIÇÃO DE CONFORTO;',
+        ] },
+      { nome: 'Hipertensão',
+        cids: ['I10', 'I11', 'I12', 'I13', 'I15'],
+        palavras: ['HAS', 'HAS DESCOMPENSADA', 'HIPERTENSAO', 'HIPERTENSAO ARTERIAL', 'CRISE HIPERTENSIVA', 'PICO HIPERTENSIVO', 'URGENCIA HIPERTENSIVA'],
+        cuidados: [
+          'AFIRO PRESSÃO ARTERIAL CONFORME PRESCRIÇÃO E COMUNICO ALTERAÇÕES;',
+          'ADMINISTRO ANTI-HIPERTENSIVO CONFORME PRESCRIÇÃO MÉDICA;',
+          'OBSERVO CEFALEIA, TONTURA E ALTERAÇÕES VISUAIS;',
+          'MANTENHO PACIENTE EM REPOUSO E AMBIENTE TRANQUILO;',
+        ] },
+      { nome: 'Dor',
+        cids: ['R52', 'R51', 'R10', 'R07', 'M54'],
+        palavras: ['DOR', 'DORES', 'ALGIA', 'CEFALEIA', 'LOMBALGIA', 'CERVICALGIA', 'COLICA'],
+        dorPresente: true,
+        cuidados: [
+          'AVALIO DOR POR ESCALA E REGISTRO INTENSIDADE;',
+          'ADMINISTRO ANALGESIA CONFORME PRESCRIÇÃO MÉDICA;',
+          'REAVALIO DOR APÓS ANALGESIA E COMUNICO AO ENFERMEIRO SE NÃO HOUVER MELHORA;',
+          'OFEREÇO POSIÇÃO DE CONFORTO;',
+        ] },
+      { nome: 'Pneumonia',
+        cids: ['J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18'],
+        palavras: ['PNEUMONIA', 'PNM', 'PAC', 'BCP', 'BRONCOPNEUMONIA'],
+        cuidados: [
+          'MANTENHO CABECEIRA ELEVADA;',
+          'MONITORO SATURAÇÃO DE O2 E PADRÃO RESPIRATÓRIO E COMUNICO ALTERAÇÕES;',
+          'CONTROLO TEMPERATURA E COMUNICO FEBRE AO ENFERMEIRO;',
+          'ESTIMULO TOSSE E OBSERVO ASPECTO DA SECREÇÃO;',
+          'ADMINISTRO ANTIBIOTICOTERAPIA CONFORME PRESCRIÇÃO MÉDICA;',
+        ] },
+    ];
+
+    function temPalavra(texto, palavras) {
+      const t = stripAccents(texto).toUpperCase();
+      return palavras.find(p => new RegExp(`(^|[^A-Z0-9])${p}([^A-Z0-9]|$)`).test(t));
+    }
+
+    // → [{ grupo, origem }]: o que casou e por quê (mostrado ao lado do grupo).
+    function diagnosticosDoPaciente() {
+      const problemaBruto = getValue('problemaAtual')?.trim() || '';
+      const problema = semCodigoCid(problemaBruto);
+      const m = problemaBruto.match(/\(([A-Z]\d{2})(?:\.(\d))?\)\s*$/);
+      const codigo = m ? m[1] + (m[2] || '') : '';
+      const comorbs = listarItens(getValue('comorbidades'));
+      const achados = [];
+      for (const g of CUIDADOS_POR_DIAGNOSTICO) {
+        let origem = '';
+        if (codigo && g.cids.some(c => codigo.startsWith(c))) origem = `${problema} (${m[1]}${m[2] ? '.' + m[2] : ''})`;
+        else if (problema && temPalavra(problema, g.palavras)) origem = problema;
+        else {
+          const c = comorbs.find(x => temPalavra(x, g.palavras));
+          if (c) origem = `comorbidade ${c}`;
+          else if (g.dorPresente && state.form.dorPresente === 'Sim') origem = 'dor presente';
+        }
+        if (origem) achados.push({ grupo: g, origem, principal: !origem.startsWith('comorbidade') && origem !== 'dor presente' });
+      }
+      // o que veio do Problema atual primeiro; comorbidades e dor depois
+      return achados.sort((a, b) => b.principal - a.principal);
+    }
+
+    function linhasCuidados() {
+      return (getValue('acoesCuidados') || '').split('\n').map(l => l.trim()).filter(Boolean);
+    }
+
+    function renderSugestoesCuidados() {
+      const box = document.getElementById('sugestoesCuidados');
+      if (!box) return;
+      box.innerHTML = '';
+      const achados = diagnosticosDoPaciente();
+      if (!achados.length) {
+        const p = document.createElement('p');
+        p.className = 'sug-vazio';
+        p.textContent = 'Preencha o Problema atual ou as comorbidades para ver cuidados sugeridos.';
+        box.appendChild(p);
+        return;
+      }
+      const atuais = linhasCuidados();
+      achados.forEach(({ grupo, origem }) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'sug-grupo';
+        const titulo = document.createElement('p');
+        titulo.className = 'field-group';
+        titulo.textContent = `Sugestões · ${grupo.nome} `;
+        const por = document.createElement('span');
+        por.className = 'sug-origem';
+        por.textContent = `— por: ${origem}`;
+        titulo.appendChild(por);
+        const chips = document.createElement('div');
+        chips.className = 'nc-chips';
+        grupo.cuidados.forEach(frase => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'nc-chip cuidado-sug';
+          b.dataset.ncColor = 'green';
+          b.dataset.frase = frase;
+          b.textContent = frase.replace(/;$/, '');
+          b.classList.toggle('active', atuais.includes(frase));
+          chips.appendChild(b);
+        });
+        wrap.append(titulo, chips);
+        box.appendChild(wrap);
+      });
+    }
+
+    // Clique numa sugestão: entra no fim da lista; clicar de novo tira.
+    function alternarCuidado(frase) {
+      const el = document.getElementById('acoesCuidados');
+      if (!el) return;
+      const linhas = linhasCuidados();
+      const i = linhas.indexOf(frase);
+      if (i >= 0) linhas.splice(i, 1); else linhas.push(frase);
+      el.value = linhas.join('\n');
+      state.form.acoesCuidados = el.value;
+      updateClearIcon(el);
+    }
+
+    function marcarSugestoesAtivas() {
+      const atuais = linhasCuidados();
+      document.querySelectorAll('.cuidado-sug').forEach(b =>
+        b.classList.toggle('active', atuais.includes(b.dataset.frase)));
     }
 
     function updateClearIcon(el) {
@@ -2257,6 +2414,14 @@
       if (!chip) return;
       const val = chip.dataset.ncVal;
 
+      // ── Cuidados sugeridos ──────────────────────────────────────────────
+      if (chip.classList.contains('cuidado-sug')) {
+        alternarCuidado(chip.dataset.frase);
+        marcarSugestoesAtivas();
+        gerarAnotacao();
+        return;
+      }
+
       // ── Dor toggle ──────────────────────────────────────────────────────
       if (chip.classList.contains('nc-dor-toggle')) {
         chip.classList.toggle('active');
@@ -2370,6 +2535,7 @@
     // antes do 'change' disparar, e o texto digitado se perdia.
     document.addEventListener('input', e => {
       saveField(e);
+      if (e.target.id === 'acoesCuidados') marcarSugestoesAtivas();
       gerarAnotacao();
     });
 
