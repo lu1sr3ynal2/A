@@ -1375,6 +1375,12 @@
       return itens;
     }
 
+    // "Nega", "nega alergias", "sem alergias", "nenhuma", "NKDA"… — sem lista,
+    // sai numa linha só.
+    function negaAlergias(item) {
+      return /^(NEGA|NEGADAS?|NENHUMA|SEM ALERGIAS?|NAO|NKDA)\b/.test(stripAccents(item).toUpperCase());
+    }
+
     // 'YYYY-MM-DD' → 'DD/MM/YYYY' sem passar por Date (evita o shift UTC−3)
     function formatDateBR(iso) {
       if (!iso) return '';
@@ -1899,7 +1905,8 @@
       const comorbidades = listarItens(comorb);
       if (comorbidades.length) parts.push(listaComRotulo('COMORBIDADES', comorbidades));
       const listaAlergias = listarItens(alergias);
-      if (listaAlergias.length) parts.push(listaComRotulo('ALERGIAS', listaAlergias));
+      if (listaAlergias.length === 1 && negaAlergias(listaAlergias[0])) parts.push('ALERGIAS: NEGA');
+      else if (listaAlergias.length) parts.push(listaComRotulo('ALERGIAS', listaAlergias));
 
       if (nome) {
         let paciente = nome.toUpperCase();
