@@ -1884,60 +1884,68 @@
       state.form.acoesCuidados = padrao;
     }
 
-    // Cuidados sugeridos por diagnóstico — RASCUNHO, a validar pela equipe.
-    // Escopo do técnico de enfermagem (COREN): observar, controlar, administrar
-    // o prescrito e comunicar ao enfermeiro. Casamento por código CID (prefixo,
-    // sem ponto) no Problema atual, ou por palavra (sem acento) no Problema
-    // atual e nas comorbidades. Para editar frases, basta mexer aqui.
+    // Cuidados sugeridos por diagnóstico. Redação no padrão dos exemplos
+    // oficiais de anotação — Cofen, Res. 514/2016 (Guia de Recomendações) e
+    // Coren-SP, "Anotação de Enfermagem" (2022):
+    //   · registrar o que FOI FEITO, logo após o cuidado — nada condicional
+    //     ("comunico SE…" é plano, não fato);
+    //   · "conforme prescrição médica/de enfermagem", "comunicado ao
+    //     enfermeiro", "mantido em observação" — fórmulas dos próprios exemplos;
+    //   · sem termos de valor (bem, mal, muito, pouco) e sem dado de exame
+    //     físico, que é privativo do enfermeiro (Coren-SP, p. 16).
+    // Valores (SSVV, dor, diurese, SpO2) saem das outras seções, não daqui.
+    // Casamento por código CID (prefixo, sem ponto) no Problema atual, ou por
+    // palavra (sem acento) no Problema atual e nas comorbidades.
     const CUIDADOS_POR_DIAGNOSTICO = [
       { nome: 'Infecção urinária',
         cids: ['N10', 'N12', 'N30', 'N390'],
         palavras: ['ITU', 'INFECCAO URINARIA', 'INFECCAO DO TRATO URINARIO', 'CISTITE', 'PIELONEFRITE'],
         cuidados: [
-          'OBSERVO E COMUNICO CARACTERÍSTICAS DA DIURESE (COR, ODOR E VOLUME);',
-          'ESTIMULO INGESTA HÍDRICA CONFORME PRESCRIÇÃO;',
-          'CONTROLO TEMPERATURA E COMUNICO FEBRE AO ENFERMEIRO;',
-          'ORIENTO HIGIENE ÍNTIMA;',
-          'ADMINISTRO ANTIBIOTICOTERAPIA CONFORME PRESCRIÇÃO MÉDICA;',
+          'ADMINISTRO ANTIBIOTICOTERAPIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'COLETO AMOSTRA DE URINA PARA EXAME, CONFORME PRESCRIÇÃO MÉDICA;',
+          'ESTIMULO INGESTA HÍDRICA, CONFORME PRESCRIÇÃO;',
+          'REALIZO HIGIENE ÍNTIMA;',
+          'ORIENTO PACIENTE QUANTO À HIGIENE ÍNTIMA;',
         ] },
       { nome: 'Cálculo renal',
         cids: ['N20', 'N21', 'N22', 'N23'],
         palavras: ['CALCULO RENAL', 'CALCULO URETERAL', 'PEDRA NO RIM', 'LITIASE', 'NEFROLITIASE', 'UROLITIASE', 'URETEROLITIASE', 'COLICA RENAL', 'COLICA NEFRETICA'],
         cuidados: [
-          'AVALIO DOR E COMUNICO PERSISTÊNCIA OU PIORA AO ENFERMEIRO;',
-          'ADMINISTRO ANALGESIA CONFORME PRESCRIÇÃO MÉDICA;',
-          'OBSERVO DIURESE QUANTO A HEMATÚRIA E ELIMINAÇÃO DE CÁLCULOS;',
-          'ESTIMULO INGESTA HÍDRICA CONFORME PRESCRIÇÃO;',
-          'ORIENTO POSIÇÃO DE CONFORTO;',
+          'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
+          'COLETO AMOSTRA DE URINA PARA EXAME, CONFORME PRESCRIÇÃO MÉDICA;',
+          'ENCAMINHO AO SETOR DE IMAGEM PARA REALIZAÇÃO DE EXAME;',
+          'ESTIMULO INGESTA HÍDRICA, CONFORME PRESCRIÇÃO;',
         ] },
       { nome: 'Hipertensão',
         cids: ['I10', 'I11', 'I12', 'I13', 'I15'],
         palavras: ['HAS', 'HAS DESCOMPENSADA', 'HIPERTENSAO', 'HIPERTENSAO ARTERIAL', 'CRISE HIPERTENSIVA', 'PICO HIPERTENSIVO', 'URGENCIA HIPERTENSIVA'],
         cuidados: [
-          'AFIRO PRESSÃO ARTERIAL CONFORME PRESCRIÇÃO E COMUNICO ALTERAÇÕES;',
-          'ADMINISTRO ANTI-HIPERTENSIVO CONFORME PRESCRIÇÃO MÉDICA;',
-          'OBSERVO CEFALEIA, TONTURA E ALTERAÇÕES VISUAIS;',
-          'MANTENHO PACIENTE EM REPOUSO E AMBIENTE TRANQUILO;',
+          'VERIFICO PRESSÃO ARTERIAL, CONFORME PRESCRIÇÃO;',
+          'ADMINISTRO MEDICAÇÃO ANTI-HIPERTENSIVA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'COMUNICO PICO HIPERTENSIVO AO ENFERMEIRO;',
+          'MANTENHO CABECEIRA ELEVADA A 30º;',
+          'MANTIDO EM OBSERVAÇÃO;',
         ] },
       { nome: 'Dor',
         cids: ['R52', 'R51', 'R10', 'R07', 'M54'],
         palavras: ['DOR', 'DORES', 'ALGIA', 'CEFALEIA', 'LOMBALGIA', 'CERVICALGIA', 'COLICA'],
         dorPresente: true,
         cuidados: [
-          'AVALIO DOR POR ESCALA E REGISTRO INTENSIDADE;',
-          'ADMINISTRO ANALGESIA CONFORME PRESCRIÇÃO MÉDICA;',
-          'REAVALIO DOR APÓS ANALGESIA E COMUNICO AO ENFERMEIRO SE NÃO HOUVER MELHORA;',
-          'OFEREÇO POSIÇÃO DE CONFORTO;',
+          'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
+          'COMUNICO QUEIXA ÁLGICA AO ENFERMEIRO;',
+          'POSICIONO NO LEITO EM POSIÇÃO DE CONFORTO;',
         ] },
       { nome: 'Pneumonia',
         cids: ['J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18'],
         palavras: ['PNEUMONIA', 'PNM', 'PAC', 'BCP', 'BRONCOPNEUMONIA'],
         cuidados: [
-          'MANTENHO CABECEIRA ELEVADA;',
-          'MONITORO SATURAÇÃO DE O2 E PADRÃO RESPIRATÓRIO E COMUNICO ALTERAÇÕES;',
-          'CONTROLO TEMPERATURA E COMUNICO FEBRE AO ENFERMEIRO;',
-          'ESTIMULO TOSSE E OBSERVO ASPECTO DA SECREÇÃO;',
-          'ADMINISTRO ANTIBIOTICOTERAPIA CONFORME PRESCRIÇÃO MÉDICA;',
+          'MANTENHO CABECEIRA ELEVADA A 45º;',
+          'ADMINISTRO ANTIBIOTICOTERAPIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REALIZO NEBULIZAÇÃO, CONFORME PRESCRIÇÃO MÉDICA;',
+          'VERIFICO SATURAÇÃO DE O2 E FREQUÊNCIA RESPIRATÓRIA;',
+          'COMUNICO ALTERAÇÃO DO PADRÃO RESPIRATÓRIO AO ENFERMEIRO;',
         ] },
     ];
 
