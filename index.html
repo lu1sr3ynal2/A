@@ -1033,6 +1033,10 @@
           <input type="number" id="hgt" min="20" max="600" placeholder="–" class="nc-valor-dor" />
           <button type="button" class="nc-step-btn" id="hgtPlus">+</button>
         </div>
+        <!-- Cofen 514/2016, 9.34: registrar a condição (jejum) da glicemia capilar -->
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-hgt-jejum" data-nc-val="Em jejum" data-nc-color="gray">Em jejum</button>
+        </div>
       </div>
     </div>
   </template>
@@ -1288,7 +1292,7 @@
       'nc-padrao':       'padraoVentilatorio', 'nc-tosse':     'tosse',
       'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
       'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
-      'nc-queixa-abd':   'queixaAbdominal',
+      'nc-queixa-abd':   'queixaAbdominal',    'nc-hgt-jejum':  'hgtJejum',
     };
 
     const BASE_FORM = {
@@ -2197,7 +2201,7 @@
       }
 
       if (queixaAbd) parts.push(queixaAbd.toUpperCase());
-      if (hgt) parts.push(`HGT ${hgt} MG/DL`);
+      if (hgt) parts.push(`HGT ${hgt} MG/DL` + (state.form.hgtJejum ? ' EM JEJUM' : ''));
 
       return parts.join(' . ');
     }
