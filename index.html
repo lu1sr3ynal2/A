@@ -438,6 +438,7 @@
       margin-bottom: 0.25rem;
     }
     .nc-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .nc-chips + .nc-chips { margin-top: 0.3rem; }
     .nc-chip {
       padding: 0.45rem 1rem;
       border: 1.5px solid var(--border);
@@ -1023,6 +1024,30 @@
         </div>
       </div>
     </div>
+    <p class="field-group">Abdome / Glicemia</p>
+    <div class="form-row">
+      <div>
+        <label>Abdome</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-abdome" data-nc-val="Flácido"    data-nc-color="green">Flácido</button>
+          <button type="button" class="nc-chip nc-abdome" data-nc-val="Globoso"    data-nc-color="gray">Globoso</button>
+          <button type="button" class="nc-chip nc-abdome" data-nc-val="Distendido" data-nc-color="amber">Distendido</button>
+          <button type="button" class="nc-chip nc-abdome" data-nc-val="Tenso"      data-nc-color="orange">Tenso</button>
+        </div>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-abdome-palp" data-nc-val="Indolor à palpação"  data-nc-color="green">Indolor</button>
+          <button type="button" class="nc-chip nc-abdome-palp" data-nc-val="Doloroso à palpação" data-nc-color="red">Doloroso</button>
+        </div>
+      </div>
+      <div>
+        <label for="hgt">HGT (mg/dL)</label>
+        <div class="nc-stepper">
+          <button type="button" class="nc-step-btn" id="hgtMinus">−</button>
+          <input type="number" id="hgt" min="20" max="600" placeholder="–" class="nc-valor-dor" />
+          <button type="button" class="nc-step-btn" id="hgtPlus">+</button>
+        </div>
+      </div>
+    </div>
   </template>
 
   <!-- Conteúdo gerado no boot a partir da config ACESSOS (buildAcessosTemplate) -->
@@ -1275,6 +1300,7 @@
       'nc-padrao':       'padraoVentilatorio', 'nc-tosse':     'tosse',
       'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
       'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
+      'nc-abdome':       'abdome',             'nc-abdome-palp': 'abdomePalpacao',
     };
 
     const BASE_FORM = {
@@ -1290,7 +1316,7 @@
       dados:       ['nomePaciente', 'tipoSala', 'idadePaciente', 'problemaAtual', 'comorbidades', 'alergias', 'acompanha'],
       neurologico: ['nivelConsciencia', 'glasgow', 'verbalizacao', 'pupilas', 'dorPresente'],
       ventilacao:  ['tipoOxigenoterapia', 'padraoVentilatorio', 'spo2', 'tosse'],
-      dieta:       ['dietaOral', 'dietaSonda'],
+      dieta:       ['dietaOral', 'dietaSonda', 'abdome', 'abdomePalpacao', 'hgt'],
       acessos:     ['avpMsdCheckbox', 'avpMseCheckbox', 'cvcCheckbox', 'piccCheckbox', 'portCheckbox', 'permicathCheckbox'],
       eliminacoes: ['viaDiurese', 'viaFezes', 'nauseas', 'vomitoSelect', 'tipodreno'],
       deambulacao: ['deambula', 'dorsoEstado'],
@@ -1999,6 +2025,9 @@
       const aceitacao  = state.form.aceitacaoOral || '';
       const sonda      = getValue('dietaSonda');
       const ml         = getValue('mlSonda');
+      const abdome     = state.form.abdome         || '';
+      const palpacao   = state.form.abdomePalpacao || '';
+      const hgt        = getValue('hgt');
       const parts      = [];
 
       if (oral === 'NPO') {
@@ -2019,6 +2048,11 @@
         if (ml) txt += ` A ${ml}ML/H`;
         parts.push(txt);
       }
+
+      if (abdome || palpacao) {
+        parts.push('ABDOME ' + [abdome, palpacao].filter(Boolean).join(', ').toUpperCase());
+      }
+      if (hgt) parts.push(`HGT ${hgt} MG/DL`);
 
       return parts.join(' . ');
     }
@@ -2305,6 +2339,7 @@
         litrosOxigenio: { mn: 0,  mx: 15,   step: 1  },
         spo2:           { mn: 50, mx: 100,  step: 1  },
         mlSonda:        { mn: 0,  mx: 500,  step: 5  },
+        hgt:            { mn: 20, mx: 600,  step: 10, ini: 100 },
         volumeDiurese:  { mn: 0,  mx: 5000, step: 50 },
         volumedreno:    { mn: 0,  mx: 5000, step: 50 },
       };
@@ -2316,7 +2351,7 @@
       if (!input || input.disabled) return;
       const { mn, mx, step } = cfg;
       let v = parseInt(input.value, 10);
-      if (isNaN(v)) v = isPlus ? mn : mx;
+      if (isNaN(v)) v = cfg.ini ?? (isPlus ? mn : mx); // ini: ponto de partida clínico
       else v = isPlus ? Math.min(mx, v + step) : Math.max(mn, v - step);
       input.value = v;
       state.form[inputId] = v;
@@ -2384,9 +2419,11 @@
         gerarAnotacao();
       });
 
-      // Dark mode (persisted)
+      // Dark mode (persisted). Storage bloqueado não pode derrubar o boot.
       const darkToggle = document.getElementById('darkToggle');
-      if (localStorage.getItem('theme') === 'dark') {
+      let temaSalvo = null;
+      try { temaSalvo = localStorage.getItem('theme'); } catch { /* segue claro */ }
+      if (temaSalvo === 'dark') {
         document.body.classList.add('dark');
         darkToggle.textContent = 'D';
         darkToggle.classList.add('active');
@@ -2395,7 +2432,7 @@
         const isDark = document.body.classList.toggle('dark');
         darkToggle.textContent = isDark ? 'D' : 'N';
         darkToggle.classList.toggle('active', isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch { /* só nesta aba */ }
       });
 
       // Novo paciente (sidebar) e Reset (header) — mesma ação
