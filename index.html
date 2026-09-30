@@ -850,16 +850,10 @@
         <button type="button" class="nc-chip nc-comp" data-nc-val="Agressivo" data-nc-color="red">Agressivo</button>
       </div>
     </div>
-    <p class="field-group">Avaliação</p>
+    <!-- Sem Glasgow e pupilas: escala de consciência e exame pupilar são do
+         enfermeiro (Cofen 514/2016, 9.7; Coren-SP 2022, p. 16). -->
+    <p class="field-group">Comunicação</p>
     <div class="form-row">
-      <div>
-        <label for="glasgow">Glasgow</label>
-        <div class="nc-stepper">
-          <button type="button" class="nc-step-btn" id="glasgowMinus">−</button>
-          <input type="number" id="glasgow" min="3" max="15" placeholder="–" class="nc-valor-dor" />
-          <button type="button" class="nc-step-btn" id="glasgowPlus">+</button>
-        </div>
-      </div>
       <div>
         <label>Verbalização</label>
         <div class="nc-chips">
@@ -867,17 +861,6 @@
           <button type="button" class="nc-chip nc-verb" data-nc-val="Pouco comunicativo" data-nc-color="amber">Pouco com.</button>
           <button type="button" class="nc-chip nc-verb" data-nc-val="Afásico"           data-nc-color="red">Afásico</button>
         </div>
-      </div>
-      <div>
-        <label for="pupilas">Pupilas</label>
-        <select id="pupilas">
-          <option value="" disabled selected>Selecione</option>
-          <option>Isocóricas fotorreativas</option>
-          <option>Isocóricas pouco fotorreativas</option>
-          <option>Anisocóricas</option>
-          <option>Midriáticas</option>
-          <option>Mióticas bilaterais</option>
-        </select>
       </div>
     </div>
     <p class="field-group">Dor</p>
@@ -1032,19 +1015,15 @@
         </div>
       </div>
     </div>
-    <p class="field-group">Abdome / Glicemia</p>
+    <!-- Só o relato do paciente: abdome distendido/timpânico etc. é exame
+         físico, privativo do enfermeiro (Coren-SP 2022, p. 16). -->
+    <p class="field-group">Queixa abdominal / Glicemia</p>
     <div class="form-row">
       <div>
-        <label>Abdome</label>
+        <label>Queixa abdominal</label>
         <div class="nc-chips nc-chips-stretch">
-          <button type="button" class="nc-chip nc-abdome" data-nc-val="Flácido"    data-nc-color="green">Flácido</button>
-          <button type="button" class="nc-chip nc-abdome" data-nc-val="Globoso"    data-nc-color="gray">Globoso</button>
-          <button type="button" class="nc-chip nc-abdome" data-nc-val="Distendido" data-nc-color="amber">Distendido</button>
-          <button type="button" class="nc-chip nc-abdome" data-nc-val="Tenso"      data-nc-color="orange">Tenso</button>
-        </div>
-        <div class="nc-chips nc-chips-stretch">
-          <button type="button" class="nc-chip nc-abdome-palp" data-nc-val="Indolor à palpação"  data-nc-color="green">Indolor</button>
-          <button type="button" class="nc-chip nc-abdome-palp" data-nc-val="Doloroso à palpação" data-nc-color="red">Doloroso</button>
+          <button type="button" class="nc-chip nc-queixa-abd" data-nc-val="Nega dor abdominal"   data-nc-color="green">Nega dor</button>
+          <button type="button" class="nc-chip nc-queixa-abd" data-nc-val="Refere dor abdominal" data-nc-color="red">Refere dor</button>
         </div>
       </div>
       <div>
@@ -1309,7 +1288,7 @@
       'nc-padrao':       'padraoVentilatorio', 'nc-tosse':     'tosse',
       'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
       'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
-      'nc-abdome':       'abdome',             'nc-abdome-palp': 'abdomePalpacao',
+      'nc-queixa-abd':   'queixaAbdominal',
     };
 
     const BASE_FORM = {
@@ -1323,9 +1302,9 @@
 
     const SECTION_DATA_FIELDS = {
       dados:       ['nomePaciente', 'tipoSala', 'idadePaciente', 'problemaAtual', 'comorbidades', 'alergias', 'acompanha'],
-      neurologico: ['nivelConsciencia', 'glasgow', 'verbalizacao', 'pupilas', 'dorPresente'],
+      neurologico: ['nivelConsciencia', 'verbalizacao', 'dorPresente'],
       ventilacao:  ['tipoOxigenoterapia', 'padraoVentilatorio', 'spo2', 'tosse'],
-      dieta:       ['dietaOral', 'dietaSonda', 'abdome', 'abdomePalpacao', 'hgt'],
+      dieta:       ['dietaOral', 'dietaSonda', 'queixaAbdominal', 'hgt'],
       acessos:     ['avpMsdCheckbox', 'avpMseCheckbox', 'cvcCheckbox', 'piccCheckbox', 'portCheckbox', 'permicathCheckbox'],
       eliminacoes: ['viaDiurese', 'viaFezes', 'nauseas', 'vomitoSelect', 'tipodreno'],
       deambulacao: ['deambula', 'dorsoEstado'],
@@ -2121,18 +2100,14 @@
 
     function gerarTextoNeurologico() {
       const consciencia = state.form.nivelConsciencia || [];
-      const glasgow     = getValue('glasgow');
       const verbalizacao = getValue('verbalizacao');
-      const pupilas      = getValue('pupilas');
       const dorPresente  = state.form.dorPresente || '';
       const escalaDor    = state.form.escalaDor   || '';
       const valorDor     = getValue('valorDor');
       const parts        = [];
 
       if (consciencia.length) parts.push('PACIENTE ' + consciencia.map(v => v.toUpperCase()).join(', '));
-      if (glasgow) parts.push(`GLASGOW ${glasgow}`);
       if (verbalizacao) parts.push(verbalizacao.toUpperCase());
-      if (pupilas) parts.push(`PUPILAS ${pupilas.toUpperCase()}`);
 
       if (dorPresente === 'Sim') {
         if (valorDor && escalaDor) {
@@ -2198,8 +2173,7 @@
       const aceitacao  = state.form.aceitacaoOral || '';
       const sonda      = getValue('dietaSonda');
       const ml         = getValue('mlSonda');
-      const abdome     = state.form.abdome         || '';
-      const palpacao   = state.form.abdomePalpacao || '';
+      const queixaAbd  = state.form.queixaAbdominal || '';
       const hgt        = getValue('hgt');
       const parts      = [];
 
@@ -2222,9 +2196,7 @@
         parts.push(txt);
       }
 
-      if (abdome || palpacao) {
-        parts.push('ABDOME ' + [abdome, palpacao].filter(Boolean).join(', ').toUpperCase());
-      }
+      if (queixaAbd) parts.push(queixaAbd.toUpperCase());
       if (hgt) parts.push(`HGT ${hgt} MG/DL`);
 
       return parts.join(' . ');
@@ -2515,7 +2487,6 @@
       if (!btn || (!btn.id.endsWith('Plus') && !btn.id.endsWith('Minus'))) return;
       const STEPPER_CFG = {
         valorDor:       { mn: 0,  mx: 10,   step: 1  },
-        glasgow:        { mn: 3,  mx: 15,   step: 1  },
         idadePaciente:  { mn: 0,  mx: 120,  step: 1  },
         litrosOxigenio: { mn: 0,  mx: 15,   step: 1  },
         spo2:           { mn: 50, mx: 100,  step: 1  },
