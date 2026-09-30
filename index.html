@@ -12,37 +12,52 @@
     /* ── 1. Tokens ─────────────────────────────────────────────────────────── */
     :root {
       --primary:      #0071bc;
-      --primary-dk:   #005bac;
-      --bg:           #edf2f7;
+      --primary-dk:   #005a9e;
+      --primary-soft: rgba(0,113,188,0.08);
+      --bg:           #f3f6fa;
       --surface:      #ffffff;
-      --surface-hov:  #e3ebf2;
+      --surface-hov:  #f1f5f9;
       --surface-inv:  #1e293b;
-      --text:         #334155;
-      --muted:        #64748b;
-      --border:       #d0d7de;
-      --radius:       6px;
-      --font:         'Inter', Arial, sans-serif;
-      --speed:        0.2s ease;
+      --paper:        #fcfdfe;
+      --text:         #1f2d3d;
+      --muted:        #66778a;
+      --border:       #dfe5ec;
+      --border-strong:#c5cfda;
+      --radius:       8px;
+      --radius-lg:    12px;
+      /* Inter quando a rede libera o Google Fonts; senão a fonte do Windows,
+         nunca mais o Arial */
+      --font:         'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+      --speed:        0.18s ease;
       --font-xs:      0.72rem;
-      --font-sm:      0.78rem;
+      --font-sm:      0.8rem;
       --font-md:      0.875rem;
-      --shadow-focus: 0 0 0 2px rgba(0,113,188,0.2);
-      --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md:    0 2px 6px rgba(0,0,0,0.1);
+      --shadow-focus: 0 0 0 3px rgba(0,113,188,0.22);
+      --shadow-sm:    0 1px 2px rgba(15,23,42,0.05);
+      --shadow-md:    0 6px 18px rgba(15,23,42,0.10);
+      --shadow-card:  0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
       --success:      #22c55e;
       --success-soft: #86efac;
+      --top-bar:      linear-gradient(100deg, #004f8f 0%, #0068b0 55%, #0078c4 100%);
       color-scheme: light; /* controles nativos (date picker) seguem o tema */
     }
     body.dark {
       color-scheme: dark;
-      --bg:           #131720;
-      --surface:      #1e2a3a;
-      --surface-hov:  #253446;
-      --surface-inv:  #0f172a;
-      --text:         #c8d6e5;
-      --muted:        #7a8fa8;
-      --border:       #2e3a50;
-      --shadow-focus: 0 0 0 2px rgba(0,113,188,0.35);
+      --primary-soft: rgba(56,152,230,0.14);
+      --bg:           #0e131b;
+      --surface:      #161f2c;
+      --surface-hov:  #1e2a3b;
+      --surface-inv:  #0b1220;
+      --paper:        #131c28;
+      --text:         #d6e0eb;
+      --muted:        #8b9cb1;
+      --border:       #263345;
+      --border-strong:#34445a;
+      --shadow-focus: 0 0 0 3px rgba(56,152,230,0.35);
+      --shadow-sm:    0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md:    0 8px 22px rgba(0,0,0,0.45);
+      --shadow-card:  0 1px 3px rgba(0,0,0,0.35);
+      --top-bar:      linear-gradient(100deg, #0b2440 0%, #0f3259 100%);
     }
 
     /* ── 2. Reset ──────────────────────────────────────────────────────────── */
@@ -67,12 +82,13 @@
     /* ── 4. Top bar ────────────────────────────────────────────────────────── */
     .top-bar {
       position: relative;
-      background: var(--primary-dk);
+      background: var(--top-bar);
       color: #fff;
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+      letter-spacing: 0.03em;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 10px rgba(0,40,80,0.18);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -91,95 +107,123 @@
       gap: 0.5rem;
       flex-shrink: 0;
     }
-    .toggle-group { display: flex; gap: 0.2rem; }
+    /* Grupos como controle segmentado: uma "pílula" translúcida por grupo */
+    .toggle-group {
+      display: flex;
+      gap: 2px;
+      padding: 2px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+    }
     .toggle-btn {
-      padding: 0.28rem 0.55rem;
+      padding: 0.3rem 0.7rem;
       font-size: var(--font-xs);
       font-weight: 700;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: var(--radius);
+      border: 1px solid transparent;
+      border-radius: 999px;
       cursor: pointer;
       font-family: inherit;
-      transition: background var(--speed);
-      letter-spacing: 0.3px;
+      transition: background var(--speed), color var(--speed), box-shadow var(--speed);
+      letter-spacing: 0.04em;
       white-space: nowrap;
     }
-    .toggle-btn:hover  { background: rgba(255,255,255,0.28); }
-    .toggle-btn.active { background: rgba(255,255,255,0.95); color: var(--primary-dk); border-color: transparent; }
+    .toggle-group .toggle-btn { background: transparent; }
+    .toggle-btn:hover  { background: rgba(255,255,255,0.24); }
+    .toggle-btn.active,
+    .toggle-group .toggle-btn.active {
+      background: #fff;
+      color: var(--primary-dk);
+      box-shadow: 0 1px 3px rgba(0,30,60,0.25);
+    }
+    body.dark .toggle-btn.active { color: #0b2440; }
 
     /* ── 5. Layout ─────────────────────────────────────────────────────────── */
+    /* Barra lateral e área principal como dois cartões sobre o fundo */
     .layout {
       display: flex;
       flex: 1;
       overflow: hidden;
+      gap: 0.75rem;
+      padding: 0.6rem 0.75rem 0.4rem;
     }
 
     /* ── 6. Sidebar ────────────────────────────────────────────────────────── */
     .sidebar {
-      width: 185px;
+      width: 196px;
       background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 0.85rem 0.7rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       flex-shrink: 0;
     }
     .sidebar h2 {
-      font-size: 0.75rem;
+      font-size: 0.66rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.1em;
       color: var(--muted);
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.45rem 0.35rem;
     }
-    .nav-buttons { display: flex; flex-direction: column; gap: 0.4rem; }
+    .nav-buttons { display: flex; flex-direction: column; gap: 0.2rem; }
     .nav-btn {
-      padding: 0.6rem 0.75rem;
-      background: var(--bg);
+      padding: 0.58rem 0.75rem;
+      background: transparent;
       color: var(--text);
-      border: 1px solid var(--border);
+      border: 1px solid transparent;
       border-radius: var(--radius);
       text-align: left;
       cursor: pointer;
       font-size: var(--font-sm);
+      font-weight: 500;
       font-family: inherit;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.4rem;
-      transition: background var(--speed), color var(--speed);
+      transition: background var(--speed), color var(--speed), box-shadow var(--speed);
     }
     .nav-btn:hover  { background: var(--surface-hov); }
-    .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dk); }
+    .nav-btn.active {
+      background: linear-gradient(180deg, #0a7cc9, var(--primary));
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0,113,188,0.28);
+    }
     .section-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--border);
+      background: var(--border-strong);
       flex-shrink: 0;
       transition: background var(--speed);
     }
-    .nav-btn.has-data .section-dot { background: var(--success); }
+    .nav-btn.has-data .section-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
     .nav-btn.active .section-dot   { background: rgba(255,255,255,0.6); }
     .nav-btn.active.has-data .section-dot { background: var(--success-soft); }
     .copy-btn {
-      margin-top: 1rem;
-      padding: 0.6rem;
+      margin-top: 0.75rem;
+      padding: 0.7rem;
       width: 100%;
-      background: var(--primary);
+      background: linear-gradient(180deg, #0a7cc9, var(--primary-dk));
       color: #fff;
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: 700;
-      font-size: inherit;
+      font-size: 0.95rem;
       font-family: inherit;
-      transition: background var(--speed);
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 12px rgba(0,113,188,0.3);
+      transition: transform var(--speed), box-shadow var(--speed), filter var(--speed);
     }
-    .copy-btn:hover { background: var(--primary-dk); }
+    .copy-btn:hover  { filter: brightness(1.06); box-shadow: 0 6px 16px rgba(0,113,188,0.36); transform: translateY(-1px); }
+    .copy-btn:active { transform: none; box-shadow: 0 2px 6px rgba(0,113,188,0.3); }
     .sidebar-actions { display: flex; flex-direction: column; gap: 0.4rem; }
     .action-btn {
       padding: 0.45rem;
@@ -217,8 +261,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.3rem;
-      padding: 0.28rem 0.5rem;
-      background: var(--bg);
+      padding: 0.32rem 0.55rem;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       cursor: pointer;
@@ -248,16 +292,19 @@
       flex: 1;
       min-width: 0;
       background: var(--surface);
-      padding: 1rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 0.8rem 1.75rem 0.9rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
       overflow: hidden;
     }
     .patient-name-bar input {
       font-size: 1rem;
-      font-weight: 500;
-      padding: 0.6rem 1rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
     }
     .section-output {
       flex: 0 0 44%;
@@ -273,13 +320,17 @@
     @media (prefers-reduced-motion: reduce) {
       .section-output > * { animation: none; }
     }
+    /* A anotação é o produto final: folha clara, com faixa azul à esquerda */
     .note-output {
       flex: 1;
       min-height: 0;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.5rem 0.75rem;
-      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem 1.1rem;
+      background: var(--paper);
+      box-shadow: inset 0 1px 2px rgba(15,23,42,0.04);
+      color: var(--text);
       overflow-y: auto;
       font-size: 0.9rem;
       line-height: 1.65;
@@ -293,20 +344,20 @@
     /* ── 8. Form elements ──────────────────────────────────────────────────── */
     label {
       display: block;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 0.2rem;
-      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: left;
+      margin: 0 0 0.2rem 0.1rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text);
+      letter-spacing: 0.08em;
+      color: var(--muted);
     }
     input, select, textarea {
       width: 100%;
       padding: 0.5rem 0.75rem;
       background: var(--surface);
       color: var(--text);
-      border: 1.5px solid var(--border);
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius);
       font-size: var(--font-md);
       font-family: inherit;
@@ -330,10 +381,9 @@
     select:not(:disabled) { box-shadow: var(--shadow-sm); }
 
     input:not(:disabled):not(:focus):hover,
-    select:not(:disabled):not(:focus):hover {
+    select:not(:disabled):not(:focus):hover,
+    textarea:not(:focus):hover {
       border-color: var(--muted);
-      background: var(--surface-hov);
-      box-shadow: var(--shadow-md);
     }
 
     input:disabled,
@@ -400,18 +450,26 @@
     }
 
     /* ── 10. Field-group label (section dividers) ──────────────────────────── */
+    /* Título de grupo: texto azul + linha fina que corre até a borda */
     .field-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.1em;
       color: var(--primary);
-      border-left: 3px solid var(--primary);
-      padding-left: 0.5rem;
-      margin: 0.9rem 0 0;
-      opacity: 0.85;
+      margin: 0.75rem 0 0.15rem;
     }
-    .field-group:first-child  { margin-top: 0; }
+    .field-group::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    body.dark .field-group { color: #5aa9e6; }
+    .field-group:first-child  { margin-top: 0.1rem; }
     .field-group + .form-row  { margin-top: 0.15rem; }
 
     /* ── 11. Form row ──────────────────────────────────────────────────────── */
@@ -430,20 +488,30 @@
     .nc-group { margin-bottom: 0.5rem; }
     .nc-group-label {
       display: block;
-      font-size: 0.6rem;
-      font-weight: 700;
+      font-size: 0.64rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.08em;
       color: var(--muted);
-      margin-bottom: 0.25rem;
+      margin: 0 0 0.2rem 0.1rem;
     }
     .nc-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .nc-chips + .nc-chips { margin-top: 0.3rem; }
+
+    /* Sugestões de cuidados por diagnóstico */
+    .sug-cuidados { margin-bottom: 0.6rem; }
+    .sug-grupo { margin-bottom: 0.5rem; }
+    .sug-origem { font-weight: 400; text-transform: none; letter-spacing: 0; opacity: 0.75; }
+    .sug-cuidados .nc-chip { flex: 1 1 calc(50% - 0.3rem); text-align: left; white-space: normal; line-height: 1.25; padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+    .sug-cuidados .nc-chip::before { content: '+ '; opacity: 0.6; }
+    .sug-cuidados .nc-chip.active::before { content: '✓ '; opacity: 1; }
+    .sug-vazio { font-size: 0.8rem; opacity: 0.7; margin: 0 0 0.5rem; }
     .nc-chip {
-      padding: 0.45rem 1rem;
-      border: 1.5px solid var(--border);
+      padding: 0.43rem 1rem;
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius);
       background: var(--surface);
-      color: var(--muted);
+      color: #4a5a6c;
       font-size: var(--font-sm);
       font-family: inherit;
       font-weight: 500;
@@ -453,21 +521,30 @@
       line-height: 1;
       user-select: none;
       box-shadow: var(--shadow-sm);
-      transition: background var(--speed), color var(--speed), border-color var(--speed);
+      transition: background var(--speed), color var(--speed), border-color var(--speed), box-shadow var(--speed);
     }
-    .nc-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .nc-chip.active[data-nc-color="green"]  { background: rgba(22,163,74,0.09);   border-color: #22c55e; color: #15803d; }
-    .nc-chip.active[data-nc-color="amber"]  { background: rgba(217,119,6,0.09);   border-color: #f59e0b; color: #a16207; }
-    .nc-chip.active[data-nc-color="orange"] { background: rgba(234,88,12,0.09);   border-color: #f97316; color: #c2410c; }
-    .nc-chip.active[data-nc-color="red"]    { background: rgba(220,38,38,0.09);   border-color: #f87171; color: #b91c1c; }
-    .nc-chip.active[data-nc-color="gray"]   { background: rgba(100,116,139,0.09); border-color: #94a3b8; color: #475569; }
-    body.dark .nc-chip.active[data-nc-color="green"]  { background: rgba(22,163,74,0.18);   border-color: #22c55e; color: #4ade80; }
-    body.dark .nc-chip.active[data-nc-color="amber"]  { background: rgba(217,119,6,0.18);   border-color: #f59e0b; color: #fbbf24; }
-    body.dark .nc-chip.active[data-nc-color="orange"] { background: rgba(234,88,12,0.18);   border-color: #f97316; color: #fb923c; }
-    body.dark .nc-chip.active[data-nc-color="red"]    { background: rgba(220,38,38,0.18);   border-color: #ef4444; color: #f87171; }
-    body.dark .nc-chip.active[data-nc-color="gray"]   { background: rgba(100,116,139,0.18); border-color: #64748b; color: #94a3b8; }
+    body.dark .nc-chip { color: #aebccc; }
+    .nc-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+    /* Selecionado: fundo tingido forte + anel da cor + ✓ — visível de longe */
+    .nc-chip.active { font-weight: 700; }
+    .nc-chip.active:not(.cuidado-sug)::before { content: '✓ '; }
+    .nc-chip.active[data-nc-color="green"]  { background: #e3f6ea; border-color: #22a55a; color: #11683a; box-shadow: 0 0 0 1px #22a55a inset; }
+    .nc-chip.active[data-nc-color="amber"]  { background: #fdf1d8; border-color: #e3a008; color: #8a5a00; box-shadow: 0 0 0 1px #e3a008 inset; }
+    .nc-chip.active[data-nc-color="orange"] { background: #fde8da; border-color: #ea6a1c; color: #a13a06; box-shadow: 0 0 0 1px #ea6a1c inset; }
+    .nc-chip.active[data-nc-color="red"]    { background: #fde4e4; border-color: #e04848; color: #a11d1d; box-shadow: 0 0 0 1px #e04848 inset; }
+    .nc-chip.active[data-nc-color="gray"]   { background: #e8edf3; border-color: #7a8a9c; color: #334155; box-shadow: 0 0 0 1px #7a8a9c inset; }
+    body.dark .nc-chip.active[data-nc-color="green"]  { background: rgba(34,197,94,0.20);   border-color: #22c55e; color: #6ee7a0; }
+    body.dark .nc-chip.active[data-nc-color="amber"]  { background: rgba(245,158,11,0.20);  border-color: #f59e0b; color: #fcd34d; }
+    body.dark .nc-chip.active[data-nc-color="orange"] { background: rgba(249,115,22,0.20);  border-color: #f97316; color: #fdba74; }
+    body.dark .nc-chip.active[data-nc-color="red"]    { background: rgba(239,68,68,0.20);   border-color: #ef4444; color: #fca5a5; }
+    body.dark .nc-chip.active[data-nc-color="gray"]   { background: rgba(148,163,184,0.20); border-color: #94a3b8; color: #cbd5e1; }
 
-    .nc-chip:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+    /* Monitores mais baixos (1366×768): chips mais compactos para a seção caber */
+    @media (max-height: 800px) {
+      .nc-chip { padding-top: 0.34rem; padding-bottom: 0.34rem; }
+      .field-group { margin-top: 0.55rem; }
+    }
+    .nc-chip:disabled { opacity: 0.4; background: var(--bg); box-shadow: none; cursor: not-allowed; pointer-events: none; }
     .nc-divider { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.1rem; }
     .nc-stepper { display: flex; align-items: stretch; }
     .form-row .nc-stepper { width: 100%; }
@@ -481,15 +558,15 @@
     .chip-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; }
     .span-full { grid-column: 1 / -1; }
     .nc-step-btn {
-      padding: 0.45rem 0.7rem;
-      border: 1.5px solid var(--border); background: var(--surface);
+      padding: 0.45rem 0.8rem;
+      border: 1px solid var(--border-strong); background: var(--surface);
       color: var(--text); font-size: var(--font-md); font-family: inherit; font-weight: 700;
       cursor: pointer; line-height: 1; box-shadow: var(--shadow-sm);
       transition: background var(--speed), color var(--speed);
     }
     .nc-step-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); border-right: none; }
     .nc-step-btn:last-child  { border-radius: 0 var(--radius) var(--radius) 0; border-left: none; }
-    .nc-step-btn:hover:not(:disabled) { background: var(--surface-hov); }
+    .nc-step-btn:hover:not(:disabled) { background: var(--primary-soft); color: var(--primary); }
     .nc-step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .nc-valor-dor {
       width: 3rem; border-radius: 0; text-align: center;
@@ -507,10 +584,10 @@
       align-items: start;
     }
     .acesso-card {
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
       background: var(--surface);
-      padding: 0.5rem;
+      padding: 0.55rem;
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
@@ -518,7 +595,7 @@
       transition: border-color var(--speed);
     }
     .acesso-card:not(.open):hover { border-color: var(--muted); }
-    .acesso-card.open { border-color: var(--primary); }
+    .acesso-card.open { border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 0 1px var(--primary) inset; }
     .acesso-card .nc-chip { width: 100%; }
     .acesso-fields {
       display: flex;
@@ -544,11 +621,12 @@
     .has-clear { padding-right: 1.8rem; }
 
     /* ── 14. Utilities ─────────────────────────────────────────────────────── */
+    /* Centrado no campo (não no bloco rótulo+campo) */
     .clear-icon {
       position: absolute;
-      right: 0.4rem;
-      top: 50%;
-      transform: translateY(-50%);
+      right: 0.5rem;
+      bottom: 1.05rem;
+      transform: translateY(50%);
       width: 1.1rem;
       height: 1.1rem;
       border-radius: 50%;
@@ -576,10 +654,11 @@
       right: 1.5rem;
       background: var(--surface-inv);
       color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
       font-size: 0.8rem;
       font-weight: 600;
+      box-shadow: var(--shadow-md);
       opacity: 0;
       transform: translateY(6px);
       transition: opacity 0.25s ease, transform 0.25s ease;
@@ -588,12 +667,13 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .footer {
-      background: var(--bg);
+      background: transparent;
       color: var(--muted);
       text-align: center;
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      border-top: 1px solid var(--border);
+      padding: 0 0.5rem 0.35rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      opacity: 0.8;
       flex-shrink: 0;
     }
     .nav-tooltip {
@@ -619,11 +699,11 @@
       flex-shrink: 0;
     }
     .next-btn {
-      padding: 0.2rem 0.65rem;
+      padding: 0.25rem 0.8rem;
       background: transparent;
       color: var(--muted);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 999px;
       cursor: pointer;
       font-size: var(--font-xs);
       font-family: inherit;
@@ -643,11 +723,22 @@
       overscroll-behavior: contain;
       list-style: none;
       background: var(--surface);
-      border: 1.5px solid var(--primary);
-      border-radius: var(--radius);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
-      padding: 0.15rem;
+      padding: 0.25rem;
     }
+
+    /* Barras de rolagem finas e discretas (Chrome/Edge do hospital) */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 999px;
+      border: 3px solid transparent;
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { background-color: var(--muted); }
+    ::-webkit-scrollbar-track { background: transparent; }
     .cid-item {
       display: flex;
       align-items: baseline;
@@ -805,7 +896,8 @@
       </div>
       <div>
         <label for="alergias">Alergias</label>
-        <input type="text" id="alergias" placeholder="Alergias" />
+        <input type="text" id="alergias" autocomplete="off"
+          placeholder="Cole a lista ou separe com Enter" />
       </div>
     </div>
   </template>
@@ -839,16 +931,10 @@
         <button type="button" class="nc-chip nc-comp" data-nc-val="Agressivo" data-nc-color="red">Agressivo</button>
       </div>
     </div>
-    <p class="field-group">Avaliação</p>
+    <!-- Sem Glasgow e pupilas: escala de consciência e exame pupilar são do
+         enfermeiro (Cofen 514/2016, 9.7; Coren-SP 2022, p. 16). -->
+    <p class="field-group">Comunicação</p>
     <div class="form-row">
-      <div>
-        <label for="glasgow">Glasgow</label>
-        <div class="nc-stepper">
-          <button type="button" class="nc-step-btn" id="glasgowMinus">−</button>
-          <input type="number" id="glasgow" min="3" max="15" placeholder="–" class="nc-valor-dor" />
-          <button type="button" class="nc-step-btn" id="glasgowPlus">+</button>
-        </div>
-      </div>
       <div>
         <label>Verbalização</label>
         <div class="nc-chips">
@@ -856,17 +942,6 @@
           <button type="button" class="nc-chip nc-verb" data-nc-val="Pouco comunicativo" data-nc-color="amber">Pouco com.</button>
           <button type="button" class="nc-chip nc-verb" data-nc-val="Afásico"           data-nc-color="red">Afásico</button>
         </div>
-      </div>
-      <div>
-        <label for="pupilas">Pupilas</label>
-        <select id="pupilas">
-          <option value="" disabled selected>Selecione</option>
-          <option>Isocóricas fotorreativas</option>
-          <option>Isocóricas pouco fotorreativas</option>
-          <option>Anisocóricas</option>
-          <option>Midriáticas</option>
-          <option>Mióticas bilaterais</option>
-        </select>
       </div>
     </div>
     <p class="field-group">Dor</p>
@@ -994,11 +1069,10 @@
       <div class="nc-group">
         <span class="nc-group-label">Aceitação</span>
         <div class="nc-chips nc-chips-stretch">
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Boa aceitação"    data-nc-color="green">Boa</button>
+          <!-- Cofen 514/2016, 9.8: "Aceitação da dieta: total, parcial ou recusa" -->
+          <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação total"   data-nc-color="green">Total</button>
           <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação parcial" data-nc-color="amber">Parcial</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Pouca aceitação"  data-nc-color="orange">Pouca</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Sem aceitação"    data-nc-color="red">Sem</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Recusando"        data-nc-color="red">Recusa</button>
+          <button type="button" class="nc-chip nc-aceit" data-nc-val="Recusa da dieta"   data-nc-color="red">Recusa</button>
         </div>
       </div>
     </div>
@@ -1019,6 +1093,30 @@
           <button type="button" class="nc-step-btn" id="mlSondaMinus" disabled>−</button>
           <input type="number" id="mlSonda" min="0" max="500" placeholder="–" disabled class="nc-valor-dor" />
           <button type="button" class="nc-step-btn" id="mlSondaPlus" disabled>+</button>
+        </div>
+      </div>
+    </div>
+    <!-- Só o relato do paciente: abdome distendido/timpânico etc. é exame
+         físico, privativo do enfermeiro (Coren-SP 2022, p. 16). -->
+    <p class="field-group">Queixa abdominal / Glicemia</p>
+    <div class="form-row">
+      <div>
+        <label>Queixa abdominal</label>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-queixa-abd" data-nc-val="Nega dor abdominal"   data-nc-color="green">Nega dor</button>
+          <button type="button" class="nc-chip nc-queixa-abd" data-nc-val="Refere dor abdominal" data-nc-color="red">Refere dor</button>
+        </div>
+      </div>
+      <div>
+        <label for="hgt">HGT (mg/dL)</label>
+        <div class="nc-stepper">
+          <button type="button" class="nc-step-btn" id="hgtMinus">−</button>
+          <input type="number" id="hgt" min="20" max="600" placeholder="–" class="nc-valor-dor" />
+          <button type="button" class="nc-step-btn" id="hgtPlus">+</button>
+        </div>
+        <!-- Cofen 514/2016, 9.34: registrar a condição (jejum) da glicemia capilar -->
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-hgt-jejum" data-nc-val="Em jejum" data-nc-color="gray">Em jejum</button>
         </div>
       </div>
     </div>
@@ -1185,6 +1283,7 @@
   </template>
 
   <template id="tpl-cuidados">
+    <div id="sugestoesCuidados" class="sug-cuidados"></div>
     <div class="form-row">
       <textarea id="acoesCuidados" rows="10"
         placeholder="Ações de cuidados aparecerão aqui quando o nome do paciente for preenchido...">
@@ -1274,6 +1373,7 @@
       'nc-padrao':       'padraoVentilatorio', 'nc-tosse':     'tosse',
       'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
       'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
+      'nc-queixa-abd':   'queixaAbdominal',    'nc-hgt-jejum':  'hgtJejum',
     };
 
     const BASE_FORM = {
@@ -1287,9 +1387,9 @@
 
     const SECTION_DATA_FIELDS = {
       dados:       ['nomePaciente', 'tipoSala', 'idadePaciente', 'problemaAtual', 'comorbidades', 'alergias', 'acompanha'],
-      neurologico: ['nivelConsciencia', 'glasgow', 'verbalizacao', 'pupilas', 'dorPresente'],
+      neurologico: ['nivelConsciencia', 'verbalizacao', 'dorPresente'],
       ventilacao:  ['tipoOxigenoterapia', 'padraoVentilatorio', 'spo2', 'tosse'],
-      dieta:       ['dietaOral', 'dietaSonda'],
+      dieta:       ['dietaOral', 'dietaSonda', 'queixaAbdominal', 'hgt'],
       acessos:     ['avpMsdCheckbox', 'avpMseCheckbox', 'cvcCheckbox', 'piccCheckbox', 'portCheckbox', 'permicathCheckbox'],
       eliminacoes: ['viaDiurese', 'viaFezes', 'nauseas', 'vomitoSelect', 'tipodreno'],
       deambulacao: ['deambula', 'dorsoEstado'],
@@ -1354,14 +1454,16 @@
       return texto.replace(/\s*\([A-Z]\d{2}(\.\d)?\)\s*$/, '').trim();
     }
 
-    // As comorbidades chegam coladas de qualquer lugar: "#DM #HAS", "dm, has",
-    // uma por linha, com traços de lista. O espaço NÃO separa — "insuficiência
-    // cardíaca" é um item só. Repetidas (ignorando acento e caixa) caem fora.
-    const COMORBIDADE_SEP = /[#,;/|+\n\r\t]+/;
-    function listarComorbidades(texto) {
+    // Comorbidades e alergias chegam coladas de qualquer lugar: "#DM #HAS",
+    // "dm, has", uma por linha, com traços de lista. O espaço NÃO separa —
+    // "insuficiência cardíaca" é um item só. Repetidas (ignorando acento e
+    // caixa) caem fora.
+    const CAMPOS_LISTA = ['comorbidades', 'alergias'];
+    const LISTA_SEP = /[#,;/|+\n\r\t]+/;
+    function listarItens(texto) {
       const vistas = new Set();
       const itens = [];
-      for (const bruto of String(texto || '').split(COMORBIDADE_SEP)) {
+      for (const bruto of String(texto || '').split(LISTA_SEP)) {
         const item = bruto.replace(/^[\s\-–—•*]+/, '').replace(/[\s.]+$/, '').trim();
         if (!item) continue;
         const chave = stripAccents(item).toUpperCase();
@@ -1370,6 +1472,12 @@
         itens.push(item);
       }
       return itens;
+    }
+
+    // "Nega", "nega alergias", "sem alergias", "nenhuma", "NKDA"… — sem lista,
+    // sai numa linha só.
+    function negaAlergias(item) {
+      return /^(NEGA|NEGADAS?|NENHUMA|SEM ALERGIAS?|NAO|NKDA)\b/.test(stripAccents(item).toUpperCase());
     }
 
     // 'YYYY-MM-DD' → 'DD/MM/YYYY' sem passar por Date (evita o shift UTC−3)
@@ -1382,10 +1490,19 @@
     // Valores persistidos antes de 2026-08: veias centrais sem lado já não têm
     // opção correspondente no select — limpar para o usuário re-escolher.
     const LOCAIS_SEM_LADO = ['Veia jugular', 'Veia subclávia', 'Veia femoral'];
+    // Aceitação antes de 2026-09 usava termos de valor ("boa", "pouca"),
+    // vetados pelo Cofen 514/2016: migrar para total / parcial / recusa.
+    const ACEITACAO_ANTIGA = {
+      'Boa aceitação':   'Aceitação total',
+      'Pouca aceitação': 'Aceitação parcial',
+      'Sem aceitação':   'Recusa da dieta',
+      'Recusando':       'Recusa da dieta',
+    };
     function normalizarLocaisAntigos(form) {
       ACESSOS.filter(a => a.select.tipo === 'local').forEach(a => {
         if (LOCAIS_SEM_LADO.includes(form[a.select.id])) form[a.select.id] = '';
       });
+      if (ACEITACAO_ANTIGA[form.aceitacaoOral]) form.aceitacaoOral = ACEITACAO_ANTIGA[form.aceitacaoOral];
     }
 
     // sessionStorage (não localStorage): sobrevive ao F5 mas morre ao fechar
@@ -1605,7 +1722,7 @@
       applyChipGroupA11y(output);
 
       restoreSection();
-      if (key === 'cuidados') ensureCuidadosContent();
+      if (key === 'cuidados') { ensureCuidadosContent(); renderSugestoesCuidados(); }
       gerarAnotacao();
       if (key === 'cuidados') setTimeout(() => copiarEvolucao(true), 120);
     }
@@ -1839,6 +1956,161 @@
       state.form.acoesCuidados = padrao;
     }
 
+    // Cuidados sugeridos por diagnóstico. Redação no padrão dos exemplos
+    // oficiais de anotação — Cofen, Res. 514/2016 (Guia de Recomendações) e
+    // Coren-SP, "Anotação de Enfermagem" (2022):
+    //   · registrar o que FOI FEITO, logo após o cuidado — nada condicional
+    //     ("comunico SE…" é plano, não fato);
+    //   · "conforme prescrição médica/de enfermagem", "comunicado ao
+    //     enfermeiro", "mantido em observação" — fórmulas dos próprios exemplos;
+    //   · sem termos de valor (bem, mal, muito, pouco) e sem dado de exame
+    //     físico, que é privativo do enfermeiro (Coren-SP, p. 16).
+    // Valores (SSVV, dor, diurese, SpO2) saem das outras seções, não daqui.
+    // Casamento por código CID (prefixo, sem ponto) no Problema atual, ou por
+    // palavra (sem acento) no Problema atual e nas comorbidades.
+    const CUIDADOS_POR_DIAGNOSTICO = [
+      { nome: 'Infecção urinária',
+        cids: ['N10', 'N12', 'N30', 'N390'],
+        palavras: ['ITU', 'INFECCAO URINARIA', 'INFECCAO DO TRATO URINARIO', 'CISTITE', 'PIELONEFRITE'],
+        cuidados: [
+          'ADMINISTRO ANTIBIOTICOTERAPIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'COLETO AMOSTRA DE URINA PARA EXAME, CONFORME PRESCRIÇÃO MÉDICA;',
+          'ESTIMULO INGESTA HÍDRICA, CONFORME PRESCRIÇÃO;',
+          'REALIZO HIGIENE ÍNTIMA;',
+          'ORIENTO PACIENTE QUANTO À HIGIENE ÍNTIMA;',
+        ] },
+      { nome: 'Cálculo renal',
+        cids: ['N20', 'N21', 'N22', 'N23'],
+        palavras: ['CALCULO RENAL', 'CALCULO URETERAL', 'PEDRA NO RIM', 'LITIASE', 'NEFROLITIASE', 'UROLITIASE', 'URETEROLITIASE', 'COLICA RENAL', 'COLICA NEFRETICA'],
+        cuidados: [
+          'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
+          'COLETO AMOSTRA DE URINA PARA EXAME, CONFORME PRESCRIÇÃO MÉDICA;',
+          'ENCAMINHO AO SETOR DE IMAGEM PARA REALIZAÇÃO DE EXAME;',
+          'ESTIMULO INGESTA HÍDRICA, CONFORME PRESCRIÇÃO;',
+        ] },
+      { nome: 'Hipertensão',
+        cids: ['I10', 'I11', 'I12', 'I13', 'I15'],
+        palavras: ['HAS', 'HAS DESCOMPENSADA', 'HIPERTENSAO', 'HIPERTENSAO ARTERIAL', 'CRISE HIPERTENSIVA', 'PICO HIPERTENSIVO', 'URGENCIA HIPERTENSIVA'],
+        cuidados: [
+          'VERIFICO PRESSÃO ARTERIAL, CONFORME PRESCRIÇÃO;',
+          'ADMINISTRO MEDICAÇÃO ANTI-HIPERTENSIVA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'COMUNICO PICO HIPERTENSIVO AO ENFERMEIRO;',
+          'MANTENHO CABECEIRA ELEVADA A 30º;',
+          'MANTIDO EM OBSERVAÇÃO;',
+        ] },
+      { nome: 'Dor',
+        cids: ['R52', 'R51', 'R10', 'R07', 'M54'],
+        palavras: ['DOR', 'DORES', 'ALGIA', 'CEFALEIA', 'LOMBALGIA', 'CERVICALGIA', 'COLICA'],
+        dorPresente: true,
+        cuidados: [
+          'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
+          'COMUNICO QUEIXA ÁLGICA AO ENFERMEIRO;',
+          'POSICIONO NO LEITO EM POSIÇÃO DE CONFORTO;',
+        ] },
+      { nome: 'Pneumonia',
+        cids: ['J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18'],
+        palavras: ['PNEUMONIA', 'PNM', 'PAC', 'BCP', 'BRONCOPNEUMONIA'],
+        cuidados: [
+          'MANTENHO CABECEIRA ELEVADA A 45º;',
+          'ADMINISTRO ANTIBIOTICOTERAPIA, CONFORME PRESCRIÇÃO MÉDICA;',
+          'REALIZO NEBULIZAÇÃO, CONFORME PRESCRIÇÃO MÉDICA;',
+          'VERIFICO SATURAÇÃO DE O2 E FREQUÊNCIA RESPIRATÓRIA;',
+          'COMUNICO ALTERAÇÃO DO PADRÃO RESPIRATÓRIO AO ENFERMEIRO;',
+        ] },
+    ];
+
+    function temPalavra(texto, palavras) {
+      const t = stripAccents(texto).toUpperCase();
+      return palavras.find(p => new RegExp(`(^|[^A-Z0-9])${p}([^A-Z0-9]|$)`).test(t));
+    }
+
+    // → [{ grupo, origem }]: o que casou e por quê (mostrado ao lado do grupo).
+    function diagnosticosDoPaciente() {
+      const problemaBruto = getValue('problemaAtual')?.trim() || '';
+      const problema = semCodigoCid(problemaBruto);
+      const m = problemaBruto.match(/\(([A-Z]\d{2})(?:\.(\d))?\)\s*$/);
+      const codigo = m ? m[1] + (m[2] || '') : '';
+      const comorbs = listarItens(getValue('comorbidades'));
+      const achados = [];
+      for (const g of CUIDADOS_POR_DIAGNOSTICO) {
+        let origem = '';
+        if (codigo && g.cids.some(c => codigo.startsWith(c))) origem = `${problema} (${m[1]}${m[2] ? '.' + m[2] : ''})`;
+        else if (problema && temPalavra(problema, g.palavras)) origem = problema;
+        else {
+          const c = comorbs.find(x => temPalavra(x, g.palavras));
+          if (c) origem = `comorbidade ${c}`;
+          else if (g.dorPresente && state.form.dorPresente === 'Sim') origem = 'dor presente';
+        }
+        if (origem) achados.push({ grupo: g, origem, principal: !origem.startsWith('comorbidade') && origem !== 'dor presente' });
+      }
+      // o que veio do Problema atual primeiro; comorbidades e dor depois
+      return achados.sort((a, b) => b.principal - a.principal);
+    }
+
+    function linhasCuidados() {
+      return (getValue('acoesCuidados') || '').split('\n').map(l => l.trim()).filter(Boolean);
+    }
+
+    function renderSugestoesCuidados() {
+      const box = document.getElementById('sugestoesCuidados');
+      if (!box) return;
+      box.innerHTML = '';
+      const achados = diagnosticosDoPaciente();
+      if (!achados.length) {
+        const p = document.createElement('p');
+        p.className = 'sug-vazio';
+        p.textContent = 'Preencha o Problema atual ou as comorbidades para ver cuidados sugeridos.';
+        box.appendChild(p);
+        return;
+      }
+      const atuais = linhasCuidados();
+      achados.forEach(({ grupo, origem }) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'sug-grupo';
+        const titulo = document.createElement('p');
+        titulo.className = 'field-group';
+        titulo.textContent = `Sugestões · ${grupo.nome} `;
+        const por = document.createElement('span');
+        por.className = 'sug-origem';
+        por.textContent = `— por: ${origem}`;
+        titulo.appendChild(por);
+        const chips = document.createElement('div');
+        chips.className = 'nc-chips';
+        grupo.cuidados.forEach(frase => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'nc-chip cuidado-sug';
+          b.dataset.ncColor = 'green';
+          b.dataset.frase = frase;
+          b.textContent = frase.replace(/;$/, '');
+          b.classList.toggle('active', atuais.includes(frase));
+          chips.appendChild(b);
+        });
+        wrap.append(titulo, chips);
+        box.appendChild(wrap);
+      });
+    }
+
+    // Clique numa sugestão: entra no fim da lista; clicar de novo tira.
+    function alternarCuidado(frase) {
+      const el = document.getElementById('acoesCuidados');
+      if (!el) return;
+      const linhas = linhasCuidados();
+      const i = linhas.indexOf(frase);
+      if (i >= 0) linhas.splice(i, 1); else linhas.push(frase);
+      el.value = linhas.join('\n');
+      state.form.acoesCuidados = el.value;
+      updateClearIcon(el);
+    }
+
+    function marcarSugestoesAtivas() {
+      const atuais = linhasCuidados();
+      document.querySelectorAll('.cuidado-sug').forEach(b =>
+        b.classList.toggle('active', atuais.includes(b.dataset.frase)));
+    }
+
     function updateClearIcon(el) {
       if (el.type === 'checkbox' || el.closest('.acesso-fields')) return;
       const parent = el.closest('.form-row > div');
@@ -1889,13 +2161,15 @@
       }
 
       if (problema)  parts.push(`#ATUAL: ${problema.toUpperCase()}`);
-      // uma comorbidade por linha, sem linha em branco entre elas (o join do
+      // um item por linha, sem linha em branco entre eles (o join do
       // final separa as *partes* com linha em branco, não os itens da lista)
-      const comorbidades = listarComorbidades(comorb);
-      if (comorbidades.length) {
-        parts.push(['COMORBIDADES:', ...comorbidades.map(c => `#${c.toUpperCase()}`)].join('\n'));
-      }
-      if (alergias)  parts.push(`#ALERGIAS: ${alergias.toUpperCase()}`);
+      const listaComRotulo = (rotulo, itens) =>
+        [`${rotulo}:`, ...itens.map(c => `#${c.toUpperCase()}`)].join('\n');
+      const comorbidades = listarItens(comorb);
+      if (comorbidades.length) parts.push(listaComRotulo('COMORBIDADES', comorbidades));
+      const listaAlergias = listarItens(alergias);
+      if (listaAlergias.length === 1 && negaAlergias(listaAlergias[0])) parts.push('ALERGIAS: NEGA');
+      else if (listaAlergias.length) parts.push(listaComRotulo('ALERGIAS', listaAlergias));
 
       if (nome) {
         let paciente = nome.toUpperCase();
@@ -1911,18 +2185,14 @@
 
     function gerarTextoNeurologico() {
       const consciencia = state.form.nivelConsciencia || [];
-      const glasgow     = getValue('glasgow');
       const verbalizacao = getValue('verbalizacao');
-      const pupilas      = getValue('pupilas');
       const dorPresente  = state.form.dorPresente || '';
       const escalaDor    = state.form.escalaDor   || '';
       const valorDor     = getValue('valorDor');
       const parts        = [];
 
       if (consciencia.length) parts.push('PACIENTE ' + consciencia.map(v => v.toUpperCase()).join(', '));
-      if (glasgow) parts.push(`GLASGOW ${glasgow}`);
       if (verbalizacao) parts.push(verbalizacao.toUpperCase());
-      if (pupilas) parts.push(`PUPILAS ${pupilas.toUpperCase()}`);
 
       if (dorPresente === 'Sim') {
         if (valorDor && escalaDor) {
@@ -1988,6 +2258,8 @@
       const aceitacao  = state.form.aceitacaoOral || '';
       const sonda      = getValue('dietaSonda');
       const ml         = getValue('mlSonda');
+      const queixaAbd  = state.form.queixaAbdominal || '';
+      const hgt        = getValue('hgt');
       const parts      = [];
 
       if (oral === 'NPO') {
@@ -2008,6 +2280,9 @@
         if (ml) txt += ` A ${ml}ML/H`;
         parts.push(txt);
       }
+
+      if (queixaAbd) parts.push(queixaAbd.toUpperCase());
+      if (hgt) parts.push(`HGT ${hgt} MG/DL` + (state.form.hgtJejum ? ' EM JEJUM' : ''));
 
       return parts.join(' . ');
     }
@@ -2212,6 +2487,14 @@
       if (!chip) return;
       const val = chip.dataset.ncVal;
 
+      // ── Cuidados sugeridos ──────────────────────────────────────────────
+      if (chip.classList.contains('cuidado-sug')) {
+        alternarCuidado(chip.dataset.frase);
+        marcarSugestoesAtivas();
+        gerarAnotacao();
+        return;
+      }
+
       // ── Dor toggle ──────────────────────────────────────────────────────
       if (chip.classList.contains('nc-dor-toggle')) {
         chip.classList.toggle('active');
@@ -2289,11 +2572,11 @@
       if (!btn || (!btn.id.endsWith('Plus') && !btn.id.endsWith('Minus'))) return;
       const STEPPER_CFG = {
         valorDor:       { mn: 0,  mx: 10,   step: 1  },
-        glasgow:        { mn: 3,  mx: 15,   step: 1  },
         idadePaciente:  { mn: 0,  mx: 120,  step: 1  },
         litrosOxigenio: { mn: 0,  mx: 15,   step: 1  },
         spo2:           { mn: 50, mx: 100,  step: 1  },
         mlSonda:        { mn: 0,  mx: 500,  step: 5  },
+        hgt:            { mn: 20, mx: 600,  step: 10, ini: 100 },
         volumeDiurese:  { mn: 0,  mx: 5000, step: 50 },
         volumedreno:    { mn: 0,  mx: 5000, step: 50 },
       };
@@ -2305,7 +2588,7 @@
       if (!input || input.disabled) return;
       const { mn, mx, step } = cfg;
       let v = parseInt(input.value, 10);
-      if (isNaN(v)) v = isPlus ? mn : mx;
+      if (isNaN(v)) v = cfg.ini ?? (isPlus ? mn : mx); // ini: ponto de partida clínico
       else v = isPlus ? Math.min(mx, v + step) : Math.max(mn, v - step);
       input.value = v;
       state.form[inputId] = v;
@@ -2324,6 +2607,7 @@
     // antes do 'change' disparar, e o texto digitado se perdia.
     document.addEventListener('input', e => {
       saveField(e);
+      if (e.target.id === 'acoesCuidados') marcarSugestoesAtivas();
       gerarAnotacao();
     });
 
@@ -2373,9 +2657,11 @@
         gerarAnotacao();
       });
 
-      // Dark mode (persisted)
+      // Dark mode (persisted). Storage bloqueado não pode derrubar o boot.
       const darkToggle = document.getElementById('darkToggle');
-      if (localStorage.getItem('theme') === 'dark') {
+      let temaSalvo = null;
+      try { temaSalvo = localStorage.getItem('theme'); } catch { /* segue claro */ }
+      if (temaSalvo === 'dark') {
         document.body.classList.add('dark');
         darkToggle.textContent = 'D';
         darkToggle.classList.add('active');
@@ -2384,7 +2670,7 @@
         const isDark = document.body.classList.toggle('dark');
         darkToggle.textContent = isDark ? 'D' : 'N';
         darkToggle.classList.toggle('active', isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch { /* só nesta aba */ }
       });
 
       // Novo paciente (sidebar) e Reset (header) — mesma ação
@@ -2644,13 +2930,13 @@
       if (e.target.id === CID_CAMPO) cidFechar();
     });
 
-    // ── 15. Comorbidades (lista livre) ────────────────────────────────────────
+    // ── 15. Comorbidades e alergias (lista livre) ─────────────────────────────
     // O campo guarda tudo numa string ("DM; HAS; PARKINSON") — nada de estrutura
     // nova no state, que assim continua indo inteiro para o sessionStorage e
     // voltando pelo restoreSection. Reorganizar só ao colar, no Enter e ao sair
     // do campo: fazer isso a cada tecla comeria o separador recém-digitado.
-    function normalizarComorbidades(input, continuar) {
-      const itens = listarComorbidades(input.value);
+    function normalizarLista(input, continuar) {
+      const itens = listarItens(input.value);
       const valor = itens.join('; ') + (continuar && itens.length ? '; ' : '');
       if (valor === input.value) return;
       input.value = valor;
@@ -2658,27 +2944,27 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.target.id !== 'comorbidades' || e.key !== 'Enter') return;
+      if (!CAMPOS_LISTA.includes(e.target.id) || e.key !== 'Enter') return;
       e.preventDefault();
-      normalizarComorbidades(e.target, true);
+      normalizarLista(e.target, true);
     });
     // Colar precisa do texto do clipboard, não do que cairia no campo: um input
     // de uma linha engole as quebras de linha, e uma lista colada de um
     // documento ("DM⏎HAS⏎Parkinson") viraria um item só.
     document.addEventListener('paste', e => {
       const el = e.target;
-      if (el.id !== 'comorbidades') return;
+      if (!CAMPOS_LISTA.includes(el.id)) return;
       const colado = e.clipboardData?.getData('text');
       if (!colado) return;
       e.preventDefault();
       const ini = el.selectionStart ?? el.value.length;
       const fim = el.selectionEnd ?? el.value.length;
       const bruto = `${el.value.slice(0, ini)}\n${colado}\n${el.value.slice(fim)}`;
-      el.value = listarComorbidades(bruto).join('; ');
+      el.value = listarItens(bruto).join('; ');
       el.dispatchEvent(new Event('change', { bubbles: true }));
     });
     document.addEventListener('focusout', e => {
-      if (e.target.id === 'comorbidades') normalizarComorbidades(e.target, false);
+      if (CAMPOS_LISTA.includes(e.target.id)) normalizarLista(e.target, false);
     });
     document.addEventListener('mousedown', e => {
       if (cid.el && !cid.el.contains(e.target) && e.target.id !== CID_CAMPO) cidFechar();
