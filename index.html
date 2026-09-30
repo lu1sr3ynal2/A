@@ -1005,11 +1005,10 @@
       <div class="nc-group">
         <span class="nc-group-label">Aceitação</span>
         <div class="nc-chips nc-chips-stretch">
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Boa aceitação"    data-nc-color="green">Boa</button>
+          <!-- Cofen 514/2016, 9.8: "Aceitação da dieta: total, parcial ou recusa" -->
+          <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação total"   data-nc-color="green">Total</button>
           <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação parcial" data-nc-color="amber">Parcial</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Pouca aceitação"  data-nc-color="orange">Pouca</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Sem aceitação"    data-nc-color="red">Sem</button>
-          <button type="button" class="nc-chip nc-aceit" data-nc-val="Recusando"        data-nc-color="red">Recusa</button>
+          <button type="button" class="nc-chip nc-aceit" data-nc-val="Recusa da dieta"   data-nc-color="red">Recusa</button>
         </div>
       </div>
     </div>
@@ -1427,10 +1426,19 @@
     // Valores persistidos antes de 2026-08: veias centrais sem lado já não têm
     // opção correspondente no select — limpar para o usuário re-escolher.
     const LOCAIS_SEM_LADO = ['Veia jugular', 'Veia subclávia', 'Veia femoral'];
+    // Aceitação antes de 2026-09 usava termos de valor ("boa", "pouca"),
+    // vetados pelo Cofen 514/2016: migrar para total / parcial / recusa.
+    const ACEITACAO_ANTIGA = {
+      'Boa aceitação':   'Aceitação total',
+      'Pouca aceitação': 'Aceitação parcial',
+      'Sem aceitação':   'Recusa da dieta',
+      'Recusando':       'Recusa da dieta',
+    };
     function normalizarLocaisAntigos(form) {
       ACESSOS.filter(a => a.select.tipo === 'local').forEach(a => {
         if (LOCAIS_SEM_LADO.includes(form[a.select.id])) form[a.select.id] = '';
       });
+      if (ACEITACAO_ANTIGA[form.aceitacaoOral]) form.aceitacaoOral = ACEITACAO_ANTIGA[form.aceitacaoOral];
     }
 
     // sessionStorage (não localStorage): sobrevive ao F5 mas morre ao fechar
