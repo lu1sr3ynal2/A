@@ -204,6 +204,8 @@
       transition: background var(--speed);
     }
     .nav-btn.has-data .section-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+    .nav-btn.falta .section-dot,
+    .nav-btn.active.falta .section-dot { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.25); }
     .nav-btn.active .section-dot   { background: rgba(255,255,255,0.6); }
     .nav-btn.active.has-data .section-dot { background: var(--success-soft); }
     .copy-btn {
@@ -813,7 +815,7 @@
       </div>
       <div class="sidebar-actions">
         <button class="action-btn" id="novoBtn">Novo registro</button>
-        <button class="copy-btn" id="copyBtn">Copiar evolução</button>
+        <button class="copy-btn" id="copyBtn">Copiar anotação</button>
       </div>
     </aside>
 
@@ -825,7 +827,7 @@
       <div class="section-nav-bar">
         <button class="next-btn" id="nextSectionBtn">Próxima →</button>
       </div>
-      <div id="note-output" class="note-output"><p>O conteúdo da evolução será gerado aqui...</p></div>
+      <div id="note-output" class="note-output"><p>O conteúdo da anotação será gerado aqui...</p></div>
     </main>
   </div>
 
@@ -910,7 +912,7 @@
         <button type="button" class="nc-chip nc-alerta" data-nc-val="Lúcido" data-nc-color="green">Lúcido</button>
         <button type="button" class="nc-chip nc-alerta" data-nc-val="Sonolento" data-nc-color="amber">Sonolento</button>
         <button type="button" class="nc-chip nc-alerta" data-nc-val="Sedado" data-nc-color="gray">Sedado</button>
-        <button type="button" class="nc-chip nc-alerta" data-nc-val="Sem relação de vida" data-nc-color="red">Sem relação</button>
+        <button type="button" class="nc-chip nc-alerta" data-nc-val="Sem relação com o meio" data-nc-color="red">Sem relação</button>
       </div>
     </div>
     <div class="nc-group">
@@ -939,8 +941,10 @@
         <label>Verbalização</label>
         <div class="nc-chips">
           <button type="button" class="nc-chip nc-verb" data-nc-val="Comunicativo"      data-nc-color="green">Comunicativo</button>
-          <button type="button" class="nc-chip nc-verb" data-nc-val="Pouco comunicativo" data-nc-color="amber">Pouco com.</button>
-          <button type="button" class="nc-chip nc-verb" data-nc-val="Afásico"           data-nc-color="red">Afásico</button>
+          <!-- "Pouco" é termo de valor (Cofen 514/2016, 7.1 item 16) e "afásico" é rótulo:
+               o técnico descreve o que observa (Coren-SP 2022, p. 22) -->
+          <button type="button" class="nc-chip nc-verb" data-nc-val="Responde quando solicitado"  data-nc-color="amber">Quando solicitado</button>
+          <button type="button" class="nc-chip nc-verb" data-nc-val="Não se comunica verbalmente" data-nc-color="red">Não verbaliza</button>
         </div>
       </div>
     </div>
@@ -949,6 +953,9 @@
       <div class="nc-chips">
         <button type="button" class="nc-chip nc-dor-toggle" data-nc-val="Dor presente" data-nc-color="red">Dor presente</button>
         <span class="nc-divider"></span>
+        <!-- A escala segue a faixa etária e a rotina da instituição (Cofen 514/2016, 9.17;
+             Coren-SP 2022, p. 31). EVA só quando o paciente informa; sedado, sem relação com
+             o meio ou sem comunicação verbal: BPS ou PAINAD (EVA fica desabilitada). -->
         <button type="button" class="nc-chip nc-escala" data-nc-val="EVA"    data-nc-color="gray" disabled>EVA</button>
         <button type="button" class="nc-chip nc-escala" data-nc-val="BPS"    data-nc-color="gray" disabled>BPS</button>
         <button type="button" class="nc-chip nc-escala" data-nc-val="PAINAD" data-nc-color="gray" disabled>PAINAD</button>
@@ -958,6 +965,15 @@
           <input type="number" id="valorDor" min="0" max="10" placeholder="–" disabled class="nc-valor-dor" />
           <button type="button" class="nc-step-btn" id="valorDorPlus"  disabled>+</button>
         </div>
+      </div>
+    </div>
+    <!-- Reavaliação: depois do cuidado, o novo escore (Coren-SP 2022, p. 43-44) -->
+    <div class="nc-group">
+      <span class="nc-group-label">Escore após analgesia</span>
+      <div class="nc-stepper">
+        <button type="button" class="nc-step-btn" id="valorDorReavMinus" disabled>−</button>
+        <input type="number" id="valorDorReav" min="0" max="10" placeholder="–" disabled class="nc-valor-dor" />
+        <button type="button" class="nc-step-btn" id="valorDorReavPlus"  disabled>+</button>
       </div>
     </div>
   </template>
@@ -1003,12 +1019,15 @@
           <button type="button" class="nc-step-btn" id="spo2Plus">+</button>
         </div>
       </div>
+      <!-- O valor da FR, nunca só o adjetivo (Cofen 514/2016, 7.1; Coren-SP 2022, p. 16) -->
       <div>
-        <label>Padrão</label>
+        <label for="fr">FR (irpm)</label>
+        <div class="nc-stepper">
+          <button type="button" class="nc-step-btn" id="frMinus">−</button>
+          <input type="number" id="fr" min="0" max="60" placeholder="–" class="nc-valor-dor" />
+          <button type="button" class="nc-step-btn" id="frPlus">+</button>
+        </div>
         <div class="nc-chips nc-chips-stretch">
-          <button type="button" class="nc-chip nc-padrao" data-nc-val="Eupneico"    data-nc-color="green">Eupneico</button>
-          <button type="button" class="nc-chip nc-padrao" data-nc-val="Bradipneico" data-nc-color="amber">Bradipneico</button>
-          <button type="button" class="nc-chip nc-padrao" data-nc-val="Taquipneico" data-nc-color="amber">Taquipneico</button>
           <button type="button" class="nc-chip nc-padrao" data-nc-val="Dispneico"   data-nc-color="red">Dispneico</button>
         </div>
       </div>
@@ -1073,6 +1092,19 @@
           <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação total"   data-nc-color="green">Total</button>
           <button type="button" class="nc-chip nc-aceit" data-nc-val="Aceitação parcial" data-nc-color="amber">Parcial</button>
           <button type="button" class="nc-chip nc-aceit" data-nc-val="Recusa da dieta"   data-nc-color="red">Recusa</button>
+        </div>
+      </div>
+      <!-- Recusa: o motivo e a quem foi comunicado (Cofen 514/2016, 9.3; Coren-SP 2022, p. 32) -->
+      <div class="nc-group" id="motivoRecusaGroup" hidden>
+        <span class="nc-group-label">Motivo da recusa</span>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-motivo-recusa" data-nc-val="Disfagia"            data-nc-color="amber">Disfagia</button>
+          <button type="button" class="nc-chip nc-motivo-recusa" data-nc-val="Mastigação dolorosa" data-nc-color="amber">Mastigação dolorosa</button>
+          <button type="button" class="nc-chip nc-motivo-recusa" data-nc-val="Inapetência"         data-nc-color="amber">Inapetência</button>
+          <button type="button" class="nc-chip nc-motivo-recusa" data-nc-val="Náusea"              data-nc-color="amber">Náusea</button>
+        </div>
+        <div class="nc-chips nc-chips-stretch">
+          <button type="button" class="nc-chip nc-recusa-comunicado" data-nc-val="Comunicado ao enfermeiro" data-nc-color="gray">Comunicado ao enfermeiro</button>
         </div>
       </div>
     </div>
@@ -1247,10 +1279,10 @@
       <div class="nc-chips nc-chips-stretch">
         <button type="button" class="nc-chip nc-dorso" data-nc-val="Íntegro"                   data-nc-color="green">Íntegro</button>
         <button type="button" class="nc-chip nc-dorso" data-nc-val="Com hiperemia"             data-nc-color="amber">Hiperemia</button>
-        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau I"  data-nc-color="amber">LPP I</button>
-        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau II" data-nc-color="orange">LPP II</button>
-        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau III" data-nc-color="red">LPP III</button>
-        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão grau IV" data-nc-color="red">LPP IV</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão estágio 1"  data-nc-color="amber">LPP 1</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão estágio 2" data-nc-color="orange">LPP 2</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão estágio 3" data-nc-color="red">LPP 3</button>
+        <button type="button" class="nc-chip nc-dorso" data-nc-val="Lesão por pressão estágio 4" data-nc-color="red">LPP 4</button>
         <button type="button" class="nc-chip nc-dorso" data-nc-val="DAI"                       data-nc-color="orange">DAI</button>
       </div>
     </div>
@@ -1295,7 +1327,8 @@
   <script>
     // ── 1. Constants ──────────────────────────────────────────────────────────
     const GENDER_SUBS_F = [
-      ['POUCO COMUNICATIVO', 'POUCO COMUNICATIVA'],
+      ['QUANDO SOLICITADO',  'QUANDO SOLICITADA'],
+      ['DISPNEICO',          'DISPNEICA'],
       ['RESTRITO AO LEITO',  'RESTRITA AO LEITO'],
       ['LÚCIDO',             'LÚCIDA'],
       ['ORIENTADO',          'ORIENTADA'],
@@ -1374,6 +1407,7 @@
       'nc-secrecao':     'aspectoSecrecao',    'nc-sonda':     'dietaSonda',
       'nc-acompanha':    'acompanha',          'nc-nauseas':   'nauseas',
       'nc-queixa-abd':   'queixaAbdominal',    'nc-hgt-jejum':  'hgtJejum',
+      'nc-motivo-recusa': 'motivoRecusa',      'nc-recusa-comunicado': 'recusaComunicada',
     };
 
     const BASE_FORM = {
@@ -1388,7 +1422,7 @@
     const SECTION_DATA_FIELDS = {
       dados:       ['nomePaciente', 'tipoSala', 'idadePaciente', 'problemaAtual', 'comorbidades', 'alergias', 'acompanha'],
       neurologico: ['nivelConsciencia', 'verbalizacao', 'dorPresente'],
-      ventilacao:  ['tipoOxigenoterapia', 'padraoVentilatorio', 'spo2', 'tosse'],
+      ventilacao:  ['tipoOxigenoterapia', 'fr', 'padraoVentilatorio', 'spo2', 'tosse'],
       dieta:       ['dietaOral', 'dietaSonda', 'queixaAbdominal', 'hgt'],
       acessos:     ['avpMsdCheckbox', 'avpMseCheckbox', 'cvcCheckbox', 'piccCheckbox', 'portCheckbox', 'permicathCheckbox'],
       eliminacoes: ['viaDiurese', 'viaFezes', 'nauseas', 'vomitoSelect', 'tipodreno'],
@@ -1503,6 +1537,16 @@
         if (LOCAIS_SEM_LADO.includes(form[a.select.id])) form[a.select.id] = '';
       });
       if (ACEITACAO_ANTIGA[form.aceitacaoOral]) form.aceitacaoOral = ACEITACAO_ANTIGA[form.aceitacaoOral];
+      // 2026-10: opções trocadas pelo diagnóstico do Revisar
+      if (['Eupneico', 'Bradipneico', 'Taquipneico'].includes(form.padraoVentilatorio)) form.padraoVentilatorio = '';
+      if (form.verbalizacao === 'Pouco comunicativo') form.verbalizacao = 'Responde quando solicitado';
+      if (form.verbalizacao === 'Afásico') form.verbalizacao = 'Não se comunica verbalmente';
+      const LPP = { I: '1', II: '2', III: '3', IV: '4' };
+      const lpp = /^Lesão por pressão grau (I|II|III|IV)$/.exec(form.dorsoEstado || '');
+      if (lpp) form.dorsoEstado = 'Lesão por pressão estágio ' + LPP[lpp[1]];
+      if (Array.isArray(form.nivelConsciencia)) {
+        form.nivelConsciencia = form.nivelConsciencia.map(v => v === 'Sem relação de vida' ? 'Sem relação com o meio' : v);
+      }
     }
 
     // sessionStorage (não localStorage): sobrevive ao F5 mas morre ao fechar
@@ -1537,12 +1581,30 @@
       return text;
     }
 
+    // Siglas que o modo minúsculas não pode desmanchar ("#Has", "Vo liberada", "escala eva").
+    const SIGLAS_FIXAS = ['HAS', 'DM', 'DM1', 'DM2', 'DPOC', 'IRC', 'IRA', 'ICC', 'IAM', 'AVC', 'AVE', 'TCE',
+      'ITU', 'HIV', 'UTI', 'VO', 'NPO', 'SNE', 'SNG', 'SVD', 'SVA', 'IOT', 'TQT', 'VNI', 'EVA', 'BPS', 'PAINAD', 'HGT', 'BIC',
+      'AVP', 'CVC', 'PICC', 'MSD', 'MSE', 'MID', 'MIE', 'EV', 'IM', 'SC', 'SF', 'SG', 'O2', 'UDC', 'DAI',
+      'LPP', 'CID', 'FA', 'RX', 'TC', 'ECG', 'FR'];
+    const RX_SIGLAS = new RegExp(`(?<![\\p{L}\\p{N}])(${SIGLAS_FIXAS.join('|')})(?![\\p{L}\\p{N}])`, 'giu');
+    // "Maria das Dores": cada parte com maiúscula, menos as ligações
+    function nomeProprio(nome) {
+      return nome.toLowerCase().split(/(\s+)/).map((p, i) =>
+        /^(da|de|do|das|dos|e)$/.test(p) && i > 0 ? p : p.charAt(0).toUpperCase() + p.slice(1)).join('');
+    }
     function toSmartCase(text) {
+      const nome = (getValue('nomePaciente') || '').trim();
+      const rxNome = nome ? new RegExp(nome.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'giu') : null;
       return text.split('\n').map(line => {
         if (line.startsWith('EMERGÊNCIA ADULTO')) return line;
-        return line.toLowerCase()
+        let l = line.toLowerCase()
           .replace(/[a-záàãâéêíóôõúüç]/iu, ch => ch.toUpperCase())
-          .replace(/\. ([a-záàãâéêíóôõúüç])/giu, (_, ch) => '. ' + ch.toUpperCase());
+          .replace(/\. ([a-záàãâéêíóôõúüç])/giu, (_, ch) => '. ' + ch.toUpperCase())
+          .replace(RX_SIGLAS, m => m.toUpperCase())
+          .replace(/(\d\s*)l\/min/giu, '$1L/min') // "3l/min" se lê "31/min"
+          .replace(/(cateter\s+\d{2}\s*)g(?!\p{L})/giu, '$1G'); // calibre em gauge: "20 g" seria grama
+        if (rxNome) l = l.replace(rxNome, nomeProprio(nome));
+        return l;
       }).join('\n');
     }
 
@@ -1564,10 +1626,31 @@
       });
     }
 
+    function temValor(v) {
+      return v !== undefined && v !== null && String(v).trim() !== '';
+    }
+
+    // O que falta para a anotação ficar completa (Revisar, regras R25 e R21):
+    // aparece como ponto âmbar na seção e no aviso ao copiar.
+    function faltasNaAnotacao() {
+      const f = state.form, faltas = [];
+      const semEscore = !temValor(f.valorDor);
+      if (f.dorPresente === 'Sim' && semEscore) faltas.push({ secao: 'neurologico', texto: 'escore da dor' });
+      if (f.dorPresente === 'Sim' && !semEscore && !f.escalaDor && pacienteNaoInforma(f))
+        faltas.push({ secao: 'neurologico', texto: 'escala da dor (BPS ou PAINAD: o paciente não informa)' });
+      if (f.queixaAbdominal === 'Refere dor abdominal' && (f.dorPresente !== 'Sim' || semEscore))
+        faltas.push({ secao: 'dieta', texto: 'escore da dor abdominal (marque Dor em Neurológico)' });
+      if (f.aceitacaoOral === 'Recusa da dieta' && !f.motivoRecusa) faltas.push({ secao: 'dieta', texto: 'motivo da recusa' });
+      return faltas;
+    }
+
     function updateSectionIndicators() {
+      const faltas = faltasNaAnotacao();
       SECTION_KEYS.forEach(key => {
         const btn = document.querySelector(`[data-section="${key}"]`);
-        if (btn) btn.classList.toggle('has-data', sectionHasData(key));
+        if (!btn) return;
+        btn.classList.toggle('has-data', sectionHasData(key));
+        btn.classList.toggle('falta', faltas.some(x => x.secao === key));
       });
     }
 
@@ -1792,6 +1875,57 @@
       if (valorEl) { valorEl.disabled = !ok; if (!ok) { valorEl.value = ''; state.form.valorDor = ''; } }
       if (minusEl) minusEl.disabled = !ok;
       if (plusEl)  plusEl.disabled  = !ok;
+      const reavEl = document.getElementById('valorDorReav');
+      if (reavEl) { reavEl.disabled = !ok; if (!ok) { reavEl.value = ''; state.form.valorDorReav = ''; } }
+      ['valorDorReavMinus', 'valorDorReavPlus'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !ok; });
+      ajustarEscalaDor();
+    }
+
+    // EVA é o paciente que informa. Sedado, sem relação com o meio ou sem comunicação
+    // verbal, ele não informa: EVA fica desabilitada e sai se estava marcada.
+    function pacienteNaoInforma(f = state.form) {
+      const nc = f.nivelConsciencia || [];
+      return nc.includes('Sedado') || nc.includes('Sem relação com o meio') || f.verbalizacao === 'Não se comunica verbalmente';
+    }
+    // BPS vai de 3 a 12; EVA e PAINAD, de 0 a 10
+    function faixaDor(escala = state.form.escalaDor) {
+      return escala === 'BPS' ? { mn: 3, mx: 12 } : { mn: 0, mx: 10 };
+    }
+    function ajustarEscalaDor() {
+      const naoInforma = pacienteNaoInforma();
+      const dor = state.form.dorPresente === 'Sim';
+      const eva = document.querySelector('.nc-chip.nc-escala[data-nc-val="EVA"]');
+      if (eva) {
+        eva.disabled = !dor || naoInforma;
+        eva.title = naoInforma ? 'EVA é o paciente que informa: use BPS ou PAINAD' : '';
+      }
+      if (naoInforma && state.form.escalaDor === 'EVA') {
+        eva?.classList.remove('active');
+        state.form.escalaDor = '';
+      }
+      // escore fora da faixa da escala escolhida: limpa, para ser medido de novo nela
+      const { mn, mx } = faixaDor();
+      ['valorDor', 'valorDorReav'].forEach(id => {
+        const v = state.form[id];
+        const el = document.getElementById(id);
+        if (el) { el.min = mn; el.max = mx; }
+        if (temValor(v) && (Number(v) < mn || Number(v) > mx)) {
+          state.form[id] = '';
+          if (el) el.value = '';
+        }
+      });
+    }
+
+    // Recusa da dieta: aparecem o motivo e o "comunicado"; fora dela, somem e limpam
+    function handleAceitacaoChange(value) {
+      const recusa = value === 'Recusa da dieta';
+      const group = document.getElementById('motivoRecusaGroup');
+      if (group) group.hidden = !recusa;
+      if (!recusa) {
+        document.querySelectorAll('.nc-chip.nc-motivo-recusa, .nc-chip.nc-recusa-comunicado').forEach(c => c.classList.remove('active'));
+        state.form.motivoRecusa = '';
+        state.form.recusaComunicada = '';
+      }
     }
 
     function handleOxigenoterapiaChange(value) {
@@ -1877,6 +2011,7 @@
         document.querySelectorAll('.nc-chip.nc-tipo-dieta, .nc-chip.nc-aceit').forEach(c => c.classList.remove('active'));
         state.form.tipoDieta = '';
         state.form.aceitacaoOral = '';
+        handleAceitacaoChange('');
       }
     }
 
@@ -1892,6 +2027,9 @@
     // Handlers dependentes disparados quando o chip da chave correspondente muda.
     const CHIP_CHANGE_HANDLERS = {
       dietaOral:          handleDietaOralChange,
+      aceitacaoOral:      handleAceitacaoChange,
+      verbalizacao:       ajustarEscalaDor,
+      escalaDor:          ajustarEscalaDor,
       viaDiurese:         handleViaDiureseChange,
       viaFezes:           handleViaFezesChange,
       tipoOxigenoterapia: handleOxigenoterapiaChange,
@@ -1984,7 +2122,6 @@
         palavras: ['CALCULO RENAL', 'CALCULO URETERAL', 'PEDRA NO RIM', 'LITIASE', 'NEFROLITIASE', 'UROLITIASE', 'URETEROLITIASE', 'COLICA RENAL', 'COLICA NEFRETICA'],
         cuidados: [
           'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
-          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
           'COLETO AMOSTRA DE URINA PARA EXAME, CONFORME PRESCRIÇÃO MÉDICA;',
           'ENCAMINHO AO SETOR DE IMAGEM PARA REALIZAÇÃO DE EXAME;',
           'ESTIMULO INGESTA HÍDRICA, CONFORME PRESCRIÇÃO;',
@@ -1997,7 +2134,7 @@
           'ADMINISTRO MEDICAÇÃO ANTI-HIPERTENSIVA, CONFORME PRESCRIÇÃO MÉDICA;',
           'COMUNICO PICO HIPERTENSIVO AO ENFERMEIRO;',
           'MANTENHO CABECEIRA ELEVADA A 30º;',
-          'MANTIDO EM OBSERVAÇÃO;',
+          'PERMANECE EM OBSERVAÇÃO;',
         ] },
       { nome: 'Dor',
         cids: ['R52', 'R51', 'R10', 'R07', 'M54'],
@@ -2005,7 +2142,6 @@
         dorPresente: true,
         cuidados: [
           'ADMINISTRO ANALGESIA, CONFORME PRESCRIÇÃO MÉDICA;',
-          'REAVALIO DOR APÓS ADMINISTRAÇÃO DA ANALGESIA;',
           'COMUNICO QUEIXA ÁLGICA AO ENFERMEIRO;',
           'POSICIONO NO LEITO EM POSIÇÃO DE CONFORTO;',
         ] },
@@ -2078,7 +2214,9 @@
         titulo.appendChild(por);
         const chips = document.createElement('div');
         chips.className = 'nc-chips';
-        grupo.cuidados.forEach(frase => {
+        // frase sobre a dor só com a dor pontuada: sem escore, ela sairia sem escore (R25)
+        const comEscore = state.form.dorPresente === 'Sim' && temValor(state.form.valorDor);
+        grupo.cuidados.filter(frase => comEscore || !/(?<!\p{L})(DOR|ÁLGICA)(?!\p{L})/u.test(frase)).forEach(frase => {
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'nc-chip cuidado-sug';
@@ -2194,14 +2332,15 @@
       if (consciencia.length) parts.push('PACIENTE ' + consciencia.map(v => v.toUpperCase()).join(', '));
       if (verbalizacao) parts.push(verbalizacao.toUpperCase());
 
-      if (dorPresente === 'Sim') {
-        if (valorDor && escalaDor) {
-          parts.push(`DOR ${valorDor} AVALIADA NA ESCALA ${escalaDor}`);
-        } else if (valorDor) {
-          parts.push(`DOR ${valorDor}`);
-        } else {
-          parts.push('COM QUEIXA DE DOR');
-        }
+      // Dor sem escore não vira texto: o app avisa (indicador da seção e ao copiar).
+      // Com a queixa abdominal marcada em Dieta, a dor sai com o local.
+      if (dorPresente === 'Sim' && temValor(valorDor)) {
+        const escala = escalaDor ? ` NA ESCALA ${escalaDor}` : '';
+        parts.push(state.form.queixaAbdominal === 'Refere dor abdominal'
+          ? `REFERE DOR ABDOMINAL, ESCORE ${valorDor}${escala}`
+          : `DOR ${valorDor}${escalaDor ? ` AVALIADA NA ESCALA ${escalaDor}` : ''}`);
+        const reav = getValue('valorDorReav');
+        if (temValor(reav)) parts.push(`APÓS ANALGESIA, ESCORE ${reav}${escala}`);
       }
 
       return parts.join(' . ');
@@ -2236,6 +2375,8 @@
       }
 
       if (spo2) parts.push(`SATURAÇÃO ${spo2}%`);
+      const fr = getValue('fr');
+      if (temValor(fr)) parts.push(`FR ${fr} IRPM`);
       if (padrao) parts.push(padrao.toUpperCase());
 
       if (tosse === 'Produtiva') {
@@ -2272,7 +2413,9 @@
         const aceitOk = !!aceitacao;
         if (tipoOk)  txt += `, DIETA ${tipo.toUpperCase()}`;
         if (aceitOk) txt += `, ${aceitacao.toUpperCase()}`;
+        if (aceitacao === 'Recusa da dieta' && state.form.motivoRecusa) txt += ` POR ${state.form.motivoRecusa.toUpperCase()}`;
         parts.push(txt);
+        if (aceitacao === 'Recusa da dieta' && state.form.recusaComunicada) parts.push('COMUNICADO AO ENFERMEIRO');
       }
 
       if (sonda) {
@@ -2281,7 +2424,9 @@
         parts.push(txt);
       }
 
-      if (queixaAbd) parts.push(queixaAbd.toUpperCase());
+      // "Refere dor abdominal" com escore sai junto da dor, em Neurológico
+      const abdNaDor = queixaAbd === 'Refere dor abdominal' && state.form.dorPresente === 'Sim' && temValor(state.form.valorDor);
+      if (queixaAbd && !abdNaDor) parts.push(queixaAbd.toUpperCase());
       if (hgt) parts.push(`HGT ${hgt} MG/DL` + (state.form.hgtJejum ? ' EM JEJUM' : ''));
 
       return parts.join(' . ');
@@ -2293,7 +2438,7 @@
         .map(a => {
           let txt = a.texto;
           const sel = getValue(a.select.id);
-          if (sel) txt += a.select.tipo === 'calibre' ? ` ABOCATH ${sel}` : ` EM ${sel.toUpperCase()}`;
+          if (sel) txt += a.select.tipo === 'calibre' ? ` COM CATETER ${sel} G` : ` EM ${sel.toUpperCase()}`;
           const data = getValue(a.data);
           if (data) txt += ` DATADO ${formatDateBR(data)}`;
           if (getValue(a.cur)) txt += '. CURATIVO LIMPO E SECO SEM SINAIS FLOGÍSTICOS NO SÍTIO DA INSERÇÃO';
@@ -2431,26 +2576,27 @@
       const el = document.getElementById('note-output')?.querySelector('p');
       if (!el) return;
 
+      // O gênero vale só para o que o app escreve: o texto digitado em Cuidados
+      // ("FAMILIAR ORIENTADO…") sai como o técnico escreveu.
       const blocos = [
-        gerarTextoDados(),
-        [
+        applyGender(gerarTextoDados()),
+        applyGender([
           gerarTextoNeurologico(),
           gerarTextoVentilacao(),
           gerarTextoDieta(),
           gerarTextoAcessos(),
           gerarTextoEliminacoes(),
           gerarTextoDeambulacao(),
-        ].filter(Boolean).join('\n'),
+        ].filter(Boolean).join('\n')),
         gerarTextoCuidados(),
       ].filter(Boolean);
 
       if (blocos.length) {
         let text = blocos.join('\n\n');
-        text = applyGender(text);
         if (!state.uppercase) text = toSmartCase(text);
         el.innerText = text;
       } else {
-        el.innerText = 'O conteúdo da evolução será gerado aqui...';
+        el.innerText = 'O conteúdo da anotação será gerado aqui...';
       }
       fitNoteText();
       updateSectionIndicators();
@@ -2464,7 +2610,7 @@
     // ── 9. Copy ───────────────────────────────────────────────────────────────
     function copiarEvolucao(silencioso = false) {
       const text = document.getElementById('note-output')?.querySelector('p')?.innerText?.trim() || '';
-      if (!text || text === 'O conteúdo da evolução será gerado aqui...') {
+      if (!text || text === 'O conteúdo da anotação será gerado aqui...') {
         if (!silencioso) showToast('Anotação vazia.');
         return;
       }
@@ -2476,7 +2622,8 @@
             btn.textContent = 'Copiado!';
             setTimeout(() => { btn.textContent = orig; }, 2000);
           }
-          showToast('Anotação copiada.');
+          const faltas = faltasNaAnotacao();
+          showToast(faltas.length ? `Copiada. Falta: ${faltas.map(x => x.texto).join('; ')}.` : 'Anotação copiada.');
         })
         .catch(() => { if (!silencioso) showToast('Erro ao copiar.'); });
     }
@@ -2549,10 +2696,10 @@
         const deactivate = (...vals) => document.querySelectorAll('.nc-chip').forEach(c => {
           if (vals.includes(c.dataset.ncVal)) c.classList.remove('active');
         });
-        if (val === 'Sedado' || val === 'Sem relação de vida') {
+        if (val === 'Sedado' || val === 'Sem relação com o meio') {
           document.querySelectorAll('.nc-chip.nc-alerta').forEach(c => { if (c !== chip) c.classList.remove('active'); });
         } else if (val === 'Lúcido' || val === 'Sonolento') {
-          deactivate('Sedado', 'Sem relação de vida');
+          deactivate('Sedado', 'Sem relação com o meio');
         }
         if (val === 'Com períodos de confusão')    deactivate('Orientado', 'Orientado parcialmente', 'Coerente');
         else if (val === 'Orientado parcialmente') deactivate('Orientado', 'Com períodos de confusão', 'Desorientado');
@@ -2563,6 +2710,7 @@
       }
 
       state.form.nivelConsciencia = [...document.querySelectorAll('.nc-chip.active:is(.nc-alerta, .nc-orientacao, .nc-comp)')].map(c => c.dataset.ncVal);
+      ajustarEscalaDor();
       updateSectionIndicators();
       gerarAnotacao();
     });
@@ -2572,6 +2720,8 @@
       if (!btn || (!btn.id.endsWith('Plus') && !btn.id.endsWith('Minus'))) return;
       const STEPPER_CFG = {
         valorDor:       { mn: 0,  mx: 10,   step: 1  },
+        valorDorReav:   { mn: 0,  mx: 10,   step: 1  },
+        fr:             { mn: 0,  mx: 60,   step: 1, ini: 18 },
         idadePaciente:  { mn: 0,  mx: 120,  step: 1  },
         litrosOxigenio: { mn: 0,  mx: 15,   step: 1  },
         spo2:           { mn: 50, mx: 100,  step: 1  },
@@ -2582,7 +2732,9 @@
       };
       const isPlus = btn.id.endsWith('Plus');
       const inputId = btn.id.slice(0, -(isPlus ? 4 : 5));
-      const cfg = STEPPER_CFG[inputId];
+      const cfg = ['valorDor', 'valorDorReav'].includes(inputId)
+        ? { ...STEPPER_CFG[inputId], ...faixaDor() } // a faixa muda com a escala (BPS 3 a 12)
+        : STEPPER_CFG[inputId];
       if (!cfg) return;
       const input = document.getElementById(inputId);
       if (!input || input.disabled) return;
