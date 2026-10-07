@@ -780,12 +780,121 @@
       font-style: italic;
       color: var(--muted);
     }
+
+    /* ── 16. Celular ───────────────────────────────────────────────────────── */
+    /* Até 700 px a mesma app vira layout de celular: barra de cima em duas
+       linhas, a sidebar vira o menu ☰, a anotação gerada vira uma folha que
+       sobe de baixo e uma barra fixa leva Anterior/Próxima e Copiar. Acima de
+       700 px (a PC do posto) nada disto aparece. */
+    .menu-btn, .menu-extra, .nota-cab, .barra-movel, .menu-fundo { display: none; }
+    @media (max-width: 700px) {
+      .top-bar { flex-wrap: wrap; justify-content: flex-start; gap: 0.4rem 0.6rem; padding: 0.45rem 0.75rem 0.55rem; }
+      .menu-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 44px; min-height: 40px; font-size: 1.15rem; line-height: 1;
+      }
+      .top-titulo { flex: 1; min-width: 0; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .top-reset, #informativoBtn { display: none; }
+      .header-controls { width: 100%; justify-content: space-between; }
+      .header-controls .toggle-btn { min-height: 40px; min-width: 44px; font-size: 0.8rem; }
+
+      /* Menu ☰: a própria sidebar, como gaveta pela esquerda */
+      .layout { padding: 0; gap: 0; }
+      .sidebar {
+        position: fixed; top: 0; bottom: 0; left: 0; z-index: 400;
+        width: min(300px, 86vw); justify-content: flex-start; gap: 1rem; overflow-y: auto;
+        border: 0; border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+        padding: 1rem 0.8rem calc(1rem + env(safe-area-inset-bottom));
+        box-shadow: var(--shadow-md);
+        transform: translateX(-105%); visibility: hidden;
+        transition: transform 0.22s ease, visibility 0.22s;
+      }
+      body.menu-aberto .sidebar { transform: none; visibility: visible; }
+      .nav-btn { min-height: 44px; font-size: 0.95rem; }
+      .history-entry { min-height: 40px; }
+      .action-btn { min-height: 44px; font-size: 0.85rem; }
+      .sidebar .copy-btn { display: none; }
+      .menu-extra { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+      .menu-op { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; }
+      .menu-op .toggle-btn { min-width: 52px; min-height: 40px; background: var(--surface-hov); color: var(--text); border-color: var(--border); }
+      .menu-op .toggle-btn.active, body.dark .menu-op .toggle-btn.active { background: var(--primary); color: #fff; }
+      .menu-fundo {
+        display: block; position: fixed; inset: 0; z-index: 240;
+        background: rgba(15,23,42,0.45); opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      }
+      body.menu-aberto .menu-fundo, body.nota-aberta .menu-fundo { opacity: 1; pointer-events: auto; }
+      body.menu-aberto .menu-fundo { z-index: 350; }
+
+      /* Formulário de ponta a ponta, rolando entre as duas barras */
+      .main-content { border: 0; border-radius: 0; box-shadow: none; padding: 0.6rem 0.85rem 0.5rem; gap: 0.5rem; }
+      .section-output { flex: 1 1 auto; overscroll-behavior: contain; }
+      .section-nav-bar, .footer, .nav-tooltip { display: none; }
+
+      /* Dedo: alvos de 44 px; campos a 16 px (menos que isso o iPhone dá zoom) */
+      input, select, textarea, .acesso-fields :is(input, select) { font-size: 16px; }
+      input:not([type="checkbox"]), select { min-height: 44px; }
+      .nc-chip { min-height: 44px; padding-left: 0.8rem; padding-right: 0.8rem; }
+      .nc-step-btn { min-height: 44px; min-width: 44px; }
+      .form-row { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+      .form-row:has(input[type="text"], textarea) { grid-template-columns: 1fr; }
+      .chip-grid-2 { grid-template-columns: 1fr; }
+      .nc-chips-nowrap { flex-wrap: wrap; }
+      .nc-chips-nowrap .nc-chip { flex: 1 1 auto; min-width: auto; }
+      .cid-item { min-height: 40px; align-items: center; font-size: 0.9rem; }
+
+      /* A anotação gerada: folha que sobe de baixo, rola em vez de encolher */
+      .note-output {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 250;
+        min-height: 30dvh; max-height: 75dvh;
+        padding: 0 1rem calc(var(--barra-h, 7rem) + 0.75rem);
+        border: 0; border-top: 4px solid var(--primary);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: 0 -8px 24px rgba(15,23,42,0.18);
+        font-size: 1rem;
+        /* Fechada fica fora da tela, mas sem visibility:hidden: o Copiar lê o
+           texto com innerText, que volta vazio para texto invisível. */
+        transform: translateY(105%);
+        transition: transform 0.22s ease;
+      }
+      body.nota-aberta .note-output { transform: none; }
+      .nota-cab {
+        display: flex; align-items: center; justify-content: space-between;
+        position: sticky; top: 0; background: var(--paper); padding: 0.6rem 0 0.4rem;
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary);
+      }
+      .nota-fechar {
+        min-width: 44px; min-height: 40px; border: 1px solid var(--border); border-radius: 999px;
+        background: transparent; color: var(--muted); font: inherit; cursor: pointer;
+      }
+
+      /* Barra de baixo: Anotação + Copiar, e Anterior · seção · Próxima */
+      .barra-movel {
+        display: grid; gap: 0.45rem; position: relative; z-index: 260; flex-shrink: 0;
+        padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom));
+        background: var(--surface); border-top: 1px solid var(--border);
+        box-shadow: 0 -2px 10px rgba(15,23,42,0.06);
+      }
+      .barra-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; align-items: center; }
+      .barra-linha-nav { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .barra-movel button { min-height: 46px; border-radius: var(--radius); font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+      .barra-nota, .barra-nav { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+      .barra-nav { padding: 0 0.9rem; }
+      .barra-movel .copy-btn { margin-top: 0; padding: 0; font-size: 0.95rem; font-weight: 700; }
+      .barra-secao {
+        text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      /* Teclado aberto: a barra sai do caminho */
+      body:has(:is(input:not([type="checkbox"]), textarea):focus) .barra-movel { display: none; }
+      .toast { left: 1rem; right: 1rem; bottom: calc(var(--barra-h, 7rem) + 0.5rem); text-align: center; }
+    }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <span>EMERGÊNCIA ADULTO — HMV</span>
+    <button class="toggle-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+    <span class="top-titulo">EMERGÊNCIA ADULTO — HMV</span>
     <button class="toggle-btn top-reset" id="resetBtn"
       title="Novo registro — limpa o formulário (o atual vai para o histórico)">↺ RESET</button>
     <div class="header-controls">
@@ -808,6 +917,10 @@
   <div class="layout">
     <aside class="sidebar">
       <div>
+        <div class="menu-extra">
+          <div class="menu-op">Maiúsculas <span data-slot="caseToggle"></span></div>
+          <div class="menu-op">Modo noturno <span data-slot="darkToggle"></span></div>
+        </div>
         <h2>Seções</h2>
         <nav id="navButtons" class="nav-buttons">
           <button class="nav-btn" data-section="dados">Admissão <span class="section-dot"></span></button>
@@ -838,9 +951,22 @@
       <div class="section-nav-bar">
         <button class="next-btn" id="nextSectionBtn">Próxima →</button>
       </div>
-      <div id="note-output" class="note-output"><p>O conteúdo da anotação será gerado aqui...</p></div>
+      <div id="note-output" class="note-output"><div class="nota-cab">Anotação <button class="nota-fechar" id="notaFechar" aria-label="Fechar anotação">▼</button></div><p>O conteúdo da anotação será gerado aqui...</p></div>
     </main>
   </div>
+
+  <nav class="barra-movel" id="barraMovel" aria-label="Navegação">
+    <div class="barra-linha">
+      <button class="barra-nota" id="notaBtn" aria-expanded="false">▲ Anotação</button>
+      <button class="copy-btn" id="copyBtnMovel">Copiar</button>
+    </div>
+    <div class="barra-linha barra-linha-nav">
+      <button class="barra-nav" id="antBtn">‹ Anterior</button>
+      <span class="barra-secao" id="barraSecao" aria-live="polite"></span>
+      <button class="barra-nav" id="proxBtn">Próxima ›</button>
+    </div>
+  </nav>
+  <div class="menu-fundo" id="menuFundo"></div>
 
   <div class="footer">ANOTAÇÃO DE ENFERMAGEM — EMERGÊNCIA ADULTO</div>
   <div class="toast" id="toast"></div>
@@ -1820,6 +1946,7 @@
       if (key === 'cuidados') { ensureCuidadosContent(); renderSugestoesCuidados(); }
       gerarAnotacao();
       if (key === 'cuidados') setTimeout(() => copiarEvolucao(true), 120);
+      movilAoAtivar(key);
     }
 
     function activateByIndex(i) {
@@ -2574,6 +2701,7 @@
     function fitNoteText() {
       const wrap = document.getElementById('note-output');
       if (!wrap) return;
+      if (MOVIL.matches) { wrap.style.fontSize = ''; return; } // no celular a folha rola
       const BASE = 0.9, MIN = 0.62;
       wrap.style.fontSize = BASE + 'rem';
       for (let i = 0; i < 10 && wrap.scrollHeight > wrap.clientHeight; i++) {
@@ -2620,7 +2748,7 @@
     }
 
     // ── 9. Copy ───────────────────────────────────────────────────────────────
-    function copiarEvolucao(silencioso = false) {
+    function copiarEvolucao(silencioso = false, btn = document.getElementById('copyBtn')) {
       const text = document.getElementById('note-output')?.querySelector('p')?.innerText?.trim() || '';
       if (!text || text === 'O conteúdo da anotação será gerado aqui...') {
         if (!silencioso) showToast('Anotação vazia.');
@@ -2628,7 +2756,6 @@
       }
       navigator.clipboard.writeText(text)
         .then(() => {
-          const btn = document.getElementById('copyBtn');
           if (btn) {
             const orig = btn.textContent;
             btn.textContent = 'Copiado!';
@@ -3133,7 +3260,11 @@
     document.addEventListener('mousedown', e => {
       if (cid.el && !cid.el.contains(e.target) && e.target.id !== CID_CAMPO) cidFechar();
     });
-    window.addEventListener('resize', cidFechar);
+    // No celular abrir o teclado também dispara resize: ali a lista segue o campo.
+    window.addEventListener('resize', () => {
+      const campo = document.getElementById(CID_CAMPO);
+      if (MOVIL.matches && cid.el && campo) cidPosicionar(campo); else cidFechar();
+    });
 
     // ── 15. Informativo Assistencial ──────────────────────────────────────────
     // A app do informativo vem inteira em #informativoHtml (base64, gerada por
@@ -3166,6 +3297,71 @@
       informativoTela.firstChild?.contentWindow.postMessage(
         { tema: document.body.classList.contains('dark') ? 'dark' : 'light' }, '*');
     }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    // ── 16. Celular ───────────────────────────────────────────────────────────
+    // Até 700 px (CSS seção 16): a sidebar é o menu ☰, a anotação gerada é uma
+    // folha que sobe de baixo e a barra de baixo tem Anterior/Próxima e Copiar.
+    // AA e N moram no menu; voltam para a barra de cima quando a tela cresce.
+    const MOVIL = matchMedia('(max-width: 700px)');
+    const movilMovidos = ['caseToggle', 'darkToggle'].map(id => {
+      const el = document.getElementById(id);
+      const marca = document.createComment(id);
+      el.before(marca);
+      return { el, marca, slot: document.querySelector(`[data-slot="${id}"]`) };
+    });
+    const barraMovel = document.getElementById('barraMovel');
+
+    function movilMedirBarra() {
+      document.body.style.setProperty('--barra-h', barraMovel.offsetHeight + 'px');
+    }
+    function movilLayout() {
+      movilMovidos.forEach(m => (MOVIL.matches ? m.slot.appendChild(m.el) : m.marca.after(m.el)));
+      if (!MOVIL.matches) movilFechar();
+      movilMedirBarra();
+      fitNoteText();
+    }
+    function movilFechar() {
+      document.body.classList.remove('menu-aberto', 'nota-aberta');
+      document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+      document.getElementById('notaBtn').setAttribute('aria-expanded', 'false');
+    }
+    function movilAbrir(classe, botao) {
+      const jaAberto = document.body.classList.contains(classe);
+      movilFechar();
+      if (jaAberto) return;
+      movilMedirBarra();
+      document.body.classList.add(classe);
+      document.getElementById(botao).setAttribute('aria-expanded', 'true');
+    }
+    // Chamada por activate(): rótulo da barra, topo da seção e menu fechado.
+    function movilAoAtivar(key) {
+      const nome = document.querySelector(`.nav-btn[data-section="${key}"]`)?.firstChild.textContent.trim();
+      document.getElementById('barraSecao').textContent =
+        `${nome} · ${SECTION_KEYS.indexOf(key) + 1}/${SECTION_KEYS.length}`;
+      if (!MOVIL.matches) return;
+      document.getElementById('section-output').scrollTop = 0;
+      document.body.classList.remove('menu-aberto');
+      document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', () => movilAbrir('menu-aberto', 'menuBtn'));
+    document.getElementById('notaBtn').addEventListener('click', () => movilAbrir('nota-aberta', 'notaBtn'));
+    document.getElementById('notaFechar').addEventListener('click', movilFechar);
+    document.getElementById('menuFundo').addEventListener('click', movilFechar);
+    document.getElementById('antBtn').addEventListener('click', () =>
+      activateByIndex((state.sectionIndex - 1 + SECTION_KEYS.length) % SECTION_KEYS.length));
+    document.getElementById('proxBtn').addEventListener('click', () =>
+      activateByIndex((state.sectionIndex + 1) % SECTION_KEYS.length));
+    const copyBtnMovel = document.getElementById('copyBtnMovel');
+    copyBtnMovel.addEventListener('click', () => copiarEvolucao(false, copyBtnMovel));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') movilFechar(); });
+    document.getElementById('section-output').addEventListener('scroll', () => {
+      const campo = document.getElementById(CID_CAMPO);
+      if (MOVIL.matches && cid.el && campo) cidPosicionar(campo);
+    }, { passive: true });
+    window.addEventListener('resize', movilMedirBarra);
+    MOVIL.addEventListener('change', movilLayout);
+    movilLayout();
   </script>
   <!-- Base CID-10 (revisão 2008, DATASUS) — 14.233 códigos, uma linha por
        código: o código, um espaço, a descrição. Fica aqui dentro de propósito:
